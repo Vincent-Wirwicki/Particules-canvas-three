@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,7 +9,9 @@
   body {
     background-color: #0a0a0a;
     color: #fafafa;
+    font-family: "Afacad", sans-serif;
   }
+
 }
 
 @layer components {
@@ -18,7 +21,11 @@
   }
 
   .nav {
-    @apply h-fit w-fit border-b border-neutral-800 z-50 p-2 flex gap-5 font-bold
+    @apply fixed top-5 left-5 h-fit w-fit z-50 p-2 flex flex-col gap-1 border-r border-neutral-500
+  }
+
+  .nav-link {
+    @apply border-b border-neutral-500 w-full p-1 font-bold uppercase text-xs text-end tracking-widest
   }
 
   .page-center {

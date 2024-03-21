@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
-const FBOPage = () => {
+
+const NoisePage = () => {
   return (
     <main className="page-center">
       <Outlet />
@@ -7,4 +8,4 @@ const FBOPage = () => {
   );
 };
 
-export default FBOPage;
+export default NoisePage;

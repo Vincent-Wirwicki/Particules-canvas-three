@@ -1,10 +1,9 @@
 import { Outlet } from "react-router-dom";
-const FBOPage = () => {
+
+export const MorphPage = () => {
   return (
     <main className="page-center">
       <Outlet />
     </main>
   );
 };
-
-export default FBOPage;

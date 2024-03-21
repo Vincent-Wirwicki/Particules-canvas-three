@@ -1,31 +1,26 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 type Props = {
   paths: { title: string; path: string }[];
 };
 
 const MainNav: React.FC<Props> = ({ paths }) => {
-  const location = useLocation();
-  const filter = location.pathname.split("/")[1];
+  // const location = useLocation();
+  // const filter = location.pathname.split("/")[1];
 
   return (
-    <nav className="nav fixed-top-center">
+    <nav className="nav">
       {paths.map(({ title, path }, idx) => (
-        <Link
+        <NavLink
           key={idx}
           to={path}
-          style={{
-            color:
-              title === filter || (title === "home" && filter === "")
-                ? "#fafafa"
-                : "#737373",
-          }}
+          className={({ isActive }) =>
+            isActive ? "text-amber-200 nav-link" : "text-neutral-500 nav-link"
+          }
         >
-          {title === filter || (title === "home" && filter === "")
-            ? `| ${title} |`
-            : title}
-        </Link>
+          {title}
+        </NavLink>
       ))}
     </nav>
   );
@@ -37,3 +32,8 @@ export default MainNav;
 //     ? `[${title}]`
 //     : title;
 // }
+// `nav-link ${
+//   title === filter || (title === "home" && filter === "")
+//     ? "text-emerald-400"
+//     : "text-neutral-200"
+// } `;
