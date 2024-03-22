@@ -1,4 +1,4 @@
-import { useFBO } from "@react-three/drei";
+import { useFBO, } from "@react-three/drei";
 import {
   useFrame,
   createPortal,
@@ -72,8 +72,8 @@ const ParticulesShapeOne = () => {
   });
 
   useFrame(state => {
-    const { gl, clock, camera: c } = state;
-    console.log(c.position);
+    const { gl, clock } = state;
+    // console.log(c.position);camera: c
     gl.setRenderTarget(target);
     gl.clear();
     gl.render(scene, camera);
@@ -86,7 +86,6 @@ const ParticulesShapeOne = () => {
       simulationMaterialRef.current.uniforms.uTime.value =
         clock.elapsedTime * 2;
   });
-
   return (
     <>
       {createPortal(

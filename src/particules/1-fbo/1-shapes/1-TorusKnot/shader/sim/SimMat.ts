@@ -4,7 +4,7 @@ import { getTorusKnot } from "../../../0-utils-shape-func/shapesFunction";
 export default class SimMatCurlTwo extends ShaderMaterial {
   constructor(size: number) {
     const positionsTexture = new DataTexture(
-      getTorusKnot(size, 5, 4, 6),
+      getTorusKnot(size, 6, 4, 6),
       size,
       size,
       RGBAFormat,
@@ -140,17 +140,15 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       return normalize( vec3( x , y , z ) * divisor );
     }
 
-            //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
 
     void main() {
       vec2 uv = vUv;
-      
       vec3 pos = texture2D( uPositions, uv ).xyz;
-      float time = uTime *0.01;
-      pos+=curlNoise(pos + time);
-      // pos += sin(pos+time*0.1 ) * cos(pos+time*0.1) * 6.283184;
-      // pos += sin(pos + time*0.1) * cos(pos+time*0.1) * 6.283184;
+      
+      pos+=curlNoise(pos + uTime *0.01);
       pos.xy = rotate(pos.xy, 0.5);
+      
       gl_FragColor = vec4( pos , 1. );
 
       }`,

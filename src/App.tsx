@@ -13,7 +13,9 @@ import FBOPage from "./pages/2-FBO/FBOPage";
 // );
 
 import CurlOneScene from "./particules/1-fbo/0-noise/curl/1/scene/CurlOneScene";
-import CurlTwoScene from "./particules/1-fbo/0-noise/curl/2/scene/CurlOneScene";
+import CurlTwoScene from "./particules/1-fbo/0-noise/curl/2/scene/CurlTwoScene";
+import CurlThreeScene from "./particules/1-fbo/0-noise/curl/3/scene/CurlThreeScene";
+
 import FBMOneScene from "./particules/1-fbo/0-noise/fbm/1/scene/FBMOneScene";
 import WipPage from "./pages/0-wip/WipPage";
 import MorphOneScene from "./particules/1-fbo/2-morph/1/scene/MorphOneScene";
@@ -38,6 +40,10 @@ const App = () => {
             {
               path: "curl-2",
               element: <CurlTwoScene />,
+            },
+            {
+              path: "curl-3",
+              element: <CurlThreeScene />,
             },
             {
               path: "fbm",

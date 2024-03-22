@@ -164,6 +164,10 @@ export const getTorusKnotWireFrame = (numPoints: number) => {
   return data;
 };
 
+
+
+
+
 export const getFlatTorusKnot = (
   numPoints: number,
   p: number,
@@ -197,41 +201,41 @@ export const getFlatTorusKnot = (
   return data;
 };
 
-export const getDataWeirdRayFromCenter = (
-  numPoints: number
-  // majorRadius: number,
-  // minorRadius: number
-) => {
-  const size = numPoints * numPoints * 4;
-  const data = new Float32Array(size); // Each point has 3 coordinates
+// export const getDataWeirdRayFromCenter = (
+//   numPoints: number
+//   // majorRadius: number,
+//   // minorRadius: number
+// ) => {
+//   const size = numPoints * numPoints * 4;
+//   const data = new Float32Array(size); // Each point has 3 coordinates
 
-  for (let i = 0; i < size; i++) {
-    const stride = i * 4;
-    // const a = numPoints * numPoints;(i / numPoints)
-    const p = 10;
-    const q = 5;
-    //if q > p full torus
+//   for (let i = 0; i < size; i++) {
+//     const stride = i * 4;
+//     // const a = numPoints * numPoints;(i / numPoints)
+//     const p = 10;
+//     const q = 5;
+//     //if q > p full torus
 
-    const u = (i / 64) * Math.PI * 2 * p;
-    const u1 = (i / 32) * Math.PI * 2;
-    const cx = Math.cos(u1);
-    const cy = Math.sin(u1);
-    const cxy = cx + cy;
-    // const u1 = (i/ 64) * Math.PI * 2
-    const v = (q / p) * u;
+//     const u = (i / 64) * Math.PI * 2 * p;
+//     const u1 = (i / 32) * Math.PI * 2;
+//     const cx = Math.cos(u1);
+//     const cy = Math.sin(u1);
+//     const cxy = cx + cy;
+//     // const u1 = (i/ 64) * Math.PI * 2
+//     const v = (q / p) * u;
 
-    const pos = Math.random() * Math.PI * 2;
-    // const pointIdx = Math.random() * Math.PI * 2;
+//     const pos = Math.random() * Math.PI * 2;
+//     // const pointIdx = Math.random() * Math.PI * 2;
 
-    const x = Math.cos(u) * (2 + Math.cos(v)) + cxy;
-    const y = Math.sin(u) * (2 + Math.cos(v)) + cxy;
-    const z = Math.sin(v) + cxy;
+//     const x = Math.cos(u) * (2 + Math.cos(v)) + cxy;
+//     const y = Math.sin(u) * (2 + Math.cos(v)) + cxy;
+//     const z = Math.sin(v) + cxy;
 
-    data[stride] = x * pos;
-    data[stride + 1] = y * pos;
-    data[stride + 2] = z * pos;
-    data[stride + 3] = 1;
-  }
+//     data[stride] = x * pos;
+//     data[stride + 1] = y * pos;
+//     data[stride + 2] = z * pos;
+//     data[stride + 3] = 1;
+//   }
 
-  return data;
-};
+//   return data;
+// };

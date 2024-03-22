@@ -17,6 +17,7 @@ export default class RenderMatCurlTwo extends ShaderMaterial {
 
         void main() {  
           vec3 color = vec3(0.45,0.25,0.1);
+          
       
           float dist = length(gl_PointCoord.xy - vec2(0.5));
           
