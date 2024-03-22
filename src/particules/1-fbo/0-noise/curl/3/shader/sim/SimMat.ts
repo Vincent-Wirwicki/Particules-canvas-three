@@ -4,7 +4,7 @@ import { getSphere } from "../../../../../1-shapes/0-utils-shape-func/shapesFunc
 export default class SimMatCurlTwo extends ShaderMaterial {
   constructor(size: number) {
     const positionsTexture = new DataTexture(
-      getSphere(size, 4),
+      getSphere(size, 6),
       size,
       size,
       RGBAFormat,
@@ -187,7 +187,7 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       float amp = mix(0.5,0.25, sin(uTime*0.25 + 0.25)*0.25);
       float time = uTime *0.15;
 
-      curlPos = curlNoise(pos * freq + time);
+      curlPos = curlNoise(curlPos * freq + time);
       curlPos += curlNoise(curlPos *freq *1.15) *amp ;
       curlPos += curlNoise(curlPos *freq *1.30) *amp *1.25;
       

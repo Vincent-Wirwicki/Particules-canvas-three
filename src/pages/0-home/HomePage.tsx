@@ -5,11 +5,11 @@ const HomePage = () => {
   return (
     <main className="page-center">
       <div>
-        <h1 className="text-4xl tracking-wider">Particules</h1>
+        {/* <h1 className="text-4xl tracking-wider">Particules</h1>
         <h3 className="">
           An experimental project
           <br />
-        </h3>
+        </h3> */}
       </div>
       <div className="fixed top-0 left-0  h-screen w-screen">
         <TorusKnotScene />

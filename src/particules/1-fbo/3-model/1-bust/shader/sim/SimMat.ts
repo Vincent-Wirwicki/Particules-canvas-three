@@ -172,13 +172,13 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       vec3 disp =  curl( pos.x * freq , pos.y *  freq, pos.z *  freq ) * amp;
 
       disp += curl( pos.x * freq *2. , pos.y *  freq *2., pos.z *  freq*2. ) * amp*0.5;
-      disp += curl( pos.x * freq *4. , pos.y *  freq *4., pos.z *  freq*4. ) * amp*0.25;
-      disp += curl( pos.x * freq *8. , pos.y *  freq *8., pos.z *  freq*8. ) * amp*0.15;
+      // disp += curl( pos.x * freq *4. , pos.y *  freq *4., pos.z *  freq*4. ) * amp*0.25;
+      // disp += curl( pos.x * freq *8. , pos.y *  freq *8., pos.z *  freq*8. ) * amp*0.15;
 
       float d = length(pos-disp) * dist;
       pos = mix( pos, disp, pow( d, 5. ) );
       // pos += noise;
-      // pos.xz = rotate(pos.xz, .15);
+      pos.xz = rotate(pos.xz, uTime *0.15 );
       pos.x = pos.x - .5;
       pos.y = pos.y - 2.75;
       pos.z = pos.z - 3.75;

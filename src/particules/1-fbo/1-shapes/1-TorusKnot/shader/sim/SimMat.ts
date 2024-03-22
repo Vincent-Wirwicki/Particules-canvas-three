@@ -4,7 +4,7 @@ import { getTorusKnot } from "../../../0-utils-shape-func/shapesFunction";
 export default class SimMatCurlTwo extends ShaderMaterial {
   constructor(size: number) {
     const positionsTexture = new DataTexture(
-      getTorusKnot(size, 6, 4, 6),
+      getTorusKnot(size, 4, 3, 3),
       size,
       size,
       RGBAFormat,
@@ -12,27 +12,25 @@ export default class SimMatCurlTwo extends ShaderMaterial {
     );
 
     positionsTexture.needsUpdate = true;
-    // positionsTexture2.needsUpdate = true;
 
     super({
       uniforms: {
         uPositions: { value: positionsTexture },
         // uPositions2: { value: positionsTexture2 },
-
         uTime: { value: 0 },
       },
+
       vertexShader: /* glsl */ `
         varying vec2 vUv;
-        varying float vAlpha;
 
           void main() {
             vUv = uv;
             gl_Position = projectionMatrix * modelViewMatrix * vec4( position,.8 );
           }
       `,
+
       fragmentShader: /* glsl */ `
       uniform sampler2D uPositions;
-      uniform sampler2D uPositions2;
       uniform float uTime;
       varying vec2 vUv;
 
@@ -43,101 +41,42 @@ export default class SimMatCurlTwo extends ShaderMaterial {
 	      return m * v;
       }
         
-
-
-    //----------------------------------------------------------------------------------------
-    vec3 HashALU(in vec3 p, in float numCells)
-    {
-    	// This is tiling part, adjusts with the scale
-    	p = mod(p, numCells);
+    float mod289(float x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
+    vec4 mod289(vec4 x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
+    vec4 perm(vec4 x){return mod289(((x * 34.0) + 1.0) * x);}
+        
+    float noise(vec3 p){
+        vec3 a = floor(p);
+        vec3 d = p - a;
+        d = d * d * (3.0 - 2.0 * d);
     
-        p = vec3( dot(p,vec3(127.1,311.7, 74.7)),
-    			  dot(p,vec3(269.5,183.3,246.1)),
-    			  dot(p,vec3(113.5,271.9,124.6)));
+        vec4 b = a.xxyy + vec4(0.0, 1.0, 0.0, 1.0);
+        vec4 k1 = perm(b.xyxy);
+        vec4 k2 = perm(k1.xyxy + b.zzww);
     
-    	return -1.0 + fract(sin(p)*43758.5453123) * 2.0;
+        vec4 c = k2 + a.zzzz;
+        vec4 k3 = perm(c);
+        vec4 k4 = perm(c + 1.0);
+    
+        vec4 o1 = fract(k3 * (1.0 / 41.0));
+        vec4 o2 = fract(k4 * (1.0 / 41.0));
+    
+        vec4 o3 = o2 * d.z + o1 * (1.0 - d.z);
+        vec2 o4 = o3.yw * d.x + o3.xz * (1.0 - d.x);
+    
+        return o4.y * d.y + o4.x * (1.0 - d.y);
     }
 
-    #define Hash HashALU
-
-    //----------------------------------------------------------------------------------------
-    float TileableNoise(in vec3 p, in float numCells )
-    {
-    	vec3 f, i;
-    
-    	p *= numCells;
-    
-    
-    	f = fract(p);		// Separate integer from fractional
-        i = floor(p);
-    
-        vec3 u = f*f*(3.0-2.0*f); // Cosine interpolation approximation
-    
-        return mix( mix( mix( dot( Hash( i + vec3(0.0,0.0,0.0), numCells ), f - vec3(0.0,0.0,0.0) ), 
-                              dot( Hash( i + vec3(1.0,0.0,0.0), numCells ), f - vec3(1.0,0.0,0.0) ), u.x),
-                         mix( dot( Hash( i + vec3(0.0,1.0,0.0), numCells ), f - vec3(0.0,1.0,0.0) ), 
-                              dot( Hash( i + vec3(1.0,1.0,0.0), numCells ), f - vec3(1.0,1.0,0.0) ), u.x), u.y),
-                    mix( mix( dot( Hash( i + vec3(0.0,0.0,1.0), numCells ), f - vec3(0.0,0.0,1.0) ), 
-                              dot( Hash( i + vec3(1.0,0.0,1.0), numCells ), f - vec3(1.0,0.0,1.0) ), u.x),
-                         mix( dot( Hash( i + vec3(0.0,1.0,1.0), numCells ), f - vec3(0.0,1.0,1.0) ), 
-                              dot( Hash( i + vec3(1.0,1.0,1.0), numCells ), f - vec3(1.0,1.0,1.0) ), u.x), u.y), u.z );
-    }
-
-    float TileableNoiseFBM(in vec3 p, float numCells, int octaves)
-    {
-    	float f = 0.0;
-
-    	// Change starting scale to any integer value...
-        p = mod(p, vec3(numCells));
-    	float amp = 0.5;
-        float sum = 0.0;
-    
-    	for (int i = 0; i < octaves; i++)
-    	{
-    		f += TileableNoise(p, numCells) * amp;
-            sum += amp;
-    		amp *= 0.5;
-      
-    		// numCells must be multiplied by an integer value...
-    		numCells *= 2.0;
+    float fbm(vec3 x) {
+    	float v = 0.0;
+    	float a = 0.5;
+    	vec3 shift = vec3(100);
+    	for (int i = 0; i < 5; ++i) {
+    		v += a * noise(x);
+    		x = x * 2.0 + shift;
+    		a *= 0.5;
     	}
-    
-    	return f / sum;
-    }
-
-    vec3 snoiseVec3( vec3 x )
-    {
-      float numCells = 10.0;
-      int octaves = 3;
-
-      float s  = TileableNoiseFBM(vec3( x ), numCells, octaves);
-      float s1 = TileableNoiseFBM(vec3( x.y - 19.1 , x.z + 33.4 , x.x + 47.2 ), numCells, octaves);
-      float s2 = TileableNoiseFBM(vec3( x.z + 74.2 , x.x - 124.5 , x.y + 99.4 ), numCells, octaves);
-      vec3 c = vec3( s , s1 , s2 );
-      return c;
-    
-    }
-
-    vec3 curlNoise(vec3 p)
-    {
-      const float e = .1;
-      vec3 dx = vec3( e   , 0.0 , 0.0 );
-      vec3 dy = vec3( 0.0 , e   , 0.0 );
-      vec3 dz = vec3( 0.0 , 0.0 , e   );
-    
-      vec3 p_x0 = snoiseVec3( p - dx );
-      vec3 p_x1 = snoiseVec3( p + dx );
-      vec3 p_y0 = snoiseVec3( p - dy );
-      vec3 p_y1 = snoiseVec3( p + dy );
-      vec3 p_z0 = snoiseVec3( p - dz );
-      vec3 p_z1 = snoiseVec3( p + dz );
-    
-      float x = p_y1.z - p_y0.z - p_z1.y + p_z0.y;
-      float y = p_z1.x - p_z0.x - p_x1.z + p_x0.z;
-      float z = p_x1.y - p_x0.y - p_y1.x + p_y0.x;
-    
-      const float divisor = 1.0 / ( 2.0 * e );
-      return normalize( vec3( x , y , z ) * divisor );
+    	return v;
     }
 
     //-------------------------------------------------------------------------
@@ -145,9 +84,13 @@ export default class SimMatCurlTwo extends ShaderMaterial {
     void main() {
       vec2 uv = vUv;
       vec3 pos = texture2D( uPositions, uv ).xyz;
-      
-      pos+=curlNoise(pos + uTime *0.01);
-      pos.xy = rotate(pos.xy, 0.5);
+      float n = fbm(pos*2. + uTime *0.1);
+      pos +=n;
+      pos.y = pos.y -0.35;
+      pos.x = pos.x -0.4;
+      // pos.z = pos.z + sin(uTime*0.1);
+      // pos+=curlNoise(pos + uTime *0.01);
+      // pos.xy = rotate(pos.xy, 0.5);
       
       gl_FragColor = vec4( pos , 1. );
 

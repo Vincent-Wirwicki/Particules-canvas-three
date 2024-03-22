@@ -25,7 +25,7 @@ export default class RenderMatCurlTwo extends ShaderMaterial {
           float alpha = cos(angle ) * sin(angle ) * dist;
           
           dist = 1. - clamp(dist, 0.,1.);
-          if(dist > 0.5) discard;
+          if(dist > 0.95) discard;
 
           gl_FragColor = vec4(color,alpha);
         }`,

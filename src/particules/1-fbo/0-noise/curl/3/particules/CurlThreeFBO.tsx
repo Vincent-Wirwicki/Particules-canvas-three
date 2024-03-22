@@ -40,7 +40,7 @@ declare module "@react-three/fiber" {
   }
 }
 const CurlThreeFBO = () => {
-  const size = 512;
+  const size = 350;
 
   const simulationMaterialRef = useRef<ShaderMaterial | null>(null);
   const renderMaterialRef = useRef<ShaderMaterial | null>(null);

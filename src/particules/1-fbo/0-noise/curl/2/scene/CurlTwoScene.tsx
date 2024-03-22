@@ -5,11 +5,15 @@ import Loading from "../../../../../../layout/loader/Loader";
 
 const CurlTwoScene = () => {
   return (
-    <Suspense fallback={<Loading />}>
-      <Canvas camera={{ position: [-1, 2, 3.5] }}>
-        <CurlTwoFBO />
-      </Canvas>
-    </Suspense>
+    <main className="canvas-wrap">
+      <div className="canvas-box">
+        <Suspense fallback={<Loading />}>
+          <Canvas camera={{ position: [-1, 2, 3.5] }}>
+            <CurlTwoFBO />
+          </Canvas>
+        </Suspense>
+      </div>
+    </main>
   );
 };
 

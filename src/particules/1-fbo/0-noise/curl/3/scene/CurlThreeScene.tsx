@@ -1,15 +1,22 @@
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
-import CurlTwoFBO from "../particules/CurlThreeFBO";
+import CurlThreeFBO from "../particules/CurlThreeFBO";
 import Loading from "../../../../../../layout/loader/Loader";
+import { Loader, Preload } from "@react-three/drei";
 
 const CurlThreeScene = () => {
   return (
-    <Suspense fallback={<Loading />}>
-      <Canvas camera={{ position: [-1, 2, 3.5] }}>
-        <CurlTwoFBO />
-      </Canvas>
-    </Suspense>
+    <main className="canvas-wrap">
+      <div className="canvas-box">
+        <Suspense fallback={<Loading />}>
+          <Canvas camera={{ position: [-1, 2, 3.5] }}>
+            <CurlThreeFBO />
+            <Preload />
+          </Canvas>
+        </Suspense>
+      </div>
+      <Loader />
+    </main>
   );
 };
 
