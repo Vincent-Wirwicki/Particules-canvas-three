@@ -6,4 +6,5 @@ export const mainNavPaths = [
   { title: "curl-3", path: "/fbo/curl-3" },
 
   { title: "morph-1", path: "/fbo/morph-1" },
+  { title: "model-1", path: "/fbo/model-1" },
 ];

@@ -1,4 +1,4 @@
-import { useFBO, } from "@react-three/drei";
+import { useFBO, useGLTF } from "@react-three/drei";
 import {
   useFrame,
   createPortal,
@@ -11,6 +11,7 @@ import {
   DoubleSide,
   // DoubleSide,
   FloatType,
+  Mesh,
   NearestFilter,
   OrthographicCamera,
   RGBAFormat,
@@ -42,6 +43,33 @@ declare module "@react-three/fiber" {
 }
 const ParticulesShapeOne = () => {
   const size = 512;
+
+  const getDataModel = (numPoints: number) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const m = useGLTF("/public/bust-hi.glb");
+    const m1 = m.nodes.Mesh_0001 as Mesh;
+    const pos = m1.geometry.attributes.position.array;
+    const total = pos.length / 3;
+    const size = numPoints * numPoints * 4;
+    const data = new Float32Array(size);
+    for (let i = 0; i < size; i++) {
+      const stride = i * 4;
+
+      const random = Math.floor(Math.random() * total);
+      const x = pos[3 * random];
+      const y = pos[3 * random + 1];
+      const z = pos[3 * random + 2];
+
+      data[stride] = x;
+      data[stride + 1] = y;
+      data[stride + 2] = z;
+      data[stride + 3] = 1;
+    }
+
+    return data;
+  };
+
+  const data = getDataModel(size);
 
   const simulationMaterialRef = useRef<ShaderMaterial | null>(null);
   const renderMaterialRef = useRef<ShaderMaterial | null>(null);
@@ -90,7 +118,7 @@ const ParticulesShapeOne = () => {
     <>
       {createPortal(
         <mesh>
-          <simMatShapeOne ref={simulationMaterialRef} args={[size]} />
+          <simMatShapeOne ref={simulationMaterialRef} args={[size, data]} />
           <bufferGeometry>
             <bufferAttribute
               attach="attributes-position"

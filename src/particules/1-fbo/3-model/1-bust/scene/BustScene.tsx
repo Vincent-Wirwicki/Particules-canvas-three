@@ -1,9 +1,9 @@
 import { Canvas } from "@react-three/fiber";
-// import { Preload } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import { Suspense } from "react";
-import CurlTwoFBO from "../particules/CurlThreeFBO";
+import CurlTwoFBO from "../particules/BustFBO";
 
-const CurlThreeScene = () => {
+const BustScene = () => {
   return (
     <Suspense
       fallback={
@@ -12,12 +12,16 @@ const CurlThreeScene = () => {
         </div>
       }
     >
-      <Canvas camera={{ position: [-1, 2, 3.5] }}>
+      <Canvas
+        camera={{
+          position: [0, 0, 0],
+        }}
+      >
         <CurlTwoFBO />
-        {/* <Preload /> */}
+        <OrbitControls />
       </Canvas>
     </Suspense>
   );
 };
 
-export default CurlThreeScene;
+export default BustScene;

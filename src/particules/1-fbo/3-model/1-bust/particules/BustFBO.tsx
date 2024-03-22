@@ -1,4 +1,4 @@
-import { Preload, useFBO } from "@react-three/drei";
+import { Preload, useFBO, useGLTF } from "@react-three/drei";
 import {
   useFrame,
   createPortal,
@@ -10,6 +10,7 @@ import {
   AdditiveBlending,
   // DoubleSide,
   FloatType,
+  Mesh,
   NearestFilter,
   OrthographicCamera,
   RGBAFormat,
@@ -17,31 +18,55 @@ import {
   ShaderMaterial,
 } from "three";
 
-import SimMatCurlThree from "../shader/sim/SimMat";
-import RenderMatCurlThree from "../shader/render/RenderMat";
+import SimMatBust from "../shader/sim/SimMat";
+import RenderMatBust from "../shader/render/RenderMat";
 
 extend({
-  SimMatCurlThree: SimMatCurlThree,
-  RenderMatCurlThree: RenderMatCurlThree,
+  SimMatBust: SimMatBust,
+  RenderMatBust: RenderMatBust,
 });
 
 declare module "@react-three/fiber" {
   interface ThreeElements {
-    renderMatCurlThree: Object3DNode<
-      RenderMatCurlThree,
-      typeof RenderMatCurlThree
-    >;
+    renderMatBust: Object3DNode<RenderMatBust, typeof RenderMatBust>;
   }
 }
 
 declare module "@react-three/fiber" {
   interface ThreeElements {
-    simMatCurlThree: Object3DNode<SimMatCurlThree, typeof SimMatCurlThree>;
+    simMatBust: Object3DNode<SimMatBust, typeof SimMatBust>;
   }
 }
-const CurlThreeFBO = () => {
+const BustFBO = () => {
   const size = 512;
+  const model = useGLTF("/bust-hi.glb");
 
+  const getDataModel = (numPoints: number) => {
+    const size = numPoints * numPoints * 4;
+    const data = new Float32Array(size);
+    const mesh = model.nodes.Mesh_0001 as Mesh;
+
+    const pos = mesh.geometry.attributes.position.array;
+    const total = pos.length / 3;
+
+    for (let i = 0; i < size; i++) {
+      const stride = i * 4;
+
+      const random = Math.floor(Math.random() * total);
+      const x = pos[3 * random];
+      const y = pos[3 * random + 1];
+      const z = pos[3 * random + 2];
+
+      data[stride] = x;
+      data[stride + 1] = y;
+      data[stride + 2] = z;
+      data[stride + 3] = 1;
+    }
+
+    return data;
+  };
+
+  const data = getDataModel(size);
   const simulationMaterialRef = useRef<ShaderMaterial | null>(null);
   const renderMaterialRef = useRef<ShaderMaterial | null>(null);
 
@@ -72,7 +97,6 @@ const CurlThreeFBO = () => {
 
   useFrame(state => {
     const { gl, clock } = state;
-
     gl.setRenderTarget(target);
     gl.clear();
     gl.render(scene, camera);
@@ -90,7 +114,7 @@ const CurlThreeFBO = () => {
     <>
       {createPortal(
         <mesh>
-          <simMatCurlThree ref={simulationMaterialRef} args={[size]} />
+          <simMatBust ref={simulationMaterialRef} args={[size, data]} />
           <bufferGeometry>
             <bufferAttribute
               attach="attributes-position"
@@ -109,7 +133,7 @@ const CurlThreeFBO = () => {
         scene
       )}
       <points>
-        <renderMatCurlThree
+        <renderMatBust
           ref={renderMaterialRef}
           blending={AdditiveBlending}
           transparent={true}
@@ -129,4 +153,4 @@ const CurlThreeFBO = () => {
   );
 };
 
-export default CurlThreeFBO;
+export default BustFBO;

@@ -1,17 +1,8 @@
-import {
-  DataTexture,
-  FloatType,
-  RGBAFormat,
-  ShaderMaterial,
-} from "three";
-import {
-  getTorusKnot,
-} from "../../../0-utils-shape-func/shapesFunction";
-
+import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
 
 // const m = useGLTF("./public/bust-hi.glb");
 export default class SimMatCurlTwo extends ShaderMaterial {
-  constructor(size: number, data:Float32Array) {
+  constructor(size: number, data: Float32Array) {
     const positionsTexture = new DataTexture(
       data,
       size,
@@ -19,24 +10,12 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       RGBAFormat,
       FloatType
     );
-    // const m = getDataModel();
-
-    const positionsTexture2 = new DataTexture(
-      getTorusKnot(size, 4, 7, 4),
-      size,
-      size,
-      RGBAFormat,
-      FloatType
-    );
 
     positionsTexture.needsUpdate = true;
-    positionsTexture2.needsUpdate = true;
 
     super({
       uniforms: {
         uPositions: { value: positionsTexture },
-        uPositions2: { value: positionsTexture2 },
-
         uTime: { value: 0 },
       },
       vertexShader: /* glsl */ `
@@ -50,9 +29,6 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       `,
       fragmentShader: /* glsl */ `
       uniform sampler2D uPositions;
-            uniform sampler2D uPositions2;
-
-
       uniform float uTime;
 
       varying vec2 vUv;
@@ -188,8 +164,9 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       
       vec3 pos = texture2D( uPositions, uv ).xyz;
       // vec3 curlPos = pos;
-       float amp = 20.;
-      float freq = .5;
+
+      float amp = 20.;
+      float freq = .45;
       float dist = .015;
       // vec3 noise = curl(pos.x, pos.y, pos.z)*0.001;
       vec3 disp =  curl( pos.x * freq , pos.y *  freq, pos.z *  freq ) * amp;
@@ -198,12 +175,13 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       disp += curl( pos.x * freq *4. , pos.y *  freq *4., pos.z *  freq*4. ) * amp*0.25;
       disp += curl( pos.x * freq *8. , pos.y *  freq *8., pos.z *  freq*8. ) * amp*0.15;
 
-
-  
       float d = length(pos-disp) * dist;
       pos = mix( pos, disp, pow( d, 5. ) );
       // pos += noise;
-
+      // pos.xz = rotate(pos.xz, .15);
+      pos.x = pos.x - .5;
+      pos.y = pos.y - 2.75;
+      pos.z = pos.z - 3.75;
       gl_FragColor = vec4( pos, 1. );
 
       }`,

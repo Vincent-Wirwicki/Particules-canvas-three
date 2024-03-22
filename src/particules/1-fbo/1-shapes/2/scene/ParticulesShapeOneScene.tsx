@@ -5,7 +5,7 @@ import ParticulesShapeOne from "../particules/ParticulesShapeOne";
 
 const ParticulesShapeOneScene = () => {
   return (
-    <Canvas camera={{ position: [-1, 2, 3.5] }}>
+    <Canvas camera={{ position: [2.7, 9, 3.5] }}>
       <Suspense fallback={null}>
         <ParticulesShapeOne />
       </Suspense>
