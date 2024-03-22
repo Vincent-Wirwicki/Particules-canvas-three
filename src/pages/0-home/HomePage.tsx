@@ -3,7 +3,7 @@ import TorusKnotScene from "../../particules/1-fbo/1-shapes/1-TorusKnot/scene/To
 
 const HomePage = () => {
   return (
-    <main className="page-fixed flex flex-col gap-2 justify-center items-center ">
+    <main className="page-center">
       <div>
         <h1 className="text-4xl tracking-wider">Particules</h1>
         <h3 className="">
@@ -11,7 +11,6 @@ const HomePage = () => {
           <br />
         </h3>
       </div>
-      <div className="absolute-center tracking-wider"></div>
       <div className="fixed top-0 left-0  h-screen w-screen">
         <TorusKnotScene />
       </div>

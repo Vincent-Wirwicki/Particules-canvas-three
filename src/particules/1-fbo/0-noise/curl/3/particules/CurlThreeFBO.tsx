@@ -1,4 +1,4 @@
-import { Preload, useFBO } from "@react-three/drei";
+import { useFBO } from "@react-three/drei";
 import {
   useFrame,
   createPortal,
@@ -8,7 +8,7 @@ import {
 import { useMemo, useRef } from "react";
 import {
   AdditiveBlending,
-  // DoubleSide,
+  DoubleSide,
   FloatType,
   NearestFilter,
   OrthographicCamera,
@@ -113,7 +113,7 @@ const CurlThreeFBO = () => {
           ref={renderMaterialRef}
           blending={AdditiveBlending}
           transparent={true}
-          // side={DoubleSide}
+          side={DoubleSide}
         />
         <bufferGeometry>
           <bufferAttribute
@@ -124,7 +124,6 @@ const CurlThreeFBO = () => {
           />
         </bufferGeometry>
       </points>
-      <Preload />
     </>
   );
 };

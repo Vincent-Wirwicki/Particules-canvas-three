@@ -164,10 +164,6 @@ export const getTorusKnotWireFrame = (numPoints: number) => {
   return data;
 };
 
-
-
-
-
 export const getFlatTorusKnot = (
   numPoints: number,
   p: number,
@@ -239,3 +235,22 @@ export const getFlatTorusKnot = (
 
 //   return data;
 // };
+
+// function getPoint(
+//   v: Vector3,
+//   size: number,
+//   data: Float32Array,
+//   offset: number
+// ) {
+//   v.set(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
+//   if (v.length() > 1) return getPoint(v, size, data, offset);
+//   return v.normalize().multiplyScalar(size).toArray(data, offset);
+// }
+
+// function getSphere(count: number, size: number, p = new Vector4()) {
+//   const data = new Float32Array(count * 4);
+//   for (let i = 0; i < count * 4; i += 4) getPoint(p, size, data, i);
+//   return data;
+// }
+
+// const data = getSphere(size * size, 128, new Vector4());

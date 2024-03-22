@@ -16,42 +16,25 @@
 
 @layer components {
 
-  .absolute-center {
-    @apply absolute top-1/2 left-1/2 translate-x-[-50%]
-  }
 
   .nav {
     @apply fixed top-5 left-5 h-fit w-fit z-50 p-2 flex flex-col gap-1 border-r border-neutral-500
   }
 
   .nav-link {
-    @apply border-b border-neutral-500 w-full p-1 font-bold uppercase text-xs text-end tracking-widest
+    @apply border-b border-neutral-500 w-full p-1 font-bold uppercase text-end tracking-widest
+  }
+
+  .loader {
+    @apply fixed top-0 left-0 z-50 w-screen h-screen text-neutral-100 bg-neutral-950 flex flex-col justify-center items-center
   }
 
   .page-center {
     @apply w-screen h-screen flex justify-center items-center
   }
 
-  .page-fixed {
-    @apply fixed top-0 left-0 w-screen h-screen
-  }
-
   .canvas {
     @apply fixed top-0 left-0 w-screen h-screen
   }
 
-  .canvas-fixed-wrap {
-    @apply fixed top-0 left-0 w-screen h-screen
-  }
-
-  .canvas-fit {
-    @apply w-fit h-fit
-  }
-
-}
-
-@layer utilities {
-  .fixed-top-center {
-    @apply fixed top-5 left-1/2 translate-x-[-50%]
-  }
 }
