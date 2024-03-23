@@ -11,7 +11,7 @@ const HomePage = () => {
           <br />
         </h3> */}
       </div>
-      <div className="fixed top-0 left-0  h-screen w-screen">
+      <div className="fixed top-0 left-0  h-screen w-screen flex justify-center">
         <TorusKnotScene />
       </div>
     </main>

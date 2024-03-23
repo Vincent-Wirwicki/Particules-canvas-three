@@ -6,7 +6,9 @@ const Layout = () => {
   return (
     <>
       <MainNav paths={mainNavPaths} />
-      <Outlet />
+      <main className="page-canvas">
+        <Outlet />
+      </main>
     </>
   );
 };
