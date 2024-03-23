@@ -1,6 +1,6 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
 import { getSphere } from "../../utils/getSphereFBO";
-
+// https://barradeau.com/blog/?p=621
 export default class SimMaterialFBOCurl extends ShaderMaterial {
   constructor(size: number) {
     const positionsTexture = new DataTexture(

@@ -8,7 +8,7 @@ import {
 import { useMemo, useRef } from "react";
 import {
   AdditiveBlending,
-  DoubleSide,
+  // DoubleSide,
   FloatType,
   NearestFilter,
   OrthographicCamera,
@@ -113,7 +113,8 @@ const MorphOneFBO = () => {
           ref={renderMaterialRef}
           blending={AdditiveBlending}
           transparent={true}
-          side={DoubleSide}
+          // side={DoubleSide}
+          depthTest={false}
         />
         <bufferGeometry>
           <bufferAttribute

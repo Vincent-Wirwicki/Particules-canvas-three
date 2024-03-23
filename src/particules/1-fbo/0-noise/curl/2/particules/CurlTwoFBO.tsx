@@ -110,6 +110,7 @@ const CurlTwoFBO = () => {
           ref={renderMaterialRef}
           blending={AdditiveBlending}
           transparent={true}
+          depthTest={false}
           // side={DoubleSide}
         />
         <bufferGeometry>

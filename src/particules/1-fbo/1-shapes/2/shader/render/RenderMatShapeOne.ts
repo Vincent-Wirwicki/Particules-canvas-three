@@ -27,8 +27,8 @@ export default class RenderMatShapeOne extends ShaderMaterial {
           float angle = atan(vPos.x, vPos.y );
           float alpha = cos(angle ) * sin(angle ) * dist;
 
-          dist = 1. - clamp(dist, 0.,1.);
-          if(dist > 0.85) alpha =0.15;
+          // dist = 1. - clamp(dist, 0.,1.);
+          // if(dist > 0.85) alpha =0.15;
           // if(t < 0.25) alpha = 0.;
           // vec2 a = vUv - 0.5 ;
           gl_FragColor = vec4(color,alpha);

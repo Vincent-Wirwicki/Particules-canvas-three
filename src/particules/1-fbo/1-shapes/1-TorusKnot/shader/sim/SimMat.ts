@@ -16,6 +16,7 @@ export default class SimMatCurlTwo extends ShaderMaterial {
     super({
       uniforms: {
         uPositions: { value: positionsTexture },
+        // uPositions2: { value: positionsTexture2 },
         uTime: { value: 0 },
       },
 
@@ -140,14 +141,12 @@ export default class SimMatCurlTwo extends ShaderMaterial {
     void main() {
       vec2 uv = vUv;
       vec3 pos = texture2D( uPositions, uv ).xyz;
-      
       const float amp = 0.5;
       const float freq = 0.15;
-
       pos+= curlNoise(pos * freq + uTime *0.01)* amp;
       pos.xy = rotate(pos.xy, 0.5);
       
-      gl_FragColor = vec4(pos, 1.);
+      gl_FragColor = vec4( pos , 1. );
 
       }`,
     });

@@ -39,8 +39,6 @@ export default class SimMatCurlTwo extends ShaderMaterial {
 	      mat2 m = mat2(c, s, -s, c);
 	      return m * v;
       }
-        
-
 
     //-------------------------------------------------------------------------
     // Description : Array and textureless GLSL 2D simplex noise function.

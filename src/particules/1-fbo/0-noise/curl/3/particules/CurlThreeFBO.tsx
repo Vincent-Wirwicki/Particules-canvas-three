@@ -8,7 +8,6 @@ import {
 import { useMemo, useRef } from "react";
 import {
   AdditiveBlending,
-  DoubleSide,
   FloatType,
   NearestFilter,
   OrthographicCamera,
@@ -40,7 +39,7 @@ declare module "@react-three/fiber" {
   }
 }
 const CurlThreeFBO = () => {
-  const size = 350;
+  const size = 512;
 
   const simulationMaterialRef = useRef<ShaderMaterial | null>(null);
   const renderMaterialRef = useRef<ShaderMaterial | null>(null);
@@ -113,7 +112,7 @@ const CurlThreeFBO = () => {
           ref={renderMaterialRef}
           blending={AdditiveBlending}
           transparent={true}
-          side={DoubleSide}
+          depthTest={false}
         />
         <bufferGeometry>
           <bufferAttribute
