@@ -81,8 +81,7 @@ const CurlThreeFBO = () => {
       renderMaterialRef.current.uniforms.uPositions.value = target.texture;
 
     if (simulationMaterialRef.current)
-      simulationMaterialRef.current.uniforms.uTime.value =
-        clock.elapsedTime * 2;
+      simulationMaterialRef.current.uniforms.uTime.value = clock.elapsedTime;
   });
 
   return (

@@ -13,7 +13,7 @@ const TorusKnotScene = () => {
           </div>
         }
       >
-        <Canvas camera={{ position: [0, 0, 15] }}>
+        <Canvas camera={{ position: [0, 0, 15] }} dpr={1.9}>
           <CurlTwoFBO />
           <Preload />
         </Canvas>

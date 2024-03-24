@@ -33,7 +33,6 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       },
       vertexShader: /* glsl */ `
         varying vec2 vUv;
-        varying float vAlpha;
 
           void main() {
             vUv = uv;
@@ -58,11 +57,9 @@ export default class SimMatCurlTwo extends ShaderMaterial {
     
 
     void main() {
-      vec2 uv = vUv;
-      
+      vec2 uv = vUv;   
       vec3 pos = texture2D( uPositions, uv ).xyz;
-      const float amp = 1.5;
-      const float freq = 0.15;
+      
       pos.y = pos.y + 10.;
       pos.z = pos.z + 10.;
       pos+= sin(pos + uTime);

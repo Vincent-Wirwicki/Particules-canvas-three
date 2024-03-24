@@ -6,9 +6,9 @@ import { Loader, Preload } from "@react-three/drei";
 
 const CurlThreeScene = () => {
   return (
-    <div className="h-5/6 w-1/2">
+    <div className="h-[550px] w-[550px]">
       <Suspense fallback={<Loading />}>
-        <Canvas camera={{ position: [-1, 2, 3.5] }}>
+        <Canvas camera={{ position: [-1, 2, 3] }} dpr={1.9}>
           <CurlThreeFBO />
           <Preload />
         </Canvas>

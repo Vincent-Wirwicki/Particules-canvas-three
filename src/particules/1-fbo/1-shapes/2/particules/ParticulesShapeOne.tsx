@@ -1,4 +1,4 @@
-import { useFBO, useTexture } from "@react-three/drei";
+import { useFBO } from "@react-three/drei";
 import {
   useFrame,
   createPortal,
@@ -8,11 +8,14 @@ import {
 import { useMemo, useRef } from "react";
 import {
   AdditiveBlending,
+  DataTexture,
   DoubleSide,
   // DoubleSide,
   FloatType,
+  Mesh,
   NearestFilter,
   OrthographicCamera,
+  PlaneGeometry,
   RGBAFormat,
   Scene,
   ShaderMaterial,
@@ -20,10 +23,7 @@ import {
 
 import RenderMatShapeOne from "../shader/render/RenderMatShapeOne";
 import SimMatShapeOne from "../shader/sim/SimMatShapeOne";
-// import { getSphere } from "../../0-utils-shape-func/shapesFunction";
-// import imgUrl from "./penrose.png";
-// import imgUrl from "../../../../../assets/penrose.jpg";
-// import { getPlane } from "../../0-utils-shape-func/shapesFunction";
+import { getPlane } from "../../0-utils-shape-func/shapesFunction";
 
 extend({
   SimMatShapeOne: SimMatShapeOne,
@@ -46,78 +46,54 @@ declare module "@react-three/fiber" {
 }
 
 const ParticulesShapeOne = () => {
-  const size = 512;
-  // const dataRef = useRef<Float32Array>([])
-  const texture = useTexture("/t.jpg");
-  console.log(texture);
+  const size = 128;
 
-  const getImageData = () => {
-    const { width, height } = texture.image;
-    const w = width;
-    const h = height;
-    const canvas = document.createElement("canvas");
-    canvas.height = h;
-    canvas.width = w;
-    const data = new Float32Array(width * height * 4);
-    const ctx = canvas.getContext("2d");
-
-    if (ctx) {
-      ctx.drawImage(texture.image, 0, 0);
-      const imgData = ctx.getImageData(0, 0, w, h).data;
-
-      for (let i = 0; i < data.length; i += 4) {
-        const i3 = i * 3;
-        const i4 = i * 4;
-
-        // If it's not part of the background, extract data
-        data[i3] = (i % width) - width * 0.5;
-        data[i3 + 1] =
-          ((imgData[i4] / 255) * 0.299 +
-            (imgData[i4 + 1] / 255) * 0.587 +
-            (imgData[i4 + 2] / 255) * 0.114) *
-          64;
-        data[i3 + 2] = Math.floor(i / width) - height * 0.5;
-        data[i3 + 3] = 1;
-      }
-    }
-    return data;
-  };
-  // const data = getPlane(size * size * 4, 1);
-
-  const d = getImageData();
-  console.log(d);
-
-  //   for (let i = 0; i < len; i += 4) {
-  //     const i3 = i * 3;
-  //     const i4 = i * 4;
-  //     data[i3] = (i % width) - width * 0.5;
-  //     data[i3 + 1] =
-  //       ((iData[i4] / 0xff) * 0.299 +
-  //         (iData[i4 + 1] / 0xff) * 0.587 +
-  //         (iData[i4 + 2] / 0xff) * 0.114) *
-  //       elevation;
-  //     data[i3 + 2] = i / width - height * 0.5;
-  //     data[i3 + 3] = 1;
-  //   }
-  // var i3 = i * 3;
-  // var i4 = i * 4;
-  // data[i3] = ((i % width) / width - 0.5) * width; x
-  // data[i3 + 1] =
-  //   ((iData[i4] / 0xff) * 0.299 +
-  //     (iData[i4 + 1] / 0xff) * 0.587 +
-  //     (iData[i4 + 2] / 0xff) * 0.114) *
-  //   elevation;
-  // data[i3 + 2] = (i / width / height - 0.5) * height; y
+  const data = getPlane(size, 1);
 
   const simulationMaterialRef = useRef<ShaderMaterial | null>(null);
   const renderMaterialRef = useRef<ShaderMaterial | null>(null);
 
   const scene = new Scene();
-  const camera = new OrthographicCamera(-1, 1, 1, -1, 1 / Math.pow(2, 53), 1);
-  const positions = new Float32Array([
-    -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0,
-  ]);
-  const uvs = new Float32Array([0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0]);
+  // const camera = new OrthographicCamera(-1, 1, 1, -1, 1 / Math.pow(2, 53), 1);
+
+  const camera = new OrthographicCamera(-1, 1, 1, -1, -1, 1);
+  camera.position.set(0, 0, 0);
+  camera.lookAt(0, 0, 0);
+
+  const FBOTexture = new DataTexture(data, size, size, RGBAFormat, FloatType);
+  FBOTexture.needsUpdate = true;
+  const FBOgeometry = new PlaneGeometry(2, 2);
+  const FBOMat = new ShaderMaterial({
+    uniforms: {
+      uPositions: { value: FBOTexture },
+      uTime: { value: 0 },
+    },
+    fragmentShader: /*glsl */ `
+      uniform sampler2D uPositions;
+      uniform float uTime;
+      varying vec2 vUv;     
+    
+    void main() {
+      vec2 uv = vUv;   
+      vec3 pos = texture2D( uPositions, uv ).xyz;
+      gl_FragColor = vec4( uv, 1., 1. );
+
+      }`,
+    vertexShader: /*glsl */ `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( position,1. );
+      }`,
+  });
+
+  const FBOmesh = new Mesh(FBOgeometry, FBOMat);
+  scene.add(FBOmesh);
+
+  // const positions = new Float32Array([
+  //   -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0,
+  // ]);
+  // const uvs = new Float32Array([0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0]);
 
   const particles = useMemo(() => {
     const length = size * size;
@@ -145,8 +121,9 @@ const ParticulesShapeOne = () => {
     gl.render(scene, camera);
     gl.setRenderTarget(null);
 
-    if (renderMaterialRef.current){
-      renderMaterialRef.current.uniforms.uPositions.value = target.texture;}
+    if (renderMaterialRef.current) {
+      renderMaterialRef.current.uniforms.uPositions.value = target.texture;
+    }
     // getDataImg();
 
     if (simulationMaterialRef.current)
@@ -156,26 +133,8 @@ const ParticulesShapeOne = () => {
 
   return (
     <>
-      {createPortal(
-        <mesh>
-          <simMatShapeOne ref={simulationMaterialRef} args={[size, d]} />
-          <bufferGeometry>
-            <bufferAttribute
-              attach="attributes-position"
-              count={positions.length / 3}
-              array={positions}
-              itemSize={3}
-            />
-            <bufferAttribute
-              attach="attributes-uv"
-              count={uvs.length / 2}
-              array={uvs}
-              itemSize={2}
-            />
-          </bufferGeometry>
-        </mesh>,
-        scene
-      )}
+      {createPortal(<primitive object={FBOmesh} />, scene)}
+      <planeGeometry args={[1, 1]} />
       <points>
         <renderMatShapeOne
           ref={renderMaterialRef}

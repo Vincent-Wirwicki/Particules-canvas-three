@@ -94,7 +94,42 @@ export const getTorusKnot = (
 
   return data;
 };
+// if you wanna use
+// const getImageData = () => {
+//   const { width, height } = texture.image;
+//   const w = width;
+//   const h = height;
+//   const canvas = document.createElement("canvas");
+//   canvas.height = h;
+//   canvas.width = w;
+//   const data = new Float32Array(width * height * 4);
+//   const ctx = canvas.getContext("2d");
 
+//   if (ctx) {
+//     ctx.drawImage(texture.image, 0, 0);
+//     const imgData = ctx.getImageData(0, 0, w, h).data;
+
+//     for (let i = 0; i < data.length; i += 4) {
+//       const i3 = i * 3;
+//       const i4 = i * 4;
+
+//       // If it's not part of the background, extract data
+//       data[i3] = (i % width) - width * 0.5;
+//       data[i3 + 1] =
+//         ((imgData[i4] / 255) * 0.299 +
+//           (imgData[i4 + 1] / 255) * 0.587 +
+//           (imgData[i4 + 2] / 255) * 0.114) *
+//         64;
+//       data[i3 + 2] = Math.floor(i / width) - height * 0.5;
+//       data[i3 + 3] = 1;
+//     }
+//   }
+//   return data;
+// };
+// // const data = getPlane(size * size * 4, 1);
+
+// const d = getImageData();
+// console.log(d);
 // my atempt to torus start -------------------------------------------
 // export const getTorus = (
 //   numPoints: number

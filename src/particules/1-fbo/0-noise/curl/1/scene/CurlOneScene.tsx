@@ -6,7 +6,7 @@ import Loading from "../../../../../../layout/loader/Loader";
 const CurlOneScene = () => {
   return (
     <Suspense fallback={<Loading />}>
-      <Canvas camera={{ position: [0.5, 2.5, 25] }}>
+      <Canvas camera={{ position: [0.5, 2.5, 25] }} dpr={1.9}>
         <CurlOneFBO />
       </Canvas>
     </Suspense>
