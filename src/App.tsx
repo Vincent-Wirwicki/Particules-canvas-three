@@ -12,6 +12,7 @@ import CurlThreeScene from "./particules/1-fbo/0-noise/curl/3/scene/CurlThreeSce
 import WipPage from "./pages/0-wip/WipPage";
 import MorphOneScene from "./particules/1-fbo/2-morph/1/scene/MorphOneScene";
 import BustScene from "./particules/1-fbo/3-model/1-bust/scene/BustScene";
+import AttractorOneScene from "./particules/1-fbo/4-attractor/1/scene/AttractorOneScene";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -26,6 +27,7 @@ const App = () => {
         { path: "curl-3", element: <CurlThreeScene /> },
         { path: "morph-1", element: <MorphOneScene /> },
         { path: "model-1", element: <BustScene /> },
+        { path: "attract-1", element: <AttractorOneScene /> },
       ],
     },
   ]);

@@ -1,48 +1,6 @@
-import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
-import { getSphere } from "../../../0-utils-shape-func/shapesFunction";
-
-// const m = useGLTF("./public/bust-hi.glb");
-export default class SimMatCurlTwo extends ShaderMaterial {
-  constructor(size: number) {
-    const positionsTexture = new DataTexture(
-      getSphere(size, 5),
-      size,
-      size,
-      RGBAFormat,
-      FloatType
-    );
-    // const m = getDataModel();
-
-    positionsTexture.needsUpdate = true;
-
-    super({
-      uniforms: {
-        uPositions: { value: positionsTexture },
-        uTime: { value: 0 },
-      },
-      vertexShader: /* glsl */ `
-        varying vec2 vUv;
-
-          void main() {
-            vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4( position,1. );
-          }
-      `,
-      fragmentShader: /* glsl */ `
-      uniform sampler2D uPositions;
-
-      uniform float uTime;
-
-      varying vec2 vUv;
+export const otherAttractors = /* glsl */ `
       
-      vec2 rotate(vec2 v, float a) {
-	      float s = sin(a);
-	      float c = cos(a);
-	      mat2 m = mat2(c, s, -s, c);
-	      return m * v;
-      }
-
-      vec3 DeqanAttractor(vec3 pos, float t){
+    vec3 DeqanAttractor(vec3 pos, float t){
         float a = 40.0;
         float b = 1.833;
         float c = 0.16;
@@ -140,8 +98,8 @@ export default class SimMatCurlTwo extends ShaderMaterial {
         target.x = a * (pos.y - pos.x);
         target.y = pos.x * (b - pos.z) - pos.y ;
         target.z =(pos.x * pos.y  - c*pos.z);
-        // (c + a * Z - Z*Z*Z / 3.0 - (X*X + Y*Y)*(1.0 + e*Z) + f * Z * X*X*X)
         return target * t;
+        
       } 
 
       vec3 AizawaAttractor(vec3 pos, float t){
@@ -175,22 +133,8 @@ export default class SimMatCurlTwo extends ShaderMaterial {
         target.z = (d*pos.x*pos.y - e*pos.z);
         return target * t;
       } 
-
-      vec3 thomasAttractor(vec3 pos, float t){
-        
-      float b = 0.19;
-      vec3 target = vec3(0);              
-      target.x = (-b*pos.x + sin(pos.y)) ;
-      target.y = (-b*pos.y + sin(pos.z)) ;
-      target.z = (-b*pos.z + sin(pos.x)) ;
-        
-      return target * t;
-    }
-
-    void main() {
-      vec2 uv = vUv;   
-      vec3 pos = texture2D( uPositions, uv ).xyz;
-      vec3 p = pos;
+      
+      
       // vec3 target = AizawaAttractor((pos * .15) , 0.15);
       
       //infinit stability
@@ -198,26 +142,12 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       
       //vanish
       // vec3 target = thomasAttractor(pos - sin(uTime *0.5)   , sin(0.05 ));
-
       // looks cool
-      // vec3 target = thomasAttractor(pos + (sin(uTime *0.75 -0.25) -0.25)*.25-cos(uTime *.25)   , 0.05);
-
-      // looks cool
-      vec3 target = AizawaAttractor(pos *0.25, 0.0075);
+      // vec3 target = AizawaAttractor(pos *0.25, 0.0075);
 
       // vec3 target = RosslerAttractor(pos *1.1 + cos(uTime *0.5) * sin(uTime*0.5), 0.015);
 
        // looks cool
       // vec3 target = DeqanAttractor(pos*0.1, 0.0015);
-
-      float dist = length(target-pos);
-      pos+=target ;
-      // target = mix(p, target, sin(uTime*0.01));
-
-
-      gl_FragColor = vec4( pos, 1. );
-
-      }`,
-    });
-  }
-}
+      
+      `;

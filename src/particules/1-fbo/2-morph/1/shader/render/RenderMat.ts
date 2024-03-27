@@ -31,10 +31,10 @@ export default class RenderMat extends ShaderMaterial {
         void main() {
           vec3 pos = texture2D( uPositions, position.xy ).xyz;
           vPos = pos;
-          vec4 mvPosition = modelViewMatrix * vec4(position, 1.);
+          vec4 mvPosition = modelViewMatrix * vec4(pos.xyz, 1.);
           vDistance = -mvPosition.z;
           gl_PointSize = 1. * (1./ -mvPosition.z);
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1. );
+          gl_Position = projectionMatrix * mvPosition;
 
         }`,
     });

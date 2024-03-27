@@ -7,12 +7,12 @@ import ParticulesShapeOne from "../particules/ParticulesShapeOne";
 const ParticulesShapeOneScene = () => {
   return (
     <div className="w-screen h-screen">
-      <Canvas camera={{ position: [0, 0, 1] }} dpr={1.9}>
+      <Canvas camera={{ position: [0, 5, 10] }} dpr={1.75}>
         <Suspense fallback={null}>
           <ParticulesShapeOne />
         </Suspense>
         <Preload />
-        <OrbitControls />
+        <OrbitControls autoRotate />
       </Canvas>
     </div>
   );

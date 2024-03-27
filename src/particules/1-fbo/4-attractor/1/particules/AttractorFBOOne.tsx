@@ -17,30 +17,30 @@ import {
   ShaderMaterial,
 } from "three";
 
-import RenderMatShapeOne from "../shader/render/RenderMatShapeOne";
-import SimMatShapeOne from "../shader/sim/SimMatShapeOne";
+import RenderMatAttractOne from "../shader/render/RenderMatShapeOne";
+import SimMatAttractOne from "../shader/sim/SimMatShapeOne";
 
 extend({
-  SimMatShapeOne: SimMatShapeOne,
-  RenderMatShapeOne: RenderMatShapeOne,
+  SimMatAttractOne: SimMatAttractOne,
+  RenderMatAttractOne: RenderMatAttractOne,
 });
 
 declare module "@react-three/fiber" {
   interface ThreeElements {
-    renderMatShapeOne: Object3DNode<
-      RenderMatShapeOne,
-      typeof RenderMatShapeOne
+    renderMatAttractOne: Object3DNode<
+      RenderMatAttractOne,
+      typeof RenderMatAttractOne
     >;
   }
 }
 
 declare module "@react-three/fiber" {
   interface ThreeElements {
-    simMatShapeOne: Object3DNode<SimMatShapeOne, typeof SimMatShapeOne>;
+    simMatAttractOne: Object3DNode<SimMatAttractOne, typeof SimMatAttractOne>;
   }
 }
 
-const ParticulesShapeOne = () => {
+const AttractorFBOOne = () => {
   const size = 512;
 
   const simulationMaterialRef = useRef<ShaderMaterial | null>(null);
@@ -87,6 +87,13 @@ const ParticulesShapeOne = () => {
     gl.setRenderTarget(null);
   });
 
+  //reload on resize or the render dispear
+  useEffect(() => {
+    const onResize = () => location.reload();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  });
+
   useFrame(state => {
     const { gl, clock } = state;
 
@@ -98,12 +105,12 @@ const ParticulesShapeOne = () => {
     if (renderMaterialRef.current) {
       renderMaterialRef.current.uniforms.uPositions.value = target1.texture;
     }
-    // console.log(c.position);camera: c
+
     gl.setRenderTarget(target1);
     gl.clear();
     gl.render(scene, camera);
     gl.setRenderTarget(null);
-
+    //swap texture
     const temp = target;
     target = target1;
     target1 = temp;
@@ -113,7 +120,7 @@ const ParticulesShapeOne = () => {
     <>
       {createPortal(
         <mesh>
-          <simMatShapeOne ref={simulationMaterialRef} args={[size]} />
+          <simMatAttractOne ref={simulationMaterialRef} args={[size]} />
           <bufferGeometry>
             <bufferAttribute
               attach="attributes-position"
@@ -132,7 +139,7 @@ const ParticulesShapeOne = () => {
         scene
       )}
       <points>
-        <renderMatShapeOne
+        <renderMatAttractOne
           ref={renderMaterialRef}
           blending={AdditiveBlending}
           depthWrite={false}
@@ -152,4 +159,4 @@ const ParticulesShapeOne = () => {
   );
 };
 
-export default ParticulesShapeOne;
+export default AttractorFBOOne;

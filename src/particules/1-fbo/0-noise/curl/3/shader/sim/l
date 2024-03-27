@@ -1,0 +1,76 @@
+precision mediump float;
+#define GLSLIFY 1
+
+uniform float attractor;
+uniform sampler2D positions;
+
+varying vec2 vUv;
+
+vec3 lorezAttractor(vec3 pos) {
+    // Lorenz Attractor parameters
+    float a = 10.0;
+    float b = 28.0;
+    float c = 2.6666666667;
+
+    // Timestep 
+    float dt = 0.004;
+
+    float x = pos.x;
+    float y = pos.y;
+    float z = pos.z;
+
+    float dx, dy, dz;
+
+    dx = dt * (a * (y - x));
+    dy = dt * (x * (b - z) - y);
+    dz = dt * (x * y - c * z);
+
+    return vec3(dx, dy, dz);
+}
+
+vec3 lorezMod2Attractor(vec3 pos) {
+    // Lorenz Mod2 Attractor parameters
+    float a = 0.9;
+    float b = 5.0;
+    float c = 9.9;
+    float d = 1.0;
+
+    // Timestep 
+    float dt = 0.0005;
+
+    float x = pos.x;
+    float y = pos.y;
+    float z = pos.z;
+
+    float dx, dy, dz;
+
+    dx = (-a*x + y*y - z*z + a *c) * dt;
+    dy = (x*(y-b*z)+d)  * dt;
+    dz = (-z + x*(b*y +z))  * dt;
+
+    return vec3(dx, dy, dz);
+}
+
+// Define other attractors similarly...
+
+void main() {
+    vec3 pos = texture2D(positions, vUv).rgb;
+    vec3 delta;
+
+    if (attractor == 0.0) {
+        delta = lorezAttractor(pos);
+    }
+
+    if (attractor == 1.0) {
+        delta = lorezMod2Attractor(pos);
+    }
+
+    // Add conditions for other attractors...
+
+    pos.x += delta.x;
+    pos.y += delta.y;
+    pos.z += delta.z;
+
+    gl_FragColor = vec4(pos, 1.0);
+}
+

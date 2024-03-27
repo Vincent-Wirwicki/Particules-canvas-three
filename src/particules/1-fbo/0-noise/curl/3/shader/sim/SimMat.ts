@@ -201,3 +201,67 @@ export default class SimMatCurlTwo extends ShaderMaterial {
     });
   }
 }
+
+//  v1
+// vec2 uv = vUv;
+
+// vec3 pos = texture2D( uPositions, uv ).xyz;
+// vec3 curlPos = pos;
+
+// float freq = mix(0.5,.75, cos(uTime*0.5 + 0.5) *0.5);
+// float amp = mix(0.5,0.25, sin(uTime*0.25 + 0.25)*0.25);
+// float time = uTime *0.15;
+
+// curlPos = curlNoise(curlPos * freq + time);
+// curlPos += curlNoise(curlPos *freq *1.15) *amp ;
+// curlPos += curlNoise(curlPos *freq *1.30) *amp *1.25;
+
+// vec3 render = mix(pos, curlPos, 1.);
+
+// render.xz =rotate(render.xz, uTime*0.1);
+
+// gl_FragColor = vec4( render, 1. );
+
+// v2
+// vec2 uv = vUv;
+
+// vec3 pos = texture2D( uPositions, uv ).xyz;
+// vec3 curlPos = pos;
+
+// float freq = mix(0.5,.75, cos(uTime*0.5 + 0.5) *0.5);
+// float freqAmp = mix(1.5,3., (uTime*0.075 + 0.5) *0.5);
+// float amp = mix(0.5,0.25, sin(uTime*0.25 + 0.25)*0.25);
+// float time = uTime *0.15;
+
+// curlPos = curlNoise(curlPos * freq + time);
+// curlPos += curlNoise(curlPos *freq *1.15 - freqAmp) *amp;
+// curlPos += curlNoise(curlPos *freq *1.30 - freqAmp) *amp *1.25;
+
+// vec3 render = mix(pos, curlPos, 1.);
+
+
+
+
+
+
+
+// vec3 thomasAttractor(vec3 pos, float t){
+
+//   float b = 0.19;
+//   float timestep = 0.05;
+//   vec3 next = vec3(0);
+//   float x = pos.x;
+//   float y = pos.y;
+//   float z = pos.z;
+
+//   // float dx = (-b*x + sin(y)) * timestep;
+//   // float dy = (-b*y + sin(z)) * timestep;
+//   // float dz = (-b*z + sin(x)) * timestep;
+//   float dt = 1.;
+
+//   next.x = (-b*pos.x + sin(pos.y)) ;
+//   next.y = (-b*pos.y + sin(pos.z)) ;
+//   next.z = (-b*pos.z + sin(pos.x)) ;
+
+//   return next * t;
+// }

@@ -29,6 +29,8 @@ export default class SimMatCurlTwo extends ShaderMaterial {
           }
       `,
       fragmentShader: /* glsl */ `
+      precision mediump float;
+
       uniform sampler2D uPositions;
 
       uniform float uTime;

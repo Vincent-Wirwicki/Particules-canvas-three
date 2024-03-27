@@ -63,6 +63,27 @@ export const getSphere = (numPoints: number, r: number) => {
   return data;
 };
 
+// fast calc circle --------------------------------------------------------------------
+// const getPoint = (
+//   v: Vector3,
+//   size: number,
+//   data: Float32Array,
+//   offset: number
+// ) =>{
+//   v.set(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
+//   if (v.length() > 1) return getPoint(v, size, data, offset);
+//   return v.normalize().multiplyScalar(size).toArray(data, offset);
+// }
+
+// export const getFastSphere = (count: number, size: number, p = new Vector4()) => {
+//   const data = new Float32Array(count * 4);
+//   for (let i = 0; i < count * 4; i += 4) getPoint(p, size, data, i);
+//   return data;
+// }
+
+// const data = getSphere(size * size, 128, new Vector4());
+// fast calc circle --------------------------------------------------------------------
+
 export const getTorusKnot = (
   numPoints: number,
   q: number,
@@ -94,7 +115,7 @@ export const getTorusKnot = (
 
   return data;
 };
-// if you wanna use
+// if you wanna use image
 // const getImageData = () => {
 //   const { width, height } = texture.image;
 //   const w = width;
@@ -272,24 +293,3 @@ export const getTorusKnot = (
 
 //   return data;
 // };
-
-// fast calc circle --------------------------------------------------------------------
-// function getPoint(
-//   v: Vector3,
-//   size: number,
-//   data: Float32Array,
-//   offset: number
-// ) {
-//   v.set(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
-//   if (v.length() > 1) return getPoint(v, size, data, offset);
-//   return v.normalize().multiplyScalar(size).toArray(data, offset);
-// }
-
-// function getSphere(count: number, size: number, p = new Vector4()) {
-//   const data = new Float32Array(count * 4);
-//   for (let i = 0; i < count * 4; i += 4) getPoint(p, size, data, i);
-//   return data;
-// }
-
-// const data = getSphere(size * size, 128, new Vector4());
-// fast calc circle --------------------------------------------------------------------
