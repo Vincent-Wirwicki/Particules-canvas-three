@@ -13,6 +13,7 @@ import WipPage from "./pages/0-wip/WipPage";
 import MorphOneScene from "./particules/1-fbo/2-morph/1/scene/MorphOneScene";
 import BustScene from "./particules/1-fbo/3-model/1-bust/scene/BustScene";
 import AttractorOneScene from "./particules/1-fbo/4-attractor/1/scene/AttractorOneScene";
+import AttractorTwoScene from "./particules/1-fbo/4-attractor/2/scene/AttractorTwoScene";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -28,6 +29,7 @@ const App = () => {
         { path: "morph-1", element: <MorphOneScene /> },
         { path: "model-1", element: <BustScene /> },
         { path: "attract-1", element: <AttractorOneScene /> },
+        { path: "attract-2", element: <AttractorTwoScene /> },
       ],
     },
   ]);

@@ -75,7 +75,7 @@ const AttractorFBOOne = () => {
   let target1 = target.clone();
 
   const state = useThree();
-
+  //init render scene
   useEffect(() => {
     const { gl } = state;
     gl.setRenderTarget(target);
@@ -142,7 +142,7 @@ const AttractorFBOOne = () => {
         <renderMatAttractOne
           ref={renderMaterialRef}
           blending={AdditiveBlending}
-          depthWrite={false}
+          depthWrite={true}
           // transparent={true}
           // side={DoubleSide}
         />

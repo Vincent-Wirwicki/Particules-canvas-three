@@ -167,16 +167,11 @@ export default class SimMat extends ShaderMaterial {
       float freq = .25;
       float dist = .015;
 
-      vec3 disp =  curl( pos.x * freq , pos.y *  freq, pos.z *  freq ) * amp;
+      vec3 disp =  curl(pos.x * freq, pos.y *  freq, pos.z *  freq) * amp;
   
       float d = length(pos-disp) * dist;
       pos = mix( pos, disp, pow( d, 5. ) );
       pos.xz = rotate(pos.xz, sin(uTime *0.01));
-      // pos.xz = rotate(pos.xz, .75);
-
-
-      // pos.yz = rotate(pos.yz, uTime*0.05 +0.5);
-      // pos.xz = rotate(pos.xz, uTime*0.075);
 
       gl_FragColor = vec4( pos, 1. );
       }`,

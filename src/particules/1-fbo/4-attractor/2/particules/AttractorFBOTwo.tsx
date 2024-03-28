@@ -1,16 +1,15 @@
-import { Preload, useFBO, useGLTF } from "@react-three/drei";
+import { useFBO } from "@react-three/drei";
 import {
   useFrame,
   createPortal,
   extend,
   Object3DNode,
+  useThree,
 } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import {
   AdditiveBlending,
-  // DoubleSide,
   FloatType,
-  Mesh,
   NearestFilter,
   OrthographicCamera,
   RGBAFormat,
@@ -18,55 +17,32 @@ import {
   ShaderMaterial,
 } from "three";
 
-import SimMatBust from "../shader/sim/SimMat";
-import RenderMatBust from "../shader/render/RenderMat";
+import RenderMatAttractTwo from "../shader/render/RenderMatShapeOne";
+import SimMatAttractTwo from "../shader/sim/SimMatShapeOne";
 
 extend({
-  SimMatBust: SimMatBust,
-  RenderMatBust: RenderMatBust,
+  SimMatAttractTwo: SimMatAttractTwo,
+  RenderMatAttractTwo: RenderMatAttractTwo,
 });
 
 declare module "@react-three/fiber" {
   interface ThreeElements {
-    renderMatBust: Object3DNode<RenderMatBust, typeof RenderMatBust>;
+    renderMatAttractTwo: Object3DNode<
+      RenderMatAttractTwo,
+      typeof RenderMatAttractTwo
+    >;
   }
 }
 
 declare module "@react-three/fiber" {
   interface ThreeElements {
-    simMatBust: Object3DNode<SimMatBust, typeof SimMatBust>;
+    simMatAttractTwo: Object3DNode<SimMatAttractTwo, typeof SimMatAttractTwo>;
   }
 }
-const BustFBO = () => {
+
+const AttractorFBOTwo = () => {
   const size = 512;
-  const model = useGLTF("/bust-hi.glb");
 
-  const getDataModel = (numPoints: number) => {
-    const size = numPoints * numPoints * 4;
-    const data = new Float32Array(size);
-    const mesh = model.nodes.Mesh_0001 as Mesh;
-
-    const pos = mesh.geometry.attributes.position.array;
-    const total = pos.length / 3;
-
-    for (let i = 0; i < size; i++) {
-      const stride = i * 4;
-
-      const random = Math.floor(Math.random() * total);
-      const x = pos[3 * random];
-      const y = pos[3 * random + 1];
-      const z = pos[3 * random + 2];
-
-      data[stride] = x;
-      data[stride + 1] = y;
-      data[stride + 2] = z;
-      data[stride + 3] = 1;
-    }
-
-    return data;
-  };
-
-  const data = getDataModel(size);
   const simulationMaterialRef = useRef<ShaderMaterial | null>(null);
   const renderMaterialRef = useRef<ShaderMaterial | null>(null);
 
@@ -88,33 +64,64 @@ const BustFBO = () => {
     return particles;
   }, [size]);
 
-  const target = useFBO(size, size, {
+  let target = useFBO(size, size, {
     minFilter: NearestFilter,
     magFilter: NearestFilter,
     format: RGBAFormat,
+    stencilBuffer: false,
     type: FloatType,
+  });
+
+  let target1 = target.clone();
+
+  const state = useThree();
+
+  useEffect(() => {
+    const { gl } = state;
+    gl.setRenderTarget(target);
+    gl.clear();
+    gl.render(scene, camera);
+    gl.setRenderTarget(target1);
+    gl.clear();
+    gl.render(scene, camera);
+    gl.setRenderTarget(null);
+  });
+
+  //reload on resize or the render dispear
+  useEffect(() => {
+    const onResize = () => location.reload();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
   });
 
   useFrame(state => {
     const { gl, clock } = state;
-    gl.setRenderTarget(target);
+
+    if (simulationMaterialRef.current) {
+      simulationMaterialRef.current.uniforms.uTime.value = clock.elapsedTime;
+      simulationMaterialRef.current.uniforms.uPositions.value = target.texture;
+    }
+
+    if (renderMaterialRef.current) {
+      renderMaterialRef.current.uniforms.uPositions.value = target1.texture;
+      renderMaterialRef.current.uniforms.uTime.value = clock.elapsedTime;
+    }
+
+    gl.setRenderTarget(target1);
     gl.clear();
     gl.render(scene, camera);
     gl.setRenderTarget(null);
-
-    if (renderMaterialRef.current)
-      renderMaterialRef.current.uniforms.uPositions.value = target.texture;
-
-    if (simulationMaterialRef.current)
-      simulationMaterialRef.current.uniforms.uTime.value =
-        clock.elapsedTime * 2;
+    //swap texture
+    const temp = target;
+    target = target1;
+    target1 = temp;
   });
 
   return (
     <>
       {createPortal(
         <mesh>
-          <simMatBust ref={simulationMaterialRef} args={[size, data]} />
+          <simMatAttractTwo ref={simulationMaterialRef} args={[size]} />
           <bufferGeometry>
             <bufferAttribute
               attach="attributes-position"
@@ -133,11 +140,11 @@ const BustFBO = () => {
         scene
       )}
       <points>
-        <renderMatBust
+        <renderMatAttractTwo
           ref={renderMaterialRef}
           blending={AdditiveBlending}
-          transparent={true}
-          depthTest={true}
+          depthWrite={true}
+          // transparent={true}
           // side={DoubleSide}
         />
         <bufferGeometry>
@@ -149,9 +156,8 @@ const BustFBO = () => {
           />
         </bufferGeometry>
       </points>
-      <Preload />
     </>
   );
 };
 
-export default BustFBO;
+export default AttractorFBOTwo;
