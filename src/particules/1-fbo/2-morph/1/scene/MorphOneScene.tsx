@@ -5,7 +5,7 @@ import ParticulesShapeOne from "../particules/MorphOneFBO";
 const MorphOneScene = () => {
   return (
     <Suspense fallback={null}>
-      <Canvas camera={{ position: [0, 18, 0] }} dpr={1.9}>
+      <Canvas camera={{ position: [0, 18, -1] }} dpr={1.25}>
         <ParticulesShapeOne />
       </Canvas>
     </Suspense>

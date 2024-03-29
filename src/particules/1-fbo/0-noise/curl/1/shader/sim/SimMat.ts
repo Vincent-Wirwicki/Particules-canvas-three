@@ -1,10 +1,10 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
-import { getTorusKnot } from "../../../../../1-shapes/0-utils-shape-func/shapesFunction";
+import { getTorusKnotFlat } from "../../../../../1-shapes/0-utils-shape-func/torusKnotData";
 
 export default class SimMat extends ShaderMaterial {
   constructor(size: number) {
     const positionsTexture = new DataTexture(
-      getTorusKnot(size, 6, 4, 5),
+      getTorusKnotFlat(size, 6, 4, 5),
       size,
       size,
       RGBAFormat,

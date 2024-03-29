@@ -1,40 +1,10 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
-import { getTorusKnot } from "../../../../1-shapes/0-utils-shape-func/shapesFunction";
+import { getTorusWeird } from "../../../../1-shapes/0-utils-shape-func/torusKnotData";
 
-// const getThomasAttract = (numPoints: number) => {
-//   const size = numPoints * numPoints * 4;
-//   const data = new Float32Array(size);
-//   for (let i = 0; i < size; i++) {
-//     const stride = i * 4;
-
-//     const xx = Math.random() * 0.5;
-//     const yy = Math.random() * 0.5;
-//     const zz = Math.random() * 0.5;
-//     // theta varies from 0 to 2π, and phi varies from 0 to π.
-//     // const phi = Math.acos(2 * v - 1);
-//     const b = 0.19;
-
-//     const x = -b * xx + Math.sin(yy);
-//     const y = -b * yy + Math.sin(zz);
-//     const z = -b * zz + Math.sin(xx);
-
-//     data[stride] = xx;
-//     data[stride + 1] = yy;
-//     data[stride + 2] = zz;
-//     data[stride + 3] = 1;
-//   }
-//   return data;
-// };
-// float b = 0.19;
-// vec3 target = vec3(0);
-// target.x = (-b*pos.x + sin(pos.y)) ;
-// target.y = (-b*pos.y + sin(pos.z)) ;
-// target.z = (-b*pos.z + sin(pos.x)) ;
-// return target * t;
 export default class SimMatCurlTwo extends ShaderMaterial {
   constructor(size: number) {
     const positionsTexture = new DataTexture(
-      getTorusKnot(size, 5, 6, 6),
+      getTorusWeird(size, 3, 1, 3),
       size,
       size,
       RGBAFormat,
@@ -211,34 +181,17 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       return target * t;
     }
 
-      vec3 dadrasAttractor(vec3 pos, float t){
-        float a = 3.;
-        float b = 2.7;
-        float c = 1.7;
-        float d = 2.;
-        float e = 9.;
-
-        vec3 target = vec3(0);
-
-        target.x = (pos.y- a*pos.x +b*pos.y*pos.z) ;
-        target.y = (c*pos.y -pos.x*pos.z +pos.z) ;
-        target.z = (d*pos.x*pos.y - e*pos.z);
-        return target * t;
-      } 
-
     void main() {
       vec2 uv = vUv;   
       vec3 pos = texture2D( uPositions, uv ).xyz;
       
-      // float freq = smoothstep(0.,.75,uTime);
       float freq = 1.5;
-      // float m = mix(2.,3.,uTime);
       float amp = .01;
            
-      pos+=curl((pos) * freq +uTime*0.15) *amp;
+      pos+=curl((pos) * freq + uTime*0.1) *amp;
       pos+=curl((pos) * freq*2. ) *amp*0.5;
 
-      vec3 target = thomasAttractor(pos, 0.02);
+      vec3 target = thomasAttractor(pos, 0.025);
       float dist = length(target.xy - pos.xy);
       
       pos+=target ;

@@ -6,7 +6,7 @@ import {
   Object3DNode,
   useThree,
 } from "@react-three/fiber";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AdditiveBlending,
   FloatType,
@@ -15,39 +15,46 @@ import {
   RGBAFormat,
   Scene,
   ShaderMaterial,
+  Vector3,
 } from "three";
 
-import RenderMatAttractTwo from "../shader/render/RenderMatShapeOne";
-import SimMatAttractTwo from "../shader/sim/SimMatShapeOne";
+import RenderMatAttractThree from "../shader/render/RenderMatShapeOne";
+import SimMatAttractThree from "../shader/sim/SimMatShapeOne";
 
 extend({
-  SimMatAttractTwo: SimMatAttractTwo,
-  RenderMatAttractTwo: RenderMatAttractTwo,
+  SimMatAttractThree: SimMatAttractThree,
+  RenderMatAttractThree: RenderMatAttractThree,
 });
 
 declare module "@react-three/fiber" {
   interface ThreeElements {
-    renderMatAttractTwo: Object3DNode<
-      RenderMatAttractTwo,
-      typeof RenderMatAttractTwo
+    renderMatAttractThree: Object3DNode<
+      RenderMatAttractThree,
+      typeof RenderMatAttractThree
     >;
   }
 }
 
 declare module "@react-three/fiber" {
   interface ThreeElements {
-    simMatAttractTwo: Object3DNode<SimMatAttractTwo, typeof SimMatAttractTwo>;
+    simMatAttractThree: Object3DNode<
+      SimMatAttractThree,
+      typeof SimMatAttractThree
+    >;
   }
 }
 
-const AttractorFBOTwo = () => {
-  const size = 512;
+const AttractorFBOThree = () => {
+  const size = 256;
 
   const simulationMaterialRef = useRef<ShaderMaterial | null>(null);
   const renderMaterialRef = useRef<ShaderMaterial | null>(null);
 
-  const scene = new Scene();
-  const camera = new OrthographicCamera(-1, 1, 1, -1, 1 / Math.pow(2, 53), 1);
+  const [scene] = useState(() => new Scene());
+  const [camera] = useState(() => new OrthographicCamera(-1, 1, 1, -1, -1, 1));
+  camera.position.set(0, 0, 0);
+  camera.lookAt(0, 0, 0);
+
   const positions = new Float32Array([
     -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0,
   ]);
@@ -60,6 +67,7 @@ const AttractorFBOTwo = () => {
       const i3 = i * 3;
       particles[i3 + 0] = (i % size) / size;
       particles[i3 + 1] = i / size / size;
+      // particles[i3 + 3] = 0;
     }
     return particles;
   }, [size]);
@@ -81,14 +89,13 @@ const AttractorFBOTwo = () => {
     gl.setRenderTarget(target);
     gl.clear();
     gl.render(scene, camera);
+    gl.compile(scene, camera);
     gl.setRenderTarget(target1);
     gl.clear();
     gl.render(scene, camera);
     gl.setRenderTarget(null);
-    gl.compile(scene, camera);
   });
-
-  //reload on resize or the render dispear
+  // reload on resize or the render dispear
   useEffect(() => {
     const onResize = () => location.reload();
     window.addEventListener("resize", onResize);
@@ -96,11 +103,20 @@ const AttractorFBOTwo = () => {
   });
 
   useFrame(state => {
-    const { gl, clock } = state;
+    const { gl, clock, raycaster, pointer } = state;
 
+    raycaster.setFromCamera(pointer, camera);
     if (simulationMaterialRef.current) {
       simulationMaterialRef.current.uniforms.uTime.value = clock.elapsedTime;
       simulationMaterialRef.current.uniforms.uPositions.value = target.texture;
+
+      const intersects = raycaster.intersectObjects(scene.children);
+      if (intersects)
+        simulationMaterialRef.current.uniforms.uMouse.value = new Vector3(
+          pointer.x,
+          pointer.y,
+          1
+        );
     }
 
     if (renderMaterialRef.current) {
@@ -121,31 +137,33 @@ const AttractorFBOTwo = () => {
   return (
     <>
       {createPortal(
-        <mesh>
-          <simMatAttractTwo ref={simulationMaterialRef} args={[size]} />
-          <bufferGeometry>
-            <bufferAttribute
-              attach="attributes-position"
-              count={positions.length / 3}
-              array={positions}
-              itemSize={3}
-            />
-            <bufferAttribute
-              attach="attributes-uv"
-              count={uvs.length / 2}
-              array={uvs}
-              itemSize={2}
-            />
-          </bufferGeometry>
-        </mesh>,
+        <>
+          <mesh>
+            <simMatAttractThree ref={simulationMaterialRef} args={[size]} />
+            <bufferGeometry>
+              <bufferAttribute
+                attach="attributes-position"
+                count={positions.length / 3}
+                array={positions}
+                itemSize={3}
+              />
+              <bufferAttribute
+                attach="attributes-uv"
+                count={uvs.length / 2}
+                array={uvs}
+                itemSize={2}
+              />
+            </bufferGeometry>
+          </mesh>
+        </>,
         scene
       )}
       <points>
-        <renderMatAttractTwo
+        <renderMatAttractThree
           ref={renderMaterialRef}
           blending={AdditiveBlending}
           depthWrite={false}
-          // transparent={true}
+          transparent={true}
           // side={DoubleSide}
         />
         <bufferGeometry>
@@ -161,4 +179,4 @@ const AttractorFBOTwo = () => {
   );
 };
 
-export default AttractorFBOTwo;
+export default AttractorFBOThree;

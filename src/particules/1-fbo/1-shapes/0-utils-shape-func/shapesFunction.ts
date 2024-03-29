@@ -44,12 +44,9 @@ export const getSphere = (numPoints: number, r: number) => {
   for (let i = 0; i < size; i++) {
     const stride = i * 4;
 
-    const u = Math.random();
-    const v = Math.random();
-
     // theta varies from 0 to 2π, and phi varies from 0 to π.
-    const theta = 2 * Math.PI * u;
-    const phi = Math.acos(2 * v - 1);
+    const theta = 2 * Math.PI * Math.random();
+    const phi = Math.acos(2 * Math.random() - 1);
 
     const x = r * Math.sin(phi) * Math.cos(theta);
     const y = r * Math.sin(phi) * Math.sin(theta);
@@ -84,37 +81,37 @@ export const getSphere = (numPoints: number, r: number) => {
 // const data = getSphere(size * size, 128, new Vector4());
 // fast calc circle --------------------------------------------------------------------
 
-export const getTorusKnot = (
-  numPoints: number,
-  q: number,
-  p: number,
-  r: number
-) => {
-  const size = numPoints * numPoints * 4;
-  const data = new Float32Array(size);
+// export const getTorusKnot = (
+//   numPoints: number,
+//   q: number,
+//   p: number,
+//   r: number
+// ) => {
+//   const size = numPoints * numPoints * 4;
+//   const data = new Float32Array(size);
 
-  for (let i = 0; i < size; i++) {
-    const stride = i * 4;
-    const pos = Math.random() * Math.PI * 2;
-    // s = segment / t = tubes
-    const s = i * Math.PI * 2 + pos;
-    const t = i * Math.PI * 2 * pos;
-    const cx = Math.cos(t);
-    const cy = Math.sin(t);
-    const v = (q / p) * s;
+//   for (let i = 0; i < size; i++) {
+//     const stride = i * 4;
+//     const pos = Math.random() * Math.PI * 2;
+//     // s = segment / t = tubes
+//     const s = i * Math.PI * 2 + pos;
+//     const t = i * Math.PI * 2 * pos;
+//     const cx = Math.cos(t);
+//     const cy = Math.sin(t);
+//     const v = (q / p) * s * pos;
 
-    const x = r * Math.cos(s) * (2 + Math.cos(v)) + cx;
-    const y = r * Math.sin(s) * (2 + Math.cos(v)) + cy;
-    const z = r * Math.sin(v);
+//     const x = r * Math.cos(s) * (2 + Math.cos(v)) + cx;
+//     const y = r * Math.sin(s) * (2 + Math.cos(v)) + cy;
+//     const z = r * Math.sin(v);
 
-    data[stride] = x;
-    data[stride + 1] = y;
-    data[stride + 2] = z;
-    data[stride + 3] = 1;
-  }
+//     data[stride] = x;
+//     data[stride + 1] = y;
+//     data[stride + 2] = z;
+//     data[stride + 3] = 1;
+//   }
 
-  return data;
-};
+//   return data;
+// };
 // if you wanna use image
 // const getImageData = () => {
 //   const { width, height } = texture.image;

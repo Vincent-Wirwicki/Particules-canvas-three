@@ -1,10 +1,10 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
-import { getTorusKnot } from "../../../0-utils-shape-func/shapesFunction";
+import { getTorusKnotFlat } from "../../../0-utils-shape-func/torusKnotData";
 
 export default class SimMatCurlTwo extends ShaderMaterial {
   constructor(size: number) {
     const positionsTexture = new DataTexture(
-      getTorusKnot(size, 4, 3, 3),
+      getTorusKnotFlat(size, 4, 3, 3),
       size,
       size,
       RGBAFormat,
@@ -141,9 +141,10 @@ export default class SimMatCurlTwo extends ShaderMaterial {
     void main() {
       vec2 uv = vUv;
       vec3 pos = texture2D( uPositions, uv ).xyz;
-      const float amp = 0.5;
+      const float amp = 0.15;
       const float freq = 0.15;
       pos+= curlNoise(pos * freq + uTime *0.01)* amp;
+      pos+= curlNoise(pos*freq *2. )*amp;
       pos.xy = rotate(pos.xy, 0.5);
       
       gl_FragColor = vec4( pos , 1. );

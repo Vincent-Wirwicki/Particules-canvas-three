@@ -11,9 +11,9 @@ const AttractorOneScene = () => {
   return (
     <div className="w-screen h-screen">
       <Suspense fallback={null}>
-        <Canvas camera={{ position: [0, 5, 10] }} dpr={1.75}>
+        <Canvas camera={{ position: [0, 5, 12] }} dpr={1.75}>
           <AttractorFBOOne />
-          <OrbitControls autoRotate />
+          <OrbitControls autoRotate autoRotateSpeed={0.75} />
         </Canvas>
       </Suspense>
     </div>

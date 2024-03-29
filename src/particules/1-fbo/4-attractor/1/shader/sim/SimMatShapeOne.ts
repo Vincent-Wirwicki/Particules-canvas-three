@@ -31,21 +31,27 @@ export default class SimMatCurlTwo extends ShaderMaterial {
     uniform float uTime;
 
     varying vec2 vUv;
-      
-    vec3 thomasAttractor(vec3 pos, float t){   
-      float b = 0.19;
-      vec3 target = vec3(0);              
-      target.x = (-b*pos.x + sin(pos.y)) ;
-      target.y = (-b*pos.y + sin(pos.z)) ;
-      target.z = (-b*pos.z + sin(pos.x)) ;   
-      return target * t;
-    }
 
+     vec3 dadrasAttractor(vec3 pos, float t){
+        float a = 3.;
+        float b = 2.7;
+        float c = 1.7;
+        float d = 2.;
+        float e = 9.;
+
+        vec3 target = vec3(0);
+
+        target.x = (pos.y- a*pos.x +b*pos.y*pos.z) ;
+        target.y = (c*pos.y -pos.x*pos.z +pos.z) ;
+        target.z = (d*pos.x*pos.y - e*pos.z);
+        return target * t;
+      }
+      
     void main() {
       vec2 uv = vUv;   
       vec3 pos = texture2D( uPositions, uv ).xyz;
-
-      vec3 target = thomasAttractor(pos + (sin(uTime *0.75 -0.25) -0.25)*.25-cos(uTime *.25), 0.05);
+      float disp = (sin(uTime *0.75 -0.25) -0.25)*.25-cos(uTime *.25);
+      vec3 target = dadrasAttractor(pos, 0.0075);
 
       pos+=target;
      

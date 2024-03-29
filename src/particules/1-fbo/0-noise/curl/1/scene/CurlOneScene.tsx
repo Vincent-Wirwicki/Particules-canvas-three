@@ -7,7 +7,7 @@ import { AdaptiveDpr } from "@react-three/drei";
 const CurlOneScene = () => {
   return (
     <Suspense fallback={<Loading />}>
-      <Canvas camera={{ position: [0.5, 2.5, 25] }} dpr={2.1}>
+      <Canvas camera={{ position: [0.5, 2.5, 25] }} dpr={2}>
         <CurlOneFBO />
         <AdaptiveDpr pixelated />
       </Canvas>

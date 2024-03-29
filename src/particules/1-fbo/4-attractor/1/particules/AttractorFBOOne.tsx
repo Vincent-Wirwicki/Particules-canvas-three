@@ -41,7 +41,7 @@ declare module "@react-three/fiber" {
 }
 
 const AttractorFBOOne = () => {
-  const size = 512;
+  const size = 256;
 
   const simulationMaterialRef = useRef<ShaderMaterial | null>(null);
   const renderMaterialRef = useRef<ShaderMaterial | null>(null);
