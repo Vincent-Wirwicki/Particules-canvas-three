@@ -159,7 +159,7 @@ const MouseFBOOne = () => {
         <renderMatMouseOne
           ref={renderMaterialRef}
           blending={AdditiveBlending}
-          depthWrite={false}
+          depthWrite={true}
           transparent={true}
           // side={DoubleSide}
         />

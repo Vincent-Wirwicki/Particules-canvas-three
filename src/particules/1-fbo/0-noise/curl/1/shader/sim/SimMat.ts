@@ -4,7 +4,7 @@ import { getTorusKnotFlat } from "../../../../../1-shapes/0-utils-shape-func/tor
 export default class SimMat extends ShaderMaterial {
   constructor(size: number) {
     const positionsTexture = new DataTexture(
-      getTorusKnotFlat(size, 6, 4, 5),
+      getTorusKnotFlat(size, 4, 3, 3),
       size,
       size,
       RGBAFormat,

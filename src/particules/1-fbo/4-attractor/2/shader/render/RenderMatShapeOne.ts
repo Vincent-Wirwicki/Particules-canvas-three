@@ -31,7 +31,7 @@ export default class RenderMatShapeOne extends ShaderMaterial {
           // if(dist > 0.85) alpha =0.15;
           // if(t < 0.25) alpha = 0.;
           // vec2 a = vUv - 0.5 ;
-          gl_FragColor = vec4(color,1.);
+          gl_FragColor = vec4(color,1. *dist);
         }`,
       vertexShader: /*glsl */ `
         uniform sampler2D uPositions;

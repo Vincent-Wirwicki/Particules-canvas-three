@@ -1,10 +1,34 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
 import { getTorusWeird } from "../../../../1-shapes/0-utils-shape-func/torusKnotData";
+const getRandom = (numPoints: number) => {
+  const size = numPoints * numPoints * 4;
+  const data = new Float32Array(size);
+  for (let i = 0; i < size; i++) {
+    const stride = i * 4;
 
+    const x = Math.PI * Math.random() * 2 - 1;
+    const y = Math.PI * Math.random() * 2 - 1;
+    const z = Math.PI * Math.random() * 2 - 1;
+
+    data[stride] = x;
+    data[stride + 1] = y;
+    data[stride + 2] = z;
+    data[stride + 3] = 1;
+  }
+  return data;
+};
 export default class SimMatCurlTwo extends ShaderMaterial {
   constructor(size: number) {
     const positionsTexture = new DataTexture(
-      getTorusWeird(size, 3, 1, 3),
+      getTorusWeird(size, 2, 3, 1),
+      size,
+      size,
+      RGBAFormat,
+      FloatType
+    );
+
+    const positionsTexture2 = new DataTexture(
+      getRandom(size),
       size,
       size,
       RGBAFormat,
@@ -12,10 +36,12 @@ export default class SimMatCurlTwo extends ShaderMaterial {
     );
 
     positionsTexture.needsUpdate = true;
+    positionsTexture2.needsUpdate = true;
 
     super({
       uniforms: {
         uPositions: { value: positionsTexture },
+        uPositions2: { value: positionsTexture2 },
 
         uTime: { value: 0 },
       },
@@ -29,6 +55,8 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       `,
       fragmentShader: /* glsl */ `
     uniform sampler2D uPositions;
+        uniform sampler2D uPositions2;
+
 
     uniform float uTime;
 
@@ -184,15 +212,23 @@ export default class SimMatCurlTwo extends ShaderMaterial {
     void main() {
       vec2 uv = vUv;   
       vec3 pos = texture2D( uPositions, uv ).xyz;
-      
-      float freq = 1.5;
-      float amp = .01;
-           
-      pos+=curl((pos) * freq + uTime*0.1) *amp;
-      pos+=curl((pos) * freq*2. ) *amp*0.5;
+      vec3 pos2 = texture2D( uPositions2, uv ).xyz;
 
+      const float freq = 2.5;
+      const float amp = .01;
+
+      //some randomness found randomly but it works
+      float someDist = length(pos2 -0.15);
+      vec3 someDir = normalize(pos - vec3(0.15));
+      pos += someDir * 0.1 * smoothstep(pos2.z *0.5,0.,someDist);
+      
       vec3 target = thomasAttractor(pos, 0.025);
-      float dist = length(target.xy - pos.xy);
+      target+= thomasAttractor(pos2*0.15, 0.005);
+      // float dist = length(target.xy - pos2.xy);
+
+      pos+=curl((pos) * freq +uTime*0.15) *amp;
+      pos+=curl((pos2 ) * freq *1.25 ) *amp*0.15;
+      // pos+=curl((pos2 ) * freq *1.75 ) *amp*0.01;
       
       pos+=target ;
       gl_FragColor = vec4(pos, 1.);

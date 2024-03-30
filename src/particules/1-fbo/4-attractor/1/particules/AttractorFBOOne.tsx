@@ -142,8 +142,8 @@ const AttractorFBOOne = () => {
         <renderMatAttractOne
           ref={renderMaterialRef}
           blending={AdditiveBlending}
-          depthWrite={true}
-          // transparent={true}
+          depthWrite={false}
+          transparent={true}
           // side={DoubleSide}
         />
         <bufferGeometry>
