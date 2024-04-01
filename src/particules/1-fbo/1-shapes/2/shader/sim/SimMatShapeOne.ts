@@ -41,181 +41,86 @@ export default class SimMatCurlTwo extends ShaderMaterial {
 	      mat2 m = mat2(c, s, -s, c);
 	      return m * v;
       }
+//	<https://www.shadertoy.com/view/Xd23Dh>
+//	by inigo quilez <http://iquilezles.org/www/articles/voronoise/voronoise.htm>
+//
 
-      vec3 DeqanAttractor(vec3 pos, float t){
-        float a = 40.0;
-        float b = 1.833;
-        float c = 0.16;
-        float d = 0.65;
-        float e = 55.0;
-        float f = 20.0;
+vec3 hash3( vec2 p ){
+    vec3 q = vec3( dot(p,vec2(127.1,311.7)), 
+				   dot(p,vec2(269.5,183.3)), 
+				   dot(p,vec2(419.2,371.9)) );
+	return fract(sin(q)*43758.5453);
+}
 
-        vec3 target = vec3(0.);
-
-        target.x = ( a*(pos.y-pos.x) + c*pos.x*pos.z);
-        target.y = (e*pos.x + f*pos.y - pos.x*pos.z);
-        target.z = (b*pos.z + pos.x*pos.y - d*pos.x*pos.x);
-
-        return target *t;
-
-      }  
-
-      vec3 HalvorsenAttractor(vec3 pos, float t){
-        float a = 1.4;
-
-        vec3 target = vec3(0.);
-
-        target.x = a*pos.x - 4.*pos.y - 4.*pos.z - pos.y*pos.y;
-        target.y = a*pos.y - 4.*pos.z - 4.*pos.x - pos.z*pos.z;
-        target.z = a*pos.z - 4.*pos.x - 4.*pos.y - pos.x*pos.x;
-
-        return target *t;
-
-      }      
-      
-      vec3 RosslerAttractor(vec3 pos, float t){
-        float a=0.2;
-        float b=0.2;
-        float c=5.7;
-        
-        vec3 target = vec3(0);
-
-        target.x = pos.y - pos.z;
-        target.y = pos.x + a*pos.y;
-        target.z = b + pos.z*(pos.x - c);
-
-        return target *t;
-
-      }
-
-      vec3 SprotzLinzFAttractor(vec3 pos, float t){
-        float a = 5.;
-        float b = -10.;
-        float d = 2.6666666667;
-
-        vec3 target = vec3(0);
-
-        target.x = pos.y + pos.z;
-        target.y = -pos.x + a * pos.y;
-        target.z =(pos.x*pos.x) - pos.z;
-        // (c + a * Z - Z*Z*Z / 3.0 - (X*X + Y*Y)*(1.0 + e*Z) + f * Z * X*X*X)
-        return target * t;
-      } 
-
-      vec3 ChenLeeAttractor(vec3 pos, float t){
-        float a = 5.;
-        float b = -10.;
-        float d = 2.6666666667;
-
-        vec3 target = vec3(0);
-
-        target.x = a * pos.x - pos.y * pos.x;
-        target.y = b * pos.y + pos.x * pos.z;
-        target.z =d*pos.z + (pos.x*pos.y)/3.;
-        // (c + a * Z - Z*Z*Z / 3.0 - (X*X + Y*Y)*(1.0 + e*Z) + f * Z * X*X*X)
-        return target * t;
-      } 
-
-      vec3 LorenzAttractor(vec3 pos, float t){
-        float a = 10.0;
-        float b = 28.0;
-        float c = 2.6666666667;
-        vec3 target = vec3(0);
-        
-        target.x = (a * (pos.y - pos.x)) ;
-        target.y = (pos.x * (b-pos.z) - pos.y) ;
-        target.z = (pos.x*pos.y - c*pos.z) ;
-      
-        return target * t;
-
-      }
-
-      vec3 AlorenzMod2Attractor(vec3 pos, float t){
-        float a = 10.0;
-        float b = 28.0;
-        float c = 2.6666666667;
-
-        vec3 target = vec3(0);
-
-        target.x = a * (pos.y - pos.x);
-        target.y = pos.x * (b - pos.z) - pos.y ;
-        target.z =(pos.x * pos.y  - c*pos.z);
-        // (c + a * Z - Z*Z*Z / 3.0 - (X*X + Y*Y)*(1.0 + e*Z) + f * Z * X*X*X)
-        return target * t;
-      } 
-
-      vec3 AizawaAttractor(vec3 pos, float t){
-        float a = .95;
-        float b = .7;
-        float c = .6;
-        float d = 3.5;
-        float e = .25;
-        float f = .1;
-
-        vec3 target = vec3(0.);
-
-        target.x = (pos.z - b) * pos.x - d*pos.y;
-        target.y = d*pos.x + (pos.z - b) * pos.y ;
-        target.z = c + a*pos.z - pos.z * pos.z * pos.z / 3. - (pos.x * pos.x + pos.y*pos.y)*(1. + e*pos.z) + f * pos.z * pos.x * pos.x * pos.x;
-        // (c + a * Z - Z*Z*Z / 3.0 - (X*X + Y*Y)*(1.0 + e*Z) + f * Z * X*X*X)
-        return target * t;
-      } 
-
-      vec3 dadrasAttractor(vec3 pos, float t){
-        float a = 3.;
-        float b = 2.7;
-        float c = 1.7;
-        float d = 2.;
-        float e = 9.;
-
-        vec3 target = vec3(0);
-
-        target.x = (pos.y- a*pos.x +b*pos.y*pos.z) ;
-        target.y = (c*pos.y -pos.x*pos.z +pos.z) ;
-        target.z = (d*pos.x*pos.y - e*pos.z);
-        return target * t;
-      } 
-
-      vec3 thomasAttractor(vec3 pos, float t){
-        
-      float b = 0.19;
-      vec3 target = vec3(0);              
-      target.x = (-b*pos.x + sin(pos.y)) ;
-      target.y = (-b*pos.y + sin(pos.z)) ;
-      target.z = (-b*pos.z + sin(pos.x)) ;
-        
-      return target * t;
+float iqnoise( in vec2 x, float u, float v ){
+    vec2 p = floor(x);
+    vec2 f = fract(x);
+		
+	float k = 1.0+63.0*pow(1.0-v,4.0);
+	
+	float va = 0.0;
+	float wt = 0.0;
+    for( int j=-2; j<=2; j++ )
+    for( int i=-2; i<=2; i++ )
+    {
+        vec2 g = vec2( float(i),float(j) );
+		vec3 o = hash3( p + g )*vec3(u,u,1.0);
+		vec2 r = g - f + o.xy;
+		float d = dot(r,r);
+		float ww = pow( 1.0-smoothstep(0.0,1.414,sqrt(d)), k );
+		va += o.z*ww;
+		wt += ww;
     }
+	
+    return va/wt;
+}
 
+// 	<https://www.shadertoy.com/view/MdX3Rr>
+//	by inigo quilez
+//
+float rand(vec2 n) { 
+	return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
+}
+
+float noise(vec2 p){
+	vec2 ip = floor(p);
+	vec2 u = fract(p);
+	u = u*u*(3.0-2.0*u);
+	
+	float res = mix(
+		mix(rand(ip),rand(ip+vec2(1.0,0.0)),u.x),
+		mix(rand(ip+vec2(0.0,1.0)),rand(ip+vec2(1.0,1.0)),u.x),u.y);
+	return res*res;
+}
+const mat2 m2 = mat2(0.8,-0.6,0.6,0.8);
+float fbm( in vec2 p ){
+    float f = 0.0;
+    f += 0.5000*noise( p ); p = p*2.02;
+    f += 0.2500*noise( p ); p = p*2.03;
+    f += 0.1250*noise( p ); p = p*2.01;
+    f += 0.0625*noise( p );
+
+    return f/0.9375;
+}
     void main() {
-      vec2 uv = vUv;   
-      vec3 pos = texture2D( uPositions, uv ).xyz;
-      vec3 p = pos;
-      // vec3 target = AizawaAttractor((pos * .15) , 0.15);
-      
-      //infinit stability
-      // vec3 target = thomasAttractor(pos , 0.075);
-      
-      //vanish
-      // vec3 target = thomasAttractor(pos - sin(uTime *0.5)   , sin(0.05 ));
-
-      // looks cool
-      // vec3 target = thomasAttractor(pos + (sin(uTime *0.75 -0.25) -0.25)*.25-cos(uTime *.25)   , 0.05);
-
-      // looks cool
-      vec3 target = AizawaAttractor(pos *0.25, 0.0075);
-
-      // vec3 target = RosslerAttractor(pos *1.1 + cos(uTime *0.5) * sin(uTime*0.5), 0.015);
-
-       // looks cool
-      // vec3 target = DeqanAttractor(pos*0.1, 0.0015);
-
-      float dist = length(target-pos);
-      pos+=target ;
-      // target = mix(p, target, sin(uTime*0.01));
+      vec2 uv = vUv;
+      float n = fbm(uv*0.1);
+      vec3 og = texture2D( uPositions, uv).xyz;
+//  vec2 q = vec2(length(p.xz)-t.x,p.y);
+//   return length(q)-t.y;
+      vec3 pos = texture2D( uPositions, uv).xyz;
+      vec2 outterRad = vec2(length(pos.xz) - 0.5, pos.y);
+      vec2 innerRad = vec2(length(outterRad));
+      vec3 copy = pos;
+      vec3 d = texture2D( uPositions, uv + n).xyz;
+      float n2 = fbm(pos.xz - vec2(0.,1.1) );
+      // vec3 render = max(d,pos*n2*2.1);
+    
+      vec2 render = mix(pos.xz, innerRad, 0.15);
+    
 
 
-      gl_FragColor = vec4( pos, 1. );
+      gl_FragColor = vec4( render,1., 1. );
 
       }`,
     });

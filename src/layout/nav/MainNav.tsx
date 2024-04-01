@@ -16,7 +16,7 @@ const MainNav: React.FC<Props> = ({ paths }) => {
           key={idx}
           to={path}
           className={({ isActive }) =>
-            isActive ? "text-amber-200 nav-link" : "text-neutral-500 nav-link"
+            isActive ? "text-amber-200 nav-link" : "text-neutral-200 nav-link"
           }
         >
           {title}

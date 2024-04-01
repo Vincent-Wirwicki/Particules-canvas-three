@@ -3,9 +3,11 @@ import MainNav from "./nav/MainNav";
 import { mainNavPaths } from "../navPaths";
 
 const Layout = () => {
+
   return (
     <>
       <MainNav paths={mainNavPaths} />
+
       <main className="page-canvas">
         <Outlet />
       </main>

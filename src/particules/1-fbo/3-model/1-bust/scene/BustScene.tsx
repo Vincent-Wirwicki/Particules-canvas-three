@@ -1,14 +1,16 @@
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
-import CurlTwoFBO from "../particules/BustFBO";
-import Loading from "../../../../../layout/loader/Loader";
+import BustFBO from "../particules/BustFBO";
+// import Loading from "../../../../../layout/loader/Loader";
+import { Loader } from "@react-three/drei";
 
 const BustScene = () => {
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={null}>
       <Canvas camera={{ position: [0, 0, 0] }} dpr={1.5}>
-        <CurlTwoFBO />
+        <BustFBO />
       </Canvas>
+      <Loader />
     </Suspense>
   );
 };

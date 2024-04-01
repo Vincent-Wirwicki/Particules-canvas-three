@@ -43,7 +43,7 @@ const TorusKnotFBO = () => {
   const renderMaterialRef = useRef<ShaderMaterial | null>(null);
 
   const scene = new Scene();
-  const camera = new OrthographicCamera(-1, 1, 1, -1, 1 / Math.pow(2, 53), 1);
+  const camera = new OrthographicCamera(-1, 1, 1, -1, -1, 1);
   const positions = new Float32Array([
     -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0,
   ]);
@@ -66,7 +66,7 @@ const TorusKnotFBO = () => {
     format: RGBAFormat,
     type: FloatType,
   });
-
+  console.log(target.depthTexture);
   useFrame(state => {
     const { gl, clock } = state;
 
@@ -79,8 +79,7 @@ const TorusKnotFBO = () => {
       renderMaterialRef.current.uniforms.uPositions.value = target.texture;
 
     if (simulationMaterialRef.current)
-      simulationMaterialRef.current.uniforms.uTime.value =
-        clock.elapsedTime * 2;
+      simulationMaterialRef.current.uniforms.uTime.value = clock.elapsedTime;
   });
 
   return (
