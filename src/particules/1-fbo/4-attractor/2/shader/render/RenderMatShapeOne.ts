@@ -25,13 +25,13 @@ export default class RenderMatShapeOne extends ShaderMaterial {
           // vec3 color = vec3(1.);
 
           float angle = atan(vPos.x, vPos.y );
-          // float alpha = 0.5 + 0.5 * cos(angle + uTime *0.5 ) + 0.5 + 0.5 * sin(angle + uTime *0.5 );
+          float alpha = 0.5 * 0.5 +sin(angle ) * dist;
 
           // dist = 1. - clamp(dist, 0.,1.);
           // if(dist > 0.85) alpha =0.15;
           // if(t < 0.25) alpha = 0.;
           // vec2 a = vUv - 0.5 ;
-          gl_FragColor = vec4(color,1. *dist);
+          gl_FragColor = vec4(color,alpha);
         }`,
       vertexShader: /*glsl */ `
         uniform sampler2D uPositions;

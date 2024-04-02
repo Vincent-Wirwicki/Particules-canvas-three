@@ -214,54 +214,24 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       vec3 pos = texture2D( uPositions, uv ).xyz;
       vec3 pos2 = texture2D( uPositions2, uv ).xyz;
 
-      const float freq = 2.5;
-      const float amp = .01;
+      const float freq = 2.;
+      const float amp = .015;
+      pos +=curl((pos) * freq + uTime*0.5) *amp;
 
       //some randomness found randomly but it works
       float someDist = length(pos2 -0.15);
-      vec3 someDir = normalize(pos - vec3(0.15));
-      pos += someDir * 0.1 * smoothstep(pos2.z *0.5,0.,someDist);
+      vec3 someDir = normalize(pos - vec3(0.75));
+      pos += someDir * 0.15 * smoothstep(pos2.z *0.15,0.,someDist);
+      // pos += someDir * 0.5 * smoothstep(pos2.x *0.1,0.,someDist);
       
       vec3 target = thomasAttractor(pos, 0.025);
-      target+= thomasAttractor(pos2*0.15, 0.005);
-      // float dist = length(target.xy - pos2.xy);
-
-      pos+=curl((pos) * freq +uTime*0.15) *amp;
-      pos+=curl((pos2 ) * freq *1.25 ) *amp*0.15;
-      // pos+=curl((pos2 ) * freq *1.75 ) *amp*0.01;
+      target += thomasAttractor(pos2*0.15, 0.005)*0.15;
+      
       
       pos+=target ;
+      
       gl_FragColor = vec4(pos, 1.);
       }`,
     });
   }
 }
-// vec3 target2 = thomasAttractor(pos2, 0.02);
-// float speed = smoothstep(0.4,0.3, mix(target.x, target2.y,1.));
-// float radius = length(target.xy);
-
-// float circularForce = 1.-smoothstep(0.25,1.,abs(pos2.x - radius));  + sin(uTime *0.1) * 1.-cos(uTime*0.1)
-// float angle = atan(pos.x, pos.y) - target2.y*0.5*mix(0.5,1., circularForce);
-// float targetRadius = mix(target2.x,1., 0.5*sin(angle + uTime*0.1));
-// radius +=(targetRadius - radius) * mix(target2.x, 0.5, circularForce);
-// vec2 uv = vUv;
-// vec3 pos = texture2D( uPositions, uv ).xyz;
-// vec3 disp = pos + cos(uTime *0.25) * sin(uTime*0.5);
-
-// float freq = 2.;
-// float amp = .01;
-// pos += curl((pos) * freq + uTime *0.1) *amp;
-
-// vec3 target = thomasAttractor(pos, 0.015);
-
-// pos+=target;
-// gl_FragColor = vec4(pos, 1.);
-
-// float radius = length(pos.xy);
-// float circularForce = 1.- smoothstep(0.25,1.4,abs(pos.x - radius));
-// target +=  curl(target.x *freq, target.y *freq, target.z*freq)*amp;
-
-// float d = length(target - pos) * .15;
-// vec3 disp = mix( pos, noise, pow( d, 10. ) );
-
-// vec3 target = thomasAttractor(pos + noise *0.5, 0.05);

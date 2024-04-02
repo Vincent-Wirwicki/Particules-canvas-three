@@ -103,8 +103,7 @@ const CurlTwoFBO = () => {
             />
           </bufferGeometry>
         </mesh>,
-        scene,
-        // { events: { priority: 10 } }
+        scene
       )}
       <points>
         <renderMatCurlTwo

@@ -12,7 +12,7 @@ const ParticulesShapeOneScene = () => {
           <ParticulesShapeOne />
         </Suspense>
         <Preload />
-        <OrbitControls autoRotate />
+        <OrbitControls />
       </Canvas>
     </div>
   );

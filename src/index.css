@@ -1,4 +1,3 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&display=swap'); */
 @import url('https://fonts.googleapis.com/css2?family=Sometype+Mono:ital,wght@0,400..700;1,400..700&display=swap');
 @tailwind base;
 @tailwind components;
@@ -9,8 +8,6 @@
   html,
   body {
     background-color: #0a0a0a;
-    /* color: #fafafa; */
-    /* font-family: "Afacad", sans-serif; */
     font-family: "Sometype Mono", monospace;
   }
 
@@ -18,11 +15,11 @@
 
 @layer components {
   .nav {
-    @apply fixed top-5 left-5 h-fit w-fit z-50 p-2 flex flex-col gap-1 border-neutral-800
+    @apply fixed top-5 left-5 h-fit w-fit z-50 p-2 flex flex-col justify-end items-end gap-2 border-neutral-800
   }
 
   .nav-link {
-    @apply border-b border-neutral-800 w-full p-1 text-end text-xs tracking-wider hover:text-amber-200
+    @apply border-b border-dashed border-neutral-800 w-full pt-1 pl-2 text-end text-xs tracking-wider hover:text-amber-200
   }
 
   .loader {
@@ -37,4 +34,35 @@
     @apply fixed top-0 left-0 w-screen h-screen
   }
 
+  .loader-dummy {
+    @apply fixed top-0 left-0 z-50 w-screen h-screen bg-neutral-950 origin-top flex justify-center items-center text-neutral-200
+  }
+
+  .notes-wrap {
+    @apply text-neutral-200 text-xs fixed bottom-5 left-5 w-48 flex flex-col gap-2 leading-relaxed
+  }
+
+  .notes-title {
+    @apply border-b border-neutral-800 border-dashed
+  }
+
+  .notes-sub-wrap {
+    @apply border-b border-neutral-800 border-dashed
+  }
+
+  .notes-sub-title {
+    @apply text-amber-200
+  }
+
+  .notes-sub-desc {
+    @apply py-2
+  }
+
+  .project-title {
+    @apply fixed top-5 right-5 text-neutral-200 text-xs text-end flex flex-col gap-5 items-end
+  }
+
+  .page-title {
+    @apply fixed bottom-5 right-5 text-neutral-200 text-xl
+  }
 }

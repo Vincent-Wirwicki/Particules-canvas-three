@@ -145,6 +145,7 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       const float freq = 0.15;
       pos+= curlNoise(pos * freq + uTime *0.01)* amp;
       pos+= curlNoise(pos*freq *2. )*amp;
+      
       pos.xy = rotate(pos.xy, 0.5);
       
       gl_FragColor = vec4( pos , 1. );

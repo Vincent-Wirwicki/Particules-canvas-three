@@ -1,5 +1,6 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState } from "react";
+import Burger from "./Burger";
+import NavItems from "./NavItems";
 
 type Props = {
   paths: { title: string; path: string }[];
@@ -8,21 +9,18 @@ type Props = {
 const MainNav: React.FC<Props> = ({ paths }) => {
   // const location = useLocation();
   // const filter = location.pathname.split("/")[1];
-
+  const [isOpen, setIsOpen] = useState<boolean>(true);
   return (
-    <nav className="nav">
-      {paths.map(({ title, path }, idx) => (
-        <NavLink
-          key={idx}
-          to={path}
-          className={({ isActive }) =>
-            isActive ? "text-amber-200 nav-link" : "text-neutral-200 nav-link"
-          }
-        >
-          {title}
-        </NavLink>
-      ))}
-    </nav>
+    <>
+      <nav className="nav">
+        <div className="flex flex-col ">
+          <NavItems paths={paths} isOpen={isOpen} />
+        </div>
+        <button onClick={() => setIsOpen(!isOpen)} className="flex">
+          <Burger isOpen={isOpen} />
+        </button>
+      </nav>
+    </>
   );
 };
 

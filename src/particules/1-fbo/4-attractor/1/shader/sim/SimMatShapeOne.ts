@@ -61,53 +61,27 @@ export default class SimMatCurlTwo extends ShaderMaterial {
 
     varying vec2 vUv;
       
-    vec3 thomasAttractor(vec3 pos, float t){   
-      float b = 0.19;
-      vec3 target = vec3(0);              
-      target.x = (-b*pos.x + sin(pos.y)) ;
-      target.y = (-b*pos.y + sin(pos.z)) ;
-      target.z = (-b*pos.z + sin(pos.x)) ;   
+    vec3 dadrasAttractor(vec3 pos, float t){
+      float a = 3.;
+      float b = 2.7;
+      float c = 1.7;
+      float d = 2.;
+      float e = 9.;
+      vec3 target = vec3(0);
+      target.x = (pos.y- a*pos.x +b*pos.y*pos.z) ;
+      target.y = (c*pos.y -pos.x*pos.z +pos.z) ;
+      target.z = (d*pos.x*pos.y - e*pos.z);
       return target * t;
     }
-
-    vec3 SprotzLinzFAttractor(vec3 pos, float t){
-        float a = 5.;
-        float b = -10.;
-        float d = 2.6666666667;
-
-        vec3 target = vec3(0);
-
-        target.x = pos.y + pos.z;
-        target.y = -pos.x + a * pos.y;
-        target.z =(pos.x*pos.x) - pos.z;
-        // (c + a * Z - Z*Z*Z / 3.0 - (X*X + Y*Y)*(1.0 + e*Z) + f * Z * X*X*X)
-        return target * t;
-      } 
-     vec3 dadrasAttractor(vec3 pos, float t){
-        float a = 3.;
-        float b = 2.7;
-        float c = 1.7;
-        float d = 2.;
-        float e = 9.;
-
-        vec3 target = vec3(0);
-
-        target.x = (pos.y- a*pos.x +b*pos.y*pos.z) ;
-        target.y = (c*pos.y -pos.x*pos.z +pos.z) ;
-        target.z = (d*pos.x*pos.y - e*pos.z);
-        return target * t;
-      }
     void main() {
       vec2 uv = vUv;   
       vec3 pos = texture2D( uPositions, uv ).xyz;
       vec3 pos2 = texture2D( uPositions2, uv ).xyz;
 
-      float radius = length(pos.xyz);
-      float angle = atan(pos.x, pos.y) * radius;
     
       float disp = (sin(uTime *0.015 -0.5))*cos(pos2.x  *0.15 - 0.5);
       
-      vec3 target = dadrasAttractor(pos + disp, 0.005);
+      vec3 target = dadrasAttractor(pos + disp , 0.005);
       float d  = length(target - pos2);
       pos+= (target) *0.5 *d;
 

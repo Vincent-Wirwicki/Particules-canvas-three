@@ -10,7 +10,7 @@ const CurlTwoScene = () => {
     <div className="h-[720px] w-[720px]">
       <DummyLoader />
       <Suspense fallback={null}>
-        <Canvas camera={{ position: [-1, 2, 3.5] }} dpr={1.25}>
+        <Canvas camera={{ position: [-1, 2, 3.5] }} dpr={1.75}>
           <CurlTwoFBO />
         </Canvas>
       </Suspense>

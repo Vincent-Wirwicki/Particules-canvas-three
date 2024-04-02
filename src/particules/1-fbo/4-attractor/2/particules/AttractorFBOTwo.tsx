@@ -6,7 +6,7 @@ import {
   Object3DNode,
   useThree,
 } from "@react-three/fiber";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import {
   AdditiveBlending,
   FloatType,
@@ -76,7 +76,7 @@ const AttractorFBOTwo = () => {
 
   const state = useThree();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const { gl } = state;
     gl.setRenderTarget(target);
     gl.clear();

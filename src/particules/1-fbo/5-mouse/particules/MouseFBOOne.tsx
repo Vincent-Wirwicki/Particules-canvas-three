@@ -80,7 +80,7 @@ const MouseFBOOne = () => {
   let target1 = target.clone();
 
   const state = useThree();
-
+  // init render target
   useEffect(() => {
     const { gl } = state;
     gl.setRenderTarget(target);
@@ -112,7 +112,7 @@ const MouseFBOOne = () => {
         simulationMaterialRef.current.uniforms.uMouse.value = new Vector3(
           pointer.x,
           pointer.y,
-          1
+          0
         );
     }
 
@@ -159,7 +159,7 @@ const MouseFBOOne = () => {
         <renderMatMouseOne
           ref={renderMaterialRef}
           blending={AdditiveBlending}
-          depthWrite={true}
+          depthWrite={false}
           transparent={true}
           // side={DoubleSide}
         />

@@ -4,7 +4,7 @@ import { getTorusKnotFlat } from "../../../../../1-shapes/0-utils-shape-func/tor
 export default class SimMat extends ShaderMaterial {
   constructor(size: number) {
     const positionsTexture = new DataTexture(
-      getTorusKnotFlat(size, 4, 3, 3),
+      getTorusKnotFlat(size, 4, 3, 5),
       size,
       size,
       RGBAFormat,
@@ -119,9 +119,9 @@ export default class SimMat extends ShaderMaterial {
         float	eps	= 1., eps2 = 2. * eps;
         float	n1,	n2,	a,	b;
     
-        x += uTime * .075;
-        y += uTime * .075;
-        z += uTime * .075;
+        x += uTime * .05;
+        y += uTime * .05;
+        z += uTime * .05;
     
         vec3	curl = vec3(0.);
     
@@ -164,14 +164,14 @@ export default class SimMat extends ShaderMaterial {
       vec3 pos = texture2D( uPositions, uv ).xyz;
 
       float amp = 60.;
-      float freq = .25;
+      float freq = .15;
       float dist = .015;
 
       vec3 disp =  curl(pos.x * freq, pos.y *  freq, pos.z *  freq) * amp;
   
       float d = length(pos-disp) * dist;
       pos = mix( pos, disp, pow( d, 5. ) );
-      pos.xz = rotate(pos.xz, sin(uTime *0.01));
+      // pos.xz = rotate(pos.xz, sin(uTime *0.01));
 
       gl_FragColor = vec4( pos, 1. );
       }`,

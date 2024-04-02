@@ -3,6 +3,7 @@ import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
 import AttractorFBOOne from "../particules/AttractorFBOOne";
 import { OrbitControls } from "@react-three/drei";
+import DummyLoader from "../../../../../layout/dummyLoader/DummyLoader";
 
 // const AttractorFBOOne = lazy(() => import("../particules/AttractorFBOOne"));
 // import { div } from "three/examples/jsm/nodes/Nodes.js";OrbitControls lazy
@@ -10,6 +11,7 @@ import { OrbitControls } from "@react-three/drei";
 const AttractorOneScene = () => {
   return (
     <div className="w-screen h-screen">
+      <DummyLoader />
       <Suspense fallback={null}>
         <Canvas camera={{ position: [0, 5, 15] }} dpr={1.5}>
           <AttractorFBOOne />
