@@ -1,9 +1,15 @@
 # Particules canvas & three
 
-A simple project exploring particules  
-[Check the demo](https://particules-canvas-three.netlify.app)
+I found particles systems fascinating, so i decided to experiment with them.  
+This project use FBO techniques in React Three Fiber  
+[Check the demo](https://particules-canvas-three.netlify.app)  
 
-![image](https://github.com/Vincent-Wirwicki/Particules-canvas-three/assets/98763680/35853a2e-7b20-48ae-8a66-584ce25c57a9)
-![image](https://github.com/Vincent-Wirwicki/Particules-canvas-three/assets/98763680/67121652-e3d6-44fe-b766-baea659a994d)
-![image](https://github.com/Vincent-Wirwicki/Particules-canvas-three/assets/98763680/7f70038c-489c-4ffa-a88d-3278c5e7a662)
+![image](https://github.com/Vincent-Wirwicki/Particules-canvas-three/assets/98763680/10fb8b24-4e61-46fb-984e-e38c78297c6e)
+
+A quick note on folder structure :  
+  - particules is where I setup my FBO render
+  - scene is the canvas
+  - shader have 2 sub folder:
+  - sim manage animation
+  - render how the render looks  
 
