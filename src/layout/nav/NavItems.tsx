@@ -9,20 +9,20 @@ type Props = {
 const NavItems: React.FC<Props> = ({ paths, isOpen }) => {
   const stagger = useTrail(paths.length, {
     opacity: isOpen ? 1 : 0,
-    // x: isOpen ? 0 : -20,
-    config: { mass: 5, tension: 2000, friction: 200 },
+    x: isOpen ? 0 : 20,
   });
+
   return (
     <>
-      {stagger.map(({ opacity }, i) => (
+      {stagger.map(({ opacity, x }, i) => (
         <NavLink
-          key={paths[i].path}
+          key={paths[i].title}
           to={paths[i].path}
           className={({ isActive }) =>
             isActive ? "text-amber-200 " : "text-neutral-200"
           }
         >
-          <animated.div style={{ opacity }} className="nav-link">
+          <animated.div style={{ opacity, x }} className="nav-link">
             {paths[i].title}
           </animated.div>
         </NavLink>
