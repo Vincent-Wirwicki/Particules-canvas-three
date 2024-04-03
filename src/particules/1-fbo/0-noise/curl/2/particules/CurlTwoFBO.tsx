@@ -5,7 +5,7 @@ import {
   extend,
   Object3DNode,
 } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   AdditiveBlending,
   // DoubleSide,
@@ -19,6 +19,7 @@ import {
 
 import SimMatCurlTwo from "../shader/sim/SimMat";
 import RenderMatCurlTwo from "../shader/render/RenderMat";
+import { getSphere } from "../../../../1-shapes/0-utils-shape-func/shapesFunction";
 
 extend({
   SimMatCurlTwo: SimMatCurlTwo,
@@ -42,12 +43,19 @@ const CurlTwoFBO = () => {
   const simulationMaterialRef = useRef<ShaderMaterial | null>(null);
   const renderMaterialRef = useRef<ShaderMaterial | null>(null);
 
-  const scene = new Scene();
-  const camera = new OrthographicCamera(-1, 1, 1, -1, 1 / Math.pow(2, 53), 1);
-  const positions = new Float32Array([
-    -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0,
-  ]);
-  const uvs = new Float32Array([0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0]);
+  const [scene] = useState(() => new Scene());
+  const [camera] = useState(() => new OrthographicCamera(-1, 1, 1, -1, -1, 1));
+  const [positions] = useState(
+    () =>
+      new Float32Array([
+        -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0,
+      ])
+  );
+  const [uvs] = useState(
+    () => new Float32Array([0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0])
+  );
+
+  const [data] = useState(() => getSphere(size, 1)); 
 
   const particles = useMemo(() => {
     const length = size * size;
@@ -87,7 +95,7 @@ const CurlTwoFBO = () => {
     <>
       {createPortal(
         <mesh>
-          <simMatCurlTwo ref={simulationMaterialRef} args={[size]} />
+          <simMatCurlTwo ref={simulationMaterialRef} args={[size, data]} />
           <bufferGeometry>
             <bufferAttribute
               attach="attributes-position"

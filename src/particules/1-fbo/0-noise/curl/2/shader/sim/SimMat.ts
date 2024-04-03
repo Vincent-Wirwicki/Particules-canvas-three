@@ -1,40 +1,33 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
-import { getSphere } from "../../../../../1-shapes/0-utils-shape-func/shapesFunction";
+// import { getSphere } from "../../../../../1-shapes/0-utils-shape-func/shapesFunction";
 
 export default class SimMatCurlTwo extends ShaderMaterial {
-  constructor(size: number) {
+  constructor(size: number, data: Float32Array) {
     const positionsTexture = new DataTexture(
-      getSphere(size, 1),
+      data,
       size,
       size,
       RGBAFormat,
       FloatType
     );
-
     positionsTexture.needsUpdate = true;
 
     super({
       uniforms: {
         uPositions: { value: positionsTexture },
-
         uTime: { value: 0 },
       },
       vertexShader: /* glsl */ `
         varying vec2 vUv;
-        varying float vAlpha;
-
-          void main() {
+        void main() {
             vUv = uv;
             gl_Position = projectionMatrix * modelViewMatrix * vec4( position,.8 );
-          }
+        }
       `,
       fragmentShader: /* glsl */ `
       precision mediump float;
-
       uniform sampler2D uPositions;
-
       uniform float uTime;
-
       varying vec2 vUv;
       
       vec2 rotate(vec2 v, float a) {
@@ -43,9 +36,7 @@ export default class SimMatCurlTwo extends ShaderMaterial {
 	      mat2 m = mat2(c, s, -s, c);
 	      return m * v;
       }
-        
-
-
+    // ---------------------------------------------------------------------------------
     //
     // Description : Array and textureless GLSL 2D/3D/4D simplex
     //               noise functions.
@@ -57,22 +48,11 @@ export default class SimMatCurlTwo extends ShaderMaterial {
     //               https://github.com/ashima/webgl-noise
     //
 
-    vec3 mod289(vec3 x) {
-      return x - floor(x * (1.0 / 289.0)) * 289.0;
-    }
+    vec4 taylorInvSqrt(in vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+    vec3 mod289(const in vec3 x) { return x - floor(x * (1. / 289.)) * 289.; }
+    vec4 mod289(const in vec4 x) { return x - floor(x * (1. / 289.)) * 289.; }
 
-    vec4 mod289(vec4 x) {
-      return x - floor(x * (1.0 / 289.0)) * 289.0;
-    }
-
-    vec4 permute(vec4 x) {
-         return mod289(((x*34.0)+1.0)*x);
-    }
-
-    vec4 taylorInvSqrt(vec4 r)
-    {
-      return 1.79284291400159 - 0.85373472095314 * r;
-    }
+    vec4 permute(const in vec4 v) { return mod289(((v * 34.0) + 1.0) * v); }
 
     float snoise(vec3 v)
       {
@@ -149,18 +129,14 @@ export default class SimMatCurlTwo extends ShaderMaterial {
                                     dot(p2,x2), dot(p3,x3) ) );
       }
     
-    
     vec3 snoiseVec3( vec3 x ){
-    
       float s  = snoise(vec3( x ));
       float s1 = snoise(vec3( x.y - 19.1 , x.z + 33.4 , x.x + 47.2 ));
       float s2 = snoise(vec3( x.z + 74.2 , x.x - 124.5 , x.y + 99.4 ));
       vec3 c = vec3( s , s1 , s2 );
-      return c;
-    
+      return c;  
     }
-
-
+    
     vec3 curlNoise( vec3 p ){
 
       const float e = .1;
@@ -183,7 +159,7 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       return normalize( vec3( x , y , z ) * divisor );
     
     }
-        //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
 
     void main() {
       vec2 uv = vUv;

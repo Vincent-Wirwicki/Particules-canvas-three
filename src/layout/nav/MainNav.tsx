@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import Burger from "./Burger";
+// import { useState } from "react";
+// import Burger from "./Burger";
 import NavItems from "./NavItems";
 
 type Props = {
@@ -9,16 +9,16 @@ type Props = {
 const MainNav: React.FC<Props> = ({ paths }) => {
   // const location = useLocation();
   // const filter = location.pathname.split("/")[1];
-  const [isOpen, setIsOpen] = useState<boolean>(true);
+  // const [isOpen, setIsOpen] = useState<boolean>(true);
   return (
     <>
       <nav className="nav">
         <div className="flex flex-col ">
-          <NavItems paths={paths} isOpen={isOpen} />
+          <NavItems paths={paths}  />
         </div>
-        <button onClick={() => setIsOpen(!isOpen)} className="flex">
+        {/* <button onClick={() => setIsOpen(!isOpen)} className="flex">
           <Burger isOpen={isOpen} />
-        </button>
+        </button> */}
       </nav>
     </>
   );
