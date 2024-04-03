@@ -1,5 +1,5 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
-import { getSphere } from "../../../0-utils-shape-func/shapesFunction";
+import { getSphere } from "../../../../../0-dataShape/getSphere";
 
 // const m = useGLTF("./public/bust-hi.glb");
 export default class SimMatCurlTwo extends ShaderMaterial {
@@ -11,8 +11,6 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       RGBAFormat,
       FloatType
     );
-    // const m = getDataModel();
-
     positionsTexture.needsUpdate = true;
 
     super({
@@ -30,7 +28,6 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       `,
       fragmentShader: /* glsl */ `
       uniform sampler2D uPositions;
-
       uniform float uTime;
 
       varying vec2 vUv;

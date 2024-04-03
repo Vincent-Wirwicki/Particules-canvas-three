@@ -1,52 +1,42 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
-import { getTorusWeird } from "../../../../../0-dataShape/getTorusKnot";
-import { getRandom } from "../../../../../0-dataShape/getRandom";
+import { getSphere } from "../../../../../0-dataShape/getSphere";
 
 export default class SimMatCurlTwo extends ShaderMaterial {
   constructor(size: number) {
     const positionsTexture = new DataTexture(
-      getTorusWeird(size, 2, 3, 1),
+      getSphere(size, 1),
       size,
       size,
       RGBAFormat,
       FloatType
     );
-
-    const positionsTexture2 = new DataTexture(
-      getRandom(size),
-      size,
-      size,
-      RGBAFormat,
-      FloatType
-    );
-
     positionsTexture.needsUpdate = true;
-    positionsTexture2.needsUpdate = true;
 
     super({
       uniforms: {
         uPositions: { value: positionsTexture },
-        uPositions2: { value: positionsTexture2 },
-
         uTime: { value: 0 },
       },
       vertexShader: /* glsl */ `
         varying vec2 vUv;
-
-          void main() {
+        void main() {
             vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.);
-          }
+            gl_Position = projectionMatrix * modelViewMatrix * vec4( position,.8 );
+        }
       `,
       fragmentShader: /* glsl */ `
-    uniform sampler2D uPositions;
-        uniform sampler2D uPositions2;
-
-
-    uniform float uTime;
-
-    varying vec2 vUv;
-
+      precision mediump float;
+      uniform sampler2D uPositions;
+      uniform float uTime;
+      varying vec2 vUv;
+      
+      vec2 rotate(vec2 v, float a) {
+	      float s = sin(a);
+	      float c = cos(a);
+	      mat2 m = mat2(c, s, -s, c);
+	      return m * v;
+      }
+    // ---------------------------------------------------------------------------------
     //
     // Description : Array and textureless GLSL 2D/3D/4D simplex
     //               noise functions.
@@ -139,19 +129,15 @@ export default class SimMatCurlTwo extends ShaderMaterial {
                                     dot(p2,x2), dot(p3,x3) ) );
       }
     
-    
     vec3 snoiseVec3( vec3 x ){
-    
       float s  = snoise(vec3( x ));
       float s1 = snoise(vec3( x.y - 19.1 , x.z + 33.4 , x.x + 47.2 ));
       float s2 = snoise(vec3( x.z + 74.2 , x.x - 124.5 , x.y + 99.4 ));
       vec3 c = vec3( s , s1 , s2 );
-      return c;
-    
+      return c;  
     }
-
-
-    vec3 curl( vec3 p ){
+    
+    vec3 curlNoise( vec3 p ){
 
       const float e = .1;
       vec3 dx = vec3( e   , 0.0 , 0.0 );
@@ -173,38 +159,25 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       return normalize( vec3( x , y , z ) * divisor );
     
     }
-
-    vec3 thomasAttractor(vec3 pos, float t){   
-      float b = 0.19;
-      vec3 target = vec3(0);              
-      target.x = (-b*pos.x + sin(pos.y)) ;
-      target.y = (-b*pos.y + sin(pos.z)) ;
-      target.z = (-b*pos.z + sin(pos.x)) ;   
-      return target * t;
-    }
+    //-------------------------------------------------------------------------
 
     void main() {
-      vec2 uv = vUv;   
+      vec2 uv = vUv;
+      
       vec3 pos = texture2D( uPositions, uv ).xyz;
-      vec3 pos2 = texture2D( uPositions2, uv ).xyz;
+      vec3 curlPos = pos;
 
-      const float freq = 2.;
-      const float amp = .015;
-      pos +=curl((pos) * freq + uTime*0.5) *amp;
+      const float freq = 0.5;
+      float time = uTime *0.01;
 
-      //some randomness found randomly but it works
-      float someDist = length(pos2 -0.15);
-      vec3 someDir = normalize(pos - vec3(0.75));
-      pos += someDir * 0.15 * smoothstep(pos2.z *0.15,0.,someDist);
-      // pos += someDir * 0.5 * smoothstep(pos2.x *0.1,0.,someDist);
+      curlPos = curlNoise(pos * freq + time);
+      curlPos += curlNoise(curlPos *freq *2.) ;
       
-      vec3 target = thomasAttractor(pos, 0.025);
-      target += thomasAttractor(pos2*0.15, 0.005)*0.15;
-      
-      
-      pos+=target ;
-      
-      gl_FragColor = vec4(pos, 1.);
+      vec3 render = mix(pos, curlPos, 1.);
+      curlPos.xz =rotate(render.xz, uTime*0.1);
+
+      gl_FragColor = vec4( curlPos, 1. );
+
       }`,
     });
   }

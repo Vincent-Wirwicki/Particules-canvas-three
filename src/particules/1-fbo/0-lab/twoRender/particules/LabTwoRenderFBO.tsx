@@ -6,7 +6,7 @@ import {
   Object3DNode,
   useThree,
 } from "@react-three/fiber";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AdditiveBlending,
   FloatType,
@@ -17,20 +17,17 @@ import {
   ShaderMaterial,
 } from "three";
 
-import RenderMatShapeOne from "../shader/render/RenderMatShapeOne";
+import RenderTwo from "../shader/render/RenderMatShapeOne";
 import SimMatShapeOne from "../shader/sim/SimMatShapeOne";
 
 extend({
   SimMatShapeOne: SimMatShapeOne,
-  RenderMatShapeOne: RenderMatShapeOne,
+  RenderTwo: RenderTwo,
 });
 
 declare module "@react-three/fiber" {
   interface ThreeElements {
-    renderMatShapeOne: Object3DNode<
-      RenderMatShapeOne,
-      typeof RenderMatShapeOne
-    >;
+    renderTwo: Object3DNode<RenderTwo, typeof RenderTwo>;
   }
 }
 
@@ -40,18 +37,23 @@ declare module "@react-three/fiber" {
   }
 }
 
-const ParticulesShapeOne = () => {
+const LabTwoRenderFBO = () => {
   const size = 512;
 
   const simulationMaterialRef = useRef<ShaderMaterial | null>(null);
   const renderMaterialRef = useRef<ShaderMaterial | null>(null);
-
-  const scene = new Scene();
-  const camera = new OrthographicCamera(-1, 1, 1, -1, 1 / Math.pow(2, 53), 1);
-  const positions = new Float32Array([
-    -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0,
-  ]);
-  const uvs = new Float32Array([0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0]);
+  
+  const [scene] = useState(() => new Scene());
+  const [camera] = useState(() => new OrthographicCamera(-1, 1, 1, -1, -1, 1));
+  const [positions] = useState(
+    () =>
+      new Float32Array([
+        -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0,
+      ])
+  );
+  const [uvs] = useState(
+    () => new Float32Array([0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0])
+  );
 
   const particles = useMemo(() => {
     const length = size * size;
@@ -132,7 +134,7 @@ const ParticulesShapeOne = () => {
         scene
       )}
       <points>
-        <renderMatShapeOne
+        <renderTwo
           ref={renderMaterialRef}
           blending={AdditiveBlending}
           depthWrite={false}
@@ -152,4 +154,4 @@ const ParticulesShapeOne = () => {
   );
 };
 
-export default ParticulesShapeOne;
+export default LabTwoRenderFBO;

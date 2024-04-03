@@ -1,16 +1,11 @@
 import {
   DataTexture,
   FloatType,
-  // NearestFilter,
   RGBAFormat,
   ShaderMaterial,
   Vector3,
 } from "three";
-// import {
-//   getSphere,
-//   getTorusKnot,
-// } from "../../../../1-shapes/0-utils-shape-func/shapesFunction";
-// import { getTorusKnot } from "../../../../1-shapes/0-utils-shape-func/shapesFunction";
+import { getRandom } from "../../../../0-dataShape/getRandom";
 
 const getRing = (numPoints: number) => {
   const size = numPoints * numPoints * 4;
@@ -19,30 +14,10 @@ const getRing = (numPoints: number) => {
     const stride = i * 4;
     const theta = Math.random() * Math.PI;
 
-    //  const theta = Math.random() * Math.PI * 2;
     const r = Math.random() * 2 - 1;
     // const r1 = Math.random() * 2 - 1;
     const x = r * Math.cos(theta);
     const y = r * Math.sin(theta);
-    const z = 1;
-
-    data[stride] = x;
-    data[stride + 1] = y;
-    data[stride + 2] = z;
-    data[stride + 3] = 1;
-  }
-  return data;
-};
-
-const getRandom = (numPoints: number) => {
-  const size = numPoints * numPoints * 4;
-  const data = new Float32Array(size);
-  for (let i = 0; i < size; i++) {
-    const stride = i * 4;
-    // const theta = Math.random() * Math.PI * 2;
-    // const r = Math.random() * 0.5 - 0.5;
-    const x = Math.random() * 2 - 1;
-    const y = Math.random() * 2 - 1;
     const z = 1;
 
     data[stride] = x;

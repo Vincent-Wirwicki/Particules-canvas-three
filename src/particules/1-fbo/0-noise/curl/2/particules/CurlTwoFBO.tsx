@@ -19,7 +19,6 @@ import {
 
 import SimMatCurlTwo from "../shader/sim/SimMat";
 import RenderMatCurlTwo from "../shader/render/RenderMat";
-import { getSphere } from "../../../../1-shapes/0-utils-shape-func/shapesFunction";
 
 extend({
   SimMatCurlTwo: SimMatCurlTwo,
@@ -54,8 +53,6 @@ const CurlTwoFBO = () => {
   const [uvs] = useState(
     () => new Float32Array([0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0])
   );
-
-  const [data] = useState(() => getSphere(size, 1)); 
 
   const particles = useMemo(() => {
     const length = size * size;
@@ -95,7 +92,7 @@ const CurlTwoFBO = () => {
     <>
       {createPortal(
         <mesh>
-          <simMatCurlTwo ref={simulationMaterialRef} args={[size, data]} />
+          <simMatCurlTwo ref={simulationMaterialRef} args={[size]} />
           <bufferGeometry>
             <bufferAttribute
               attach="attributes-position"

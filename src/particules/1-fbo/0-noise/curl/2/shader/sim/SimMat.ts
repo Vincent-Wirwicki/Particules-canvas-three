@@ -1,10 +1,10 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
-// import { getSphere } from "../../../../../1-shapes/0-utils-shape-func/shapesFunction";
+import { getSphere } from "../../../../../../0-dataShape/getSphere";
 
 export default class SimMatCurlTwo extends ShaderMaterial {
-  constructor(size: number, data: Float32Array) {
+  constructor(size: number) {
     const positionsTexture = new DataTexture(
-      data,
+      getSphere(size, 1),
       size,
       size,
       RGBAFormat,

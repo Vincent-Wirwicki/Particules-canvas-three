@@ -5,7 +5,7 @@ import {
   extend,
   Object3DNode,
 } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   AdditiveBlending,
   // DoubleSide,
@@ -67,15 +67,21 @@ const BustFBO = () => {
   };
 
   const data = getDataModel(size);
+
   const simulationMaterialRef = useRef<ShaderMaterial | null>(null);
   const renderMaterialRef = useRef<ShaderMaterial | null>(null);
 
-  const scene = new Scene();
-  const camera = new OrthographicCamera(-1, 1, 1, -1, 1 / Math.pow(2, 53), 1);
-  const positions = new Float32Array([
-    -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0,
-  ]);
-  const uvs = new Float32Array([0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0]);
+  const [scene] = useState(() => new Scene());
+  const [camera] = useState(() => new OrthographicCamera(-1, 1, 1, -1, -1, 1));
+  const [positions] = useState(
+    () =>
+      new Float32Array([
+        -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0,
+      ])
+  );
+  const [uvs] = useState(
+    () => new Float32Array([0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0])
+  );
 
   const particles = useMemo(() => {
     const length = size * size;

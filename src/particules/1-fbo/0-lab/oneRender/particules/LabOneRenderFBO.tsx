@@ -5,10 +5,9 @@ import {
   extend,
   Object3DNode,
 } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   AdditiveBlending,
-  DoubleSide,
   // DoubleSide,
   FloatType,
   NearestFilter,
@@ -18,37 +17,43 @@ import {
   ShaderMaterial,
 } from "three";
 
-import RenderMatCurlOne from "../shader/render/RenderMat";
-import SimMatCurlOne from "../shader/sim/SimMat";
+import SimLabOne from "../shader/sim/SimMat";
+import RenderMatCurlTwo from "../shader/render/RenderMat";
 
 extend({
-  SimMatCurlOne: SimMatCurlOne,
-  RenderMatCurlOne: RenderMatCurlOne,
+  SimLabOne: SimLabOne,
+  RenderMatCurlTwo: RenderMatCurlTwo,
 });
 
 declare module "@react-three/fiber" {
   interface ThreeElements {
-    renderMatCurlOne: Object3DNode<RenderMatCurlOne, typeof RenderMatCurlOne>;
+    renderMatCurlTwo: Object3DNode<RenderMatCurlTwo, typeof RenderMatCurlTwo>;
   }
 }
 
 declare module "@react-three/fiber" {
   interface ThreeElements {
-    simMatCurlOne: Object3DNode<SimMatCurlOne, typeof SimMatCurlOne>;
+    simLabOne: Object3DNode<SimLabOne, typeof SimLabOne>;
   }
 }
-const CurlOneFBO = () => {
+
+const LabOneRenderFBO = () => {
   const size = 512;
 
   const simulationMaterialRef = useRef<ShaderMaterial | null>(null);
   const renderMaterialRef = useRef<ShaderMaterial | null>(null);
 
-  const scene = new Scene();
-  const camera = new OrthographicCamera(-1, 1, 1, -1, 1 / Math.pow(2, 53), 1);
-  const positions = new Float32Array([
-    -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0,
-  ]);
-  const uvs = new Float32Array([0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0]);
+  const [scene] = useState(() => new Scene());
+  const [camera] = useState(() => new OrthographicCamera(-1, 1, 1, -1, -1, 1));
+  const [positions] = useState(
+    () =>
+      new Float32Array([
+        -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0,
+      ])
+  );
+  const [uvs] = useState(
+    () => new Float32Array([0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0])
+  );
 
   const particles = useMemo(() => {
     const length = size * size;
@@ -88,7 +93,7 @@ const CurlOneFBO = () => {
     <>
       {createPortal(
         <mesh>
-          <simMatCurlOne ref={simulationMaterialRef} args={[size]} />
+          <simLabOne ref={simulationMaterialRef} args={[size]} />
           <bufferGeometry>
             <bufferAttribute
               attach="attributes-position"
@@ -107,12 +112,12 @@ const CurlOneFBO = () => {
         scene
       )}
       <points>
-        <renderMatCurlOne
+        <renderMatCurlTwo
           ref={renderMaterialRef}
           blending={AdditiveBlending}
           transparent={true}
           depthTest={false}
-          side={DoubleSide}
+          // side={DoubleSide}
         />
         <bufferGeometry>
           <bufferAttribute
@@ -127,4 +132,4 @@ const CurlOneFBO = () => {
   );
 };
 
-export default CurlOneFBO;
+export default LabOneRenderFBO;

@@ -1,35 +1,17 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
-// import { getTorusWeird } from "../../../../1-shapes/0-utils-shape-func/torusKnotData";
-
-const getRandom = (numPoints: number) => {
-  const size = numPoints * numPoints * 4;
-  const data = new Float32Array(size);
-  for (let i = 0; i < size; i++) {
-    const stride = i * 4;
-
-    const x = Math.PI * Math.random() * 2 - 1;
-    const y = Math.PI * Math.random() * 2 - 1;
-    const z = Math.PI * Math.random() * 2 - 1;
-
-    data[stride] = x;
-    data[stride + 1] = y;
-    data[stride + 2] = z;
-    data[stride + 3] = 1;
-  }
-  return data;
-};
+import { getRandomPI } from "../../../../../0-dataShape/getRandom";
 
 export default class SimMatCurlTwo extends ShaderMaterial {
   constructor(size: number) {
     const positionsTexture = new DataTexture(
-      getRandom(size),
+      getRandomPI(size),
       size,
       size,
       RGBAFormat,
       FloatType
     );
     const positionsTexture2 = new DataTexture(
-      getRandom(size),
+      getRandomPI(size),
       size,
       size,
       RGBAFormat,

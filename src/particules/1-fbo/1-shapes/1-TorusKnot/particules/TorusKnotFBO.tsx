@@ -44,10 +44,15 @@ const TorusKnotFBO = () => {
 
   const [scene] = useState(() => new Scene());
   const [camera] = useState(() => new OrthographicCamera(-1, 1, 1, -1, -1, 1));
-  const positions = new Float32Array([
-    -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0,
-  ]);
-  const uvs = new Float32Array([0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0]);
+  const [positions] = useState(
+    () =>
+      new Float32Array([
+        -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0,
+      ])
+  );
+  const [uvs] = useState(
+    () => new Float32Array([0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0])
+  );
 
   const particles = useMemo(() => {
     const length = size * size;
