@@ -5,7 +5,7 @@ const ModelOnePage = () => {
   const notes = [
     {
       title: "1. 3D model",
-      desc: "You can extract data point from a 3D model to get particles positions. You also need a high detail model.",
+      desc: "You can extract data points from a 3D model to get particle positions. You also need a high detail model.",
     },
     {
       title: "2. DepthTest",

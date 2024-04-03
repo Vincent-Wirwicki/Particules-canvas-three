@@ -5,7 +5,7 @@ const AttractTwoPage = () => {
   const notes = [
     {
       title: "1. Attractor",
-      desc: "An other attractor, you can find many online. This time I added some offset value so all particles don't get caught.",
+      desc: "Another attractor, you can find many online. This time I added some offset value so all particles don't get caught.",
     },
   ];
   return (

@@ -1,8 +1,8 @@
 export const mainNavPaths = [
   { title: "home", path: "/" },
   // { title: "canvas", path: "/canvas" },
-  { title: "curl-1", path: "/curl-1" },
-  { title: "curl-2", path: "/curl-2" },
+  // { title: "curl-1", path: "/curl-1" },
+  { title: "curl-1", path: "/curl-2" },
   // { title: "curl-3", path: "/curl-3" },
 
   { title: "morph-1", path: "/morph-1" },

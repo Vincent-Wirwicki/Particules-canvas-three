@@ -5,11 +5,11 @@ const HomePage = () => {
   const notes = [
     {
       title: "1. Particles",
-      desc: "Particles are an array of coordinates (x,y,z). You can draw any shape by calculating these points.",
+      desc: "Particles are an array of coordinates (x,y,z). You can draw any shape by calculating these points. Complex calculation can impact performance.",
     },
     {
       title: "2. Frame Buffer Output",
-      desc: "FBO, is a technique to force animation on your GPU. The result is send as an image to your canvas. It's like taking photos of your GPU doing math.",
+      desc: "FBO, force animation on your GPU. The result is sent as an image to your canvas. It's like taking photos of your GPU doing math.",
     },
   ];
   return (

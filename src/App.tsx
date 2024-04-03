@@ -7,7 +7,7 @@ import ErrorPage from "./pages/0-error/ErrorPage";
 import WipPage from "./pages/0-wip/WipPage";
 import AttractorThreeScene from "./particules/1-fbo/4-attractor/3/scene/AttractorThreeScene";
 
-import CurlOnePage from "./pages/2-curlOne/CurlOnePage";
+// import CurlOnePage from "./pages/2-curlOne/CurlOnePage";
 import CurlTwoPage from "./pages/3-curlTwo/CurlTwoPage";
 import MorphOnePage from "./pages/4-morph/MorphOnePage";
 import ModelOnePage from "./pages/5-model/ModelOnePage";
@@ -23,7 +23,7 @@ const App = () => {
       children: [
         { path: "/", element: <HomePage />, index: true },
         { path: "wip", element: <WipPage /> },
-        { path: "curl-1", element: <CurlOnePage /> },
+        // { path: "curl-1", element: <CurlOnePage /> },
         { path: "curl-2", element: <CurlTwoPage /> },
         // { path: "curl-3", element: <CurlThreeScene /> },
         { path: "morph-1", element: <MorphOnePage /> },

@@ -5,11 +5,11 @@ const CurlTwoPage = () => {
   const notes = [
     {
       title: "1. Curl noise",
-      desc: "Curl noise looks awsome, but it's not performance friendly, because it computes other noise.",
+      desc: "Curl noise are awesome, but they are heavy to compute.",
     },
     {
       title: "2. Device Pixel Ratio",
-      desc: "In this exemple I increase DPR to make the image more sharp at cost of performance",
+      desc: "Increasing DPR increase image resolution at cost of performance.",
     },
   ];
   return (

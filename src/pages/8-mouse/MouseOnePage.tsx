@@ -5,7 +5,7 @@ const MouseOnePage = () => {
   const notes = [
     {
       title: "1. Mouse",
-      desc: "You can add mouse position do displace particles. My mouse is a litte offset because of some camera issue.",
+      desc: "You can add mouse position to displace particles. My mouse is a litte offset because of some camera issue.",
     },
   ];
   return (
