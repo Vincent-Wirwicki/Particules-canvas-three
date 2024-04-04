@@ -151,8 +151,7 @@ export default class SimMatCurlTwo extends ShaderMaterial {
     }
 
     vec3 fbm(vec3 p, float amp, float freq){
-
-      vec3 value =vec3(0.) ;
+      vec3 value =vec3(0.);
       float ampScale = 0.5; 
       float freqScale = 2.;
       int octaves = 20;
@@ -160,29 +159,26 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       for (int i = 0; i < octaves; i++) {
         value += amp * curlNoise(p * freq);
         freq*= freqScale;
-        amp *=ampScale;
-      }
-    
+        amp*= ampScale;
+      } 
       return value;
-    
     }
+
     void main() {
       vec2 uv = vUv;
-      
+    
       vec3 pos = texture2D( uPositions, uv ).xyz;
       vec3 curlPos = pos;
-      float freq = mix(0.1,.25,smoothstep(0.,10., cos(uTime)));
+      
+      float freq = mix(0.1,.25, smoothstep(0.,10., cos(uTime)));
       float amp = mix(0.15,0.5, smoothstep(0.,20., uTime*0.8));
+      
       curlPos = curlNoise(pos);
-      curlPos += fbm(curlPos + uTime*0.6, freq, amp);
-      // curlPos += fbm(curlPos + uTime*.6, freq, amp);
-
+      curlPos += fbm(curlPos + uTime*0.4, freq, amp);      
       
       vec3 render = mix(pos, curlPos, 1.);
-      // render.yz = rotate(render.yz, uTime*0.1);
 
-
-      gl_FragColor = vec4( render, 1. );
+      gl_FragColor = vec4(render, 1. );
 
       }`,
     });
