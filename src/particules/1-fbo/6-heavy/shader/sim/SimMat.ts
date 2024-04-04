@@ -1,5 +1,5 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
-import { getRandom } from "../../../../../0-dataShape/getRandom";
+import { getRandom } from "../../../../0-dataShape/getRandom";
 
 export default class SimMatCurlTwo extends ShaderMaterial {
   constructor(size: number) {

@@ -10,4 +10,5 @@ export const mainNavPaths = [
   { title: "attract-1", path: "/attract-1" },
   { title: "attract-2", path: "/attract-2" },
   { title: "mouse-1", path: "/mouse-1" },
+  { title: "heavy-1", path: "/heavy-1" },
 ];

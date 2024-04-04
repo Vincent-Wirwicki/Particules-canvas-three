@@ -13,6 +13,7 @@ import AttractTwoPage from "./pages/7-attractTwo/AttractTwoPage";
 import MouseOnePage from "./pages/8-mouse/MouseOnePage";
 import LabOneRenderPage from "./pages/0-lab/LabOneRenderPage";
 import LabTwoRenderPage from "./pages/0-lab/LabTwoRenderPage";
+import HeavyOnePage from "./pages/9-heavy/HeavyOnePage";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -27,6 +28,7 @@ const App = () => {
         { path: "attract-1", element: <AttractOnePage /> },
         { path: "attract-2", element: <AttractTwoPage /> },
         { path: "mouse-1", element: <MouseOnePage /> },
+        { path: "heavy-1", element: <HeavyOnePage /> },
         { path: "lab-1", element: <LabOneRenderPage /> },
         { path: "lab-2", element: <LabTwoRenderPage /> },
       ],

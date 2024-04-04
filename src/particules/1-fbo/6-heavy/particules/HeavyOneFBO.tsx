@@ -17,27 +17,27 @@ import {
   ShaderMaterial,
 } from "three";
 
-import SimLabOne from "../shader/sim/SimMat";
-import RenderLabOne from "../shader/render/RenderMat";
+import SimHeavyOne from "../shader/sim/SimMat";
+import RenderHeavyOne from "../shader/render/RenderMat";
 
 extend({
-  SimLabOne: SimLabOne,
-  RenderLabOne: RenderLabOne,
+  SimHeavyOne: SimHeavyOne,
+  RenderHeavyOne: RenderHeavyOne,
 });
 
 declare module "@react-three/fiber" {
   interface ThreeElements {
-    renderLabOne: Object3DNode<RenderLabOne, typeof RenderLabOne>;
+    renderHeavyOne: Object3DNode<RenderHeavyOne, typeof RenderHeavyOne>;
   }
 }
 
 declare module "@react-three/fiber" {
   interface ThreeElements {
-    simLabOne: Object3DNode<SimLabOne, typeof SimLabOne>;
+    simHeavyOne: Object3DNode<SimHeavyOne, typeof SimHeavyOne>;
   }
 }
 
-const LabOneRenderFBO = () => {
+const HeavyOneFBO = () => {
   const size = 512;
 
   const simulationMaterialRef = useRef<ShaderMaterial | null>(null);
@@ -93,7 +93,7 @@ const LabOneRenderFBO = () => {
     <>
       {createPortal(
         <mesh>
-          <simLabOne ref={simulationMaterialRef} args={[size]} />
+          <simHeavyOne ref={simulationMaterialRef} args={[size]} />
           <bufferGeometry>
             <bufferAttribute
               attach="attributes-position"
@@ -112,7 +112,7 @@ const LabOneRenderFBO = () => {
         scene
       )}
       <points>
-        <renderLabOne
+        <renderHeavyOne
           ref={renderMaterialRef}
           blending={AdditiveBlending}
           transparent={true}
@@ -132,4 +132,4 @@ const LabOneRenderFBO = () => {
   );
 };
 
-export default LabOneRenderFBO;
+export default HeavyOneFBO;
