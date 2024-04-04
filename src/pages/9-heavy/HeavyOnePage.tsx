@@ -8,11 +8,7 @@ const HeavyOnePage = () => {
     },
   ];
   return (
-    <Page
-      notes={notes}
-      title="8. Mouse interaction"
-      className="w-screen h-screen"
-    >
+    <Page notes={notes} title="8.FBM curl noise" className="w-screen h-screen">
       <HeavyOneScene />
     </Page>
   );
