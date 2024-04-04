@@ -9,7 +9,7 @@ const CurlTwoPage = () => {
     },
     {
       title: "2. Device Pixel Ratio",
-      desc: "Increasing DPR increase image resolution at cost of performance.",
+      desc: 'Increasing DPR increase image resolution (and performance cost), so particles are smaller and looks more "foggy".',
     },
   ];
   return (

@@ -7,7 +7,7 @@ import LabTwoRenderFBO from "../particules/LabTwoRenderFBO";
 const LabTwoRenderScene = () => {
   return (
     <div className="w-screen h-screen">
-      <Canvas camera={{ position: [0, 5, 10] }} dpr={1.75}>
+      <Canvas camera={{ position: [0, 0, 2] }} dpr={1.5}>
         <Suspense fallback={null}>
           <LabTwoRenderFBO />
         </Suspense>

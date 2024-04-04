@@ -18,16 +18,16 @@ import {
 } from "three";
 
 import SimLabOne from "../shader/sim/SimMat";
-import RenderMatCurlTwo from "../shader/render/RenderMat";
+import RenderLabOne from "../shader/render/RenderMat";
 
 extend({
   SimLabOne: SimLabOne,
-  RenderMatCurlTwo: RenderMatCurlTwo,
+  RenderLabOne: RenderLabOne,
 });
 
 declare module "@react-three/fiber" {
   interface ThreeElements {
-    renderMatCurlTwo: Object3DNode<RenderMatCurlTwo, typeof RenderMatCurlTwo>;
+    renderLabOne: Object3DNode<RenderLabOne, typeof RenderLabOne>;
   }
 }
 
@@ -112,11 +112,11 @@ const LabOneRenderFBO = () => {
         scene
       )}
       <points>
-        <renderMatCurlTwo
+        <renderLabOne
           ref={renderMaterialRef}
           blending={AdditiveBlending}
           transparent={true}
-          depthTest={false}
+          depthTest={true}
           // side={DoubleSide}
         />
         <bufferGeometry>
