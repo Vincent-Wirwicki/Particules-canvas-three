@@ -40,7 +40,7 @@ export default class RenderMatCurlTwo extends ShaderMaterial {
           vUv = uv;
           vec4 mvPosition = modelViewMatrix * vec4(position, 1.);
           vDistance = -mvPosition.z;
-          gl_PointSize = 5. * (1./ -mvPosition.z);
+          gl_PointSize = 10. * (1./ -mvPosition.z);
           gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1. );
 
         }`,

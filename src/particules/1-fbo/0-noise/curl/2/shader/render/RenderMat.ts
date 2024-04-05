@@ -31,7 +31,7 @@ export default class RenderMatCurlTwo extends ShaderMaterial {
           
           // if(dist > 0.5) alpha = 0.25;
 
-          gl_FragColor = vec4(color,1.);
+          gl_FragColor = vec4(color,alpha);
         }`,
       vertexShader: /*glsl */ `
         uniform sampler2D uPositions;
@@ -46,7 +46,7 @@ export default class RenderMatCurlTwo extends ShaderMaterial {
           vUv = uv;
           vec4 mvPosition = modelViewMatrix * vec4(pos.xyz, 1.);
           vDistance = -mvPosition.z;
-          gl_PointSize = 1. * (1./ -mvPosition.z);
+          gl_PointSize = 10. * (1./ -mvPosition.z);
           gl_Position = projectionMatrix * mvPosition;
 
         }`,
