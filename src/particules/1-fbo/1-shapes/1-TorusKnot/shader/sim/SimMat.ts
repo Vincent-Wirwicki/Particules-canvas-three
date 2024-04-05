@@ -25,7 +25,7 @@ export default class SimMatCurlTwo extends ShaderMaterial {
 
           void main() {
             vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4( position,.8 );
+            gl_Position = projectionMatrix * modelViewMatrix * vec4( position,1. );
           }
       `,
 

@@ -8,6 +8,7 @@ import {
 import { useMemo, useRef, useState } from "react";
 import {
   AdditiveBlending,
+  DoubleSide,
   // DoubleSide,
   FloatType,
   Mesh,
@@ -143,8 +144,8 @@ const BustFBO = () => {
           ref={renderMaterialRef}
           blending={AdditiveBlending}
           transparent={true}
-          depthTest={true}
-          // side={DoubleSide}
+          depthTest={false}
+          side={DoubleSide}
         />
         <bufferGeometry>
           <bufferAttribute

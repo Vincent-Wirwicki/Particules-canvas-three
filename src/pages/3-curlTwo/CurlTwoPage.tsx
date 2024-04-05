@@ -13,7 +13,7 @@ const CurlTwoPage = () => {
     },
   ];
   return (
-    <Page notes={notes} title="3.under control" className="page-canvas">
+    <Page notes={notes} title="3.under control" className="w-screen h-screen">
       <CurlTwoScene />
     </Page>
   );

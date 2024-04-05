@@ -19,8 +19,8 @@ export default class RenderMatCurlTwo extends ShaderMaterial {
 
         void main() {  
           
-          vec3 color = vec3(0.45,0.25,0.1);
-      
+          // vec3 color = vec3(0.45,0.25,0.1);
+          vec3 color = vec3(0.,0.,1.);
           float dist = length(gl_PointCoord.xy - vec2(0.5)) * 0.5;
           // dist = 1.05 - clamp(dist, 0.,1.);
 
@@ -28,7 +28,7 @@ export default class RenderMatCurlTwo extends ShaderMaterial {
           float angle = atan(vPos.x, vPos.y );
           float alpha = cos(angle ) * sin(angle ) * dist;
           
-          if(dist > 0.15) alpha = 0.25;
+          if(dist > 0.15) alpha = 0.75;
 
           gl_FragColor = vec4(color,alpha);
         }`,

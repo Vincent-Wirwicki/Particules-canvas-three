@@ -15,6 +15,7 @@ export default class RenderMatCurlTwo extends ShaderMaterial {
         varying float vDistance;
         varying vec2 vUv;
         varying vec3 vPos;
+        varying float vAngle;
 
 
         void main() {  
@@ -26,20 +27,22 @@ export default class RenderMatCurlTwo extends ShaderMaterial {
 
           // float a = uv * dist;
           float angle = atan(vPos.x, vPos.y );
-          float alpha = cos(angle ) * sin(angle ) * dist;
+          float alpha = cos(vAngle ) * sin(vAngle ) * dist;
           
-          // if(dist > 0.95) alpha = 0.5;
+          // if(dist > 0.5) alpha = 0.25;
 
-          gl_FragColor = vec4(color,alpha);
+          gl_FragColor = vec4(color,1.-alpha);
         }`,
       vertexShader: /*glsl */ `
         uniform sampler2D uPositions;
         varying vec3 vPos;
         varying float vDistance;
         varying vec2 vUv;
+        varying float vAngle;
         void main() {
           vec3 pos = texture2D( uPositions, position.xy ).xyz;
           vPos = position;
+          vAngle = atan(pos.x,pos.y);
           vUv = uv;
           vec4 mvPosition = modelViewMatrix * vec4(pos.xyz, 1.);
           vDistance = -mvPosition.z;

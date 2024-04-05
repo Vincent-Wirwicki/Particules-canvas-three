@@ -7,10 +7,10 @@ const ModelOnePage = () => {
       title: "1. 3D model",
       desc: "You can extract data points from a 3D model to get particle positions. You also need a high detail model.",
     },
-    {
-      title: "2. DepthTest",
-      desc: "DephTest need to be set to true or the render will look akward.",
-    },
+    // {
+    //   title: "2. DepthTest",
+    //   desc: "DephTest need to be set to true or the render will look akward.",
+    // },
   ];
   return (
     <Page notes={notes} title="5.bust" className="w-screen h-screen">

@@ -6,7 +6,7 @@ import Loading from "../../../../../layout/loader/Loader";
 const BustScene = () => {
   return (
     <Suspense fallback={<Loading />}>
-      <Canvas camera={{ position: [0, 0, 0] }} dpr={1.5}>
+      <Canvas camera={{ position: [0, 0, 0] }} dpr={1.75}>
         <BustFBO />
       </Canvas>
     </Suspense>
