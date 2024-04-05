@@ -234,17 +234,27 @@ examples:
       vec2 uv = vUv;
       // float lod = pow(1.0-r,4.0)*5.0;
       vec2 newUv = uv;
-      float dispUv = worley(vec3(newUv.xy * sin(uTime), 1.)+uTime);
+      float dispUv = worley(vec3(newUv.xy * uTime, 1.)+uTime);
       vec3 pos = texture2D( uPositions, uv).xyz;
-      vec3 pos2 = texture2D( uPositions2, uv ).xyz;
-      vec3 curlPos = pos;
-      float freq = mix(0.1,.75,smoothstep(0.,10., length(pos2-pos)));
-      float amp = mix(0.15,0.5, smoothstep(0.,20., uTime*0.6));
-      curlPos = curlNoise(pos);
-      curlPos += fbm(curlPos, freq, amp);
-      pos2+=curlPos;
+            vec3 pos2 = texture2D( uPositions2, uv ).xyz;
 
-      gl_FragColor = vec4( pos, 1. );
+      pos.y -= clamp( pos.y, 0.0, 1. );
+      float d2 = length( pos ) - 0.25;
+      float r = length(pos);
+      vec3 dir = normalize(pos - pos2*0.1);
+
+      vec3 f = smoothstep(0.,1.5,vec3(d2)) ;
+      vec3 curlPos = pos;
+      float freq = mix(0.1,.5, 0.5 * smoothstep(0., 10., pos2.x));
+      float amp = mix(0.35,.5, smoothstep(0.,1., uTime*0.6));
+      float d = length(pos - pos2);
+
+      curlPos = curlNoise(pos);
+      curlPos += fbm(curlPos *f, freq, amp) ;
+      
+      // vec3 render = mix(pos, curlPos, smoothstep(0.,20., abs(pos.x + pos2.y) + uTime));
+
+      gl_FragColor = vec4( curlPos, 1. );
 
       }`,
     });

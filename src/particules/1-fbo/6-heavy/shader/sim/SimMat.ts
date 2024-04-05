@@ -30,7 +30,7 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       uniform float uTime;
       varying vec2 vUv;
 
-      #define PI 3.141592
+      #define PI 3.141592653589793
       
       vec2 rotate(vec2 v, float a) {
 	      float s = sin(a);
@@ -154,10 +154,11 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       vec3 value =vec3(0.);
       float ampScale = 0.5; 
       float freqScale = 2.;
-      int octaves = 20;
+      int octaves = 4;
     
       for (int i = 0; i < octaves; i++) {
         value += amp * curlNoise(p * freq);
+        // p.xy += rotate(p.xy, freq);
         freq*= freqScale;
         amp*= ampScale;
       } 
@@ -171,12 +172,12 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       vec3 curlPos = pos;
       
       float freq = mix(0.1,.25, smoothstep(0.,10., sin(uTime)));
-      float amp = mix(0.15,0.5, smoothstep(0.,20., uTime*0.8));
+      float amp = mix(0.15,0.5, smoothstep(0.,20., uTime));
       
-      curlPos = curlNoise(pos);
-      curlPos += fbm(curlPos + uTime*0.2, freq, amp); 
+      pos = curlNoise(pos);
+      pos += fbm(pos + uTime*0.2, freq, amp); 
       
-      gl_FragColor = vec4(curlPos, 1. );
+      gl_FragColor = vec4(pos, 1. );
 
       }`,
     });
