@@ -12,7 +12,9 @@ export default class RenderMat extends ShaderMaterial {
         varying vec3 vPos;
 
         void main() {        
-           vec3 color = vec3(0.45,0.25,0.1);
+          //  vec3 color = vec3(0.45,0.25,0.1);
+            vec3 color = vec3(0.75);
+
       
           float dist = length(gl_PointCoord.xy - vec2(0.5));
           
