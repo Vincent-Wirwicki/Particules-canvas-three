@@ -1,10 +1,11 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
-import { getRandom } from "../../../../../0-dataShape/getRandom";
+// import { getRandom } from "../../../../../0-dataShape/getRandom";
+import { getLab2 } from "../../../../../0-dataShape/getLab";
 
 export default class SimMatCurlTwo extends ShaderMaterial {
   constructor(size: number) {
     const positionsTexture = new DataTexture(
-      getRandom(size),
+      getLab2(size),
       size,
       size,
       RGBAFormat,
@@ -180,9 +181,9 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       
       vec3 render = mix(pos, curlPos, 1.);
       // render.yz = rotate(render.yz, uTime*0.1);
+      pos.xy = rotate(pos.xy, uTime*0.2);
 
-
-      gl_FragColor = vec4( render, 1. );
+      gl_FragColor = vec4( pos, 1. );
 
       }`,
     });

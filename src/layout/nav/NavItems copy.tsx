@@ -9,7 +9,7 @@ type Props = {
 const NavItems: React.FC<Props> = ({ paths, isOpen }) => {
   const stagger = useTrail(paths.length, {
     opacity: isOpen ? 1 : 0,
-    x: isOpen ? 0 : 20,
+    x: isOpen ? 0 : -100,
   });
 
   return (
@@ -32,3 +32,29 @@ const NavItems: React.FC<Props> = ({ paths, isOpen }) => {
 };
 
 export default NavItems;
+
+// import { NavLink } from "react-router-dom";
+
+// type Props = {
+//   paths: { title: string; path: string }[];
+// };
+
+// const NavItems: React.FC<Props> = ({ paths }) => {
+//   return (
+//     <>
+//       {paths.map(({ title, path }, i) => (
+//         <NavLink
+//           key={title + i}
+//           to={path}
+//           className={({ isActive }) =>
+//             isActive ? "text-amber-200 " : "text-neutral-200"
+//           }
+//         >
+//           <p className="nav-link">{title}</p>{" "}
+//         </NavLink>
+//       ))}
+//     </>
+//   );
+// };
+
+// export default NavItems;

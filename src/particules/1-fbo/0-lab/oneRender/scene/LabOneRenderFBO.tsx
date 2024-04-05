@@ -8,7 +8,7 @@ const LabOneRenderScene = () => {
 
   return (
     <Suspense fallback={null}>
-      <Canvas camera={{ position: [-1, 2, 3.5] }} dpr={1.5}>
+      <Canvas camera={{ position: [-1, 2, 1] }} dpr={1.5}>
         <LabOneRenderFBO />
         <OrbitControls />
       </Canvas>

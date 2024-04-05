@@ -2,12 +2,17 @@ import { animated, useSpring } from "react-spring";
 
 type Props = {
   isOpen: boolean;
+  y: number;
 };
 
-const Burger: React.FC<Props> = ({ isOpen }) => {
-  const topLine = useSpring({ y: isOpen ? 0 : 10, rotate: isOpen ? -45 : 0 });
+const Burger: React.FC<Props> = ({ isOpen, y }) => {
+  const topLine = useSpring({
+    // y: isOpen ? 0 : y * 0.5,
+    y: 0,
+    rotate: isOpen ? -45 : 180,
+  });
   const botLine = useSpring({
-    y: isOpen ? 0 : 10,
+    y: isOpen ? 0 : -y,
     rotate: isOpen ? 45 : 0,
   });
 

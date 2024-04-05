@@ -38,9 +38,9 @@ export const getLab2 = (numPoints: number) => {
     const t = 8;
     const bot = 1 + Math.cosh(u) * Math.cosh(v);
 
-    const x = 10*(Math.sinh(v) * Math.cos(t * u)) / bot;
-    const y = 10*(Math.sinh(v) * Math.sin(t * u)) / bot;
-    const z = 10*(Math.cosh(v) * Math.sinh(u)) / bot;
+    const x = (Math.sinh(v) * Math.cos(t * u)) / bot;
+    const y = (Math.sinh(v) * Math.sin(t * u)) / bot;
+    const z = (Math.cosh(v) * Math.sinh(u)) / bot;
 
     data[stride] = x;
     data[stride + 1] = y;

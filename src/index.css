@@ -15,15 +15,15 @@
 
 @layer components {
   .nav {
-    @apply fixed top-5 left-5 h-fit w-fit z-50 p-2 flex flex-col gap-2 border-neutral-800
+    @apply fixed top-5 left-5 h-fit w-48 z-50 p-2 flex flex-col gap-2 border-neutral-800
   }
 
   .nav-link {
-    @apply border-b border-dashed border-neutral-800 w-full pt-1 pr-2 text-xs tracking-wider hover:text-amber-200
+    @apply border-b border-dashed border-neutral-800 w-full py-1 text-xs tracking-wider hover:text-amber-200
   }
 
   .nav-burger {
-    @apply relative h-10 w-10 border border-dashed border-neutral-800 flex justify-center items-center
+    @apply relative h-10 w-10 border border-dashed border-neutral-800 flex justify-center items-center p-1
   }
 
   .nav-burger-line {
@@ -50,10 +50,6 @@
     @apply text-neutral-200 text-xs fixed bottom-5 left-5 w-48 flex flex-col gap-2 leading-relaxed
   }
 
-  .notes-title {
-    @apply border-b border-neutral-800 border-dashed
-  }
-
   .notes-sub-wrap {
     @apply border-b border-neutral-800 border-dashed
   }
@@ -67,7 +63,7 @@
   }
 
   .project-title {
-    @apply fixed top-5 right-5 text-neutral-200 text-xs text-end flex flex-col gap-5 items-end
+    @apply fixed top-5 right-5 text-neutral-200 text-xs text-end flex flex-col gap-5 items-end border-b border-dashed border-neutral-800
   }
 
   .page-title {
