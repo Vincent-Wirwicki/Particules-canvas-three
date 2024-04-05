@@ -14,10 +14,9 @@ export default class RenderMatShapeOne extends ShaderMaterial {
         varying vec2 vUv;
         varying vec3 vPos;
 
-
         void main() {        
-           vec3 color = vec3(0.45,0.25,0.1);
-          gl_FragColor = vec4(color,1.);
+          vec3 color = vec3(0.45,0.25,0.1);
+          gl_FragColor = vec4(color, 1.);
         }`,
       vertexShader: /*glsl */ `
         uniform sampler2D uPositions;
@@ -31,7 +30,7 @@ export default class RenderMatShapeOne extends ShaderMaterial {
           vUv = uv;
           vec4 mvPosition = modelViewMatrix * vec4(pos.xyz, 1.);
           vDistance = -mvPosition.z;
-          gl_PointSize = 1. * (1./ -mvPosition.z);
+          gl_PointSize = 10. * (1./ -mvPosition.z);
           gl_Position = projectionMatrix * mvPosition;
 
         }`,

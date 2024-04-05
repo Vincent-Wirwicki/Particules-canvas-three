@@ -17,7 +17,7 @@ export default class RenderMatShapeOne extends ShaderMaterial {
 
         void main() {        
           // gl_FragColor = vec4(vec3(0.8),.8);
-          float dist = length(gl_PointCoord.xy - vec2(0.5)) *0.5;
+          float dist = length(gl_PointCoord.xy - vec2(0.5));
           // float dist = length(vDistance - vec2(0.5));
 
           // vec3 color = vec3(0.15,0.45,0.75);
