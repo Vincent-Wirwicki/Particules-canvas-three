@@ -24,7 +24,7 @@ export default class RenderMat extends ShaderMaterial {
           dist = 1. - clamp(dist, 0.,1.);
           if(dist > 0.15) alpha = 0.5;
 
-          gl_FragColor = vec4(color, alpha);
+          gl_FragColor = vec4(color, 1.);
         }`,
       vertexShader: /*glsl */ `
         uniform sampler2D uPositions;

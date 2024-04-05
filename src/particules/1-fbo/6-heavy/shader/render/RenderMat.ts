@@ -21,16 +21,16 @@ export default class RenderMatCurlTwo extends ShaderMaterial {
           
           vec3 color = vec3(0.45,0.25,0.1);
           // vec3 color = vec3(0.,0.,1.);
-          float dist = length(gl_PointCoord.xy - vec2(0.5)) * 0.5;
+          float dist = length(gl_PointCoord.xy - vec2(0.5));
           // dist = 1.05 - clamp(dist, 0.,1.);
 
           // float a = uv * dist;
           float angle = atan(vPos.x, vPos.y );
-          float alpha = cos(angle ) * sin(angle ) * dist;
+          float alpha =  sin(angle ) * dist;
           
           // if(dist > 0.15) alpha = 0.75;
 
-          gl_FragColor = vec4(color,alpha);
+          gl_FragColor = vec4(color,1.);
         }`,
       vertexShader: /*glsl */ `
         uniform sampler2D uPositions;

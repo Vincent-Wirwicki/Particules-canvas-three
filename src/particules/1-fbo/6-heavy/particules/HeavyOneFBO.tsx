@@ -38,7 +38,7 @@ declare module "@react-three/fiber" {
 }
 
 const HeavyOneFBO = () => {
-  const size = 256;
+  const size = 512;
 
   const simulationMaterialRef = useRef<ShaderMaterial | null>(null);
   const renderMaterialRef = useRef<ShaderMaterial | null>(null);

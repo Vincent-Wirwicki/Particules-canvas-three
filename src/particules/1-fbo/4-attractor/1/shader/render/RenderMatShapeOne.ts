@@ -30,7 +30,7 @@ export default class RenderMatShapeOne extends ShaderMaterial {
           vUv = uv;
           vec4 mvPosition = modelViewMatrix * vec4(pos.xyz, 1.);
           vDistance = -mvPosition.z;
-          gl_PointSize = 10. * (1./ -mvPosition.z);
+          gl_PointSize = 1. * (1./ -mvPosition.z);
           gl_Position = projectionMatrix * mvPosition;
 
         }`,

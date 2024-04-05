@@ -2,7 +2,7 @@ import { Canvas } from "@react-three/fiber";
 // import { Preload } from "@react-three/drei";
 import { Suspense } from "react";
 import AttractorFBOTwo from "../particules/AttractorFBOTwo";
-import { OrbitControls, Preload } from "@react-three/drei";
+// import { OrbitControls, Preload } from "@react-three/drei";
 import DummyLoader from "../../../../../layout/dummyLoader/DummyLoader";
 
 // const AttractorFBOOne = lazy(() => import("../particules/AttractorFBOOne"));
@@ -15,8 +15,8 @@ const AttractorTwoScene = () => {
         <DummyLoader />
         <Canvas camera={{ position: [-1, 2, 10] }}>
           <AttractorFBOTwo />
-          <OrbitControls autoRotate />
-          <Preload />
+          {/* <OrbitControls autoRotate /> */}
+          {/* <Preload /> */}
         </Canvas>
       </Suspense>
     </div>
