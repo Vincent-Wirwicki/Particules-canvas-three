@@ -4,7 +4,7 @@ const HeavyOnePage = () => {
   const notes = [
     {
       title: "1. Fractal Brownian Motion",
-      desc: "FBM is a way to make noise more detailed, but it can be performance heavy, depending on the noise you are using.",
+      desc: "FBM make noise more detailed, but it can be performance heavy, depending on the noise you are using.",
     },
   ];
   return (

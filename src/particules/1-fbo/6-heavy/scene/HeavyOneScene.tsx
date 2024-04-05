@@ -7,7 +7,7 @@ const HeavyOneScene = () => {
 
   return (
     <Suspense fallback={null}>
-      <Canvas camera={{ position: [-1, 2, 3.5] }} dpr={1.5}>
+      <Canvas camera={{ position: [0, 2, 3.5] }} dpr={1.5}>
         <HeavyOneFBO />
       </Canvas>
     </Suspense>
