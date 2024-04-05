@@ -7,7 +7,7 @@ const CurlTwoScene = () => {
 
   return (
     <Suspense fallback={null}>
-      <Canvas camera={{ position: [-1, 2, 3.5] }} dpr={2}>
+      <Canvas camera={{ position: [-1, 2, 3.5] }} dpr={1}>
         <CurlTwoFBO />
       </Canvas>
     </Suspense>

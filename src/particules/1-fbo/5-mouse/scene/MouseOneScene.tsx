@@ -10,7 +10,7 @@ const MouseOneScene = () => {
   return (
     <div className="w-screen h-screen">
       <Suspense fallback={null}>
-        <Canvas camera={{ position: [0, 0, 5] }} dpr={1.5}>
+        <Canvas camera={{ position: [0, 0, 5] }}>
           <AttractorFBOOne />
         </Canvas>
       </Suspense>

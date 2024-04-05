@@ -119,7 +119,7 @@ const MorphOneFBO = () => {
           blending={AdditiveBlending}
           transparent={true}
           // side={DoubleSide}
-          depthTest={false}
+          depthTest={true}
         />
         <bufferGeometry>
           <bufferAttribute

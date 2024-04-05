@@ -12,10 +12,10 @@ export default class RenderMat extends ShaderMaterial {
         varying vec3 vPos;
 
         void main() {        
-          //  vec3 color = vec3(0.45,0.25,0.1);
-            vec3 color = vec3(0.75);
+           vec3 color = vec3(0.45,0.25,0.1);
+            // vec3 color = vec3(0.75);
 
-      
+          // vec2 d = 2.*gl_PointCoord.xy -1.;
           float dist = length(gl_PointCoord.xy - vec2(0.5));
           
           float angle = atan(vPos.x, vPos.y );
@@ -24,7 +24,7 @@ export default class RenderMat extends ShaderMaterial {
           dist = 1. - clamp(dist, 0.,1.);
           if(dist > 0.15) alpha = 0.5;
 
-          gl_FragColor = vec4(color, 1.);
+          gl_FragColor = vec4(color, alpha);
         }`,
       vertexShader: /*glsl */ `
         uniform sampler2D uPositions;

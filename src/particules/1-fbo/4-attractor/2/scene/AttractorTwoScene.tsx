@@ -13,7 +13,7 @@ const AttractorTwoScene = () => {
     <div className="w-screen h-screen">
       <Suspense fallback={null}>
         <DummyLoader />
-        <Canvas camera={{ position: [-1, 2, 10] }} dpr={1.75}>
+        <Canvas camera={{ position: [-1, 2, 10] }}>
           <AttractorFBOTwo />
           <OrbitControls autoRotate />
           <Preload />
