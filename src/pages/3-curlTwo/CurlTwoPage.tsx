@@ -5,12 +5,12 @@ const CurlTwoPage = () => {
   const notes = [
     {
       title: "1. Curl noise",
-      desc: "Curl noise are awesome, but they are heavy to compute.",
+      desc: "Curl noise are awesome, but they are heavy to compute. They requiere other noise function to work",
     },
-    {
-      title: "2. Device Pixel Ratio",
-      desc: 'Increasing DPR increase image resolution (and performance cost), so particles are smaller and looks more "foggy".',
-    },
+    // {
+    //   title: "2. Device Pixel Ratio",
+    //   desc: 'Increasing DPR increase image resolution (and performance cost), so particles are smaller and looks more "foggy".',
+    // },
   ];
   return (
     <Page notes={notes} title="3.under control" className="w-screen h-screen">

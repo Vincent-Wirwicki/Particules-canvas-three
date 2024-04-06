@@ -9,7 +9,7 @@ const HomePage = () => {
     },
     {
       title: "2. Frame Buffer Output",
-      desc: "FBO, force animation on your GPU. The result is sent as an image to your canvas. It's like taking photos of your GPU doing math.",
+      desc: "FBO, send the animation as a texture to your GPU. The result is sent as an image to your canvas.",
     },
   ];
   return (
