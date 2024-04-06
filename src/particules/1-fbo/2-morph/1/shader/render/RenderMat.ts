@@ -13,17 +13,6 @@ export default class RenderMat extends ShaderMaterial {
 
         void main() {        
            vec3 color = vec3(0.45,0.25,0.1);
-            // vec3 color = vec3(0.75);
-
-          // vec2 d = 2.*gl_PointCoord.xy -1.;
-          float dist = length(gl_PointCoord.xy - vec2(0.5));
-          
-          float angle = atan(vPos.x, vPos.y );
-          float alpha = cos(angle ) * sin(angle ) * dist;
-          
-          dist = 1. - clamp(dist, 0.,1.);
-          if(dist > 0.15) alpha = 0.5;
-
           gl_FragColor = vec4(color, 1.);
         }`,
       vertexShader: /*glsl */ `
@@ -37,7 +26,7 @@ export default class RenderMat extends ShaderMaterial {
 
           vec4 mvPosition = modelViewMatrix * vec4(pos.xyz, 1.);
           vDistance = -mvPosition.z;
-          gl_PointSize = 1. * (1./ -mvPosition.z);
+          gl_PointSize = 10. * (1./ -mvPosition.z);
           gl_Position = projectionMatrix * mvPosition;
 
         }`,

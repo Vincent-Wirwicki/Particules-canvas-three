@@ -157,19 +157,32 @@ export default class SimMatCurlTwo extends ShaderMaterial {
     }
         //-------------------------------------------------------------------------
 
+        
+    vec3 fbm(vec3 p, float amp, float freq){
+      vec3 value =vec3(0.);
+      float ampScale = 0.5; 
+      float freqScale = 2.;
+      int octaves = 3;
+    
+      for (int i = 0; i < octaves; i++) {
+        value +=  curl(p.x * freq, p.y*freq, p.z*freq) * amp ;
+        p.xy += rotate(p.xy, freq);
+        freq*= freqScale;
+        amp*= ampScale;
+      } 
+      return value;
+    }
+
     void main() {
       vec2 uv = vUv;
       vec3 pos = texture2D( uPositions, uv ).xyz;
 
       const float amp = 20.;
-      const float freq = .45;
+      const float freq = .75;
       const float dist = .015;
       
-      vec3 disp =  curl( pos.x * freq , pos.y *  freq, pos.z *  freq ) * amp;
-
-      disp += curl( pos.x * freq *2. , pos.y *  freq *2., pos.z *  freq*2. ) * amp*0.5;
-      disp += curl( pos.x * freq *4. , pos.y *  freq *4., pos.z *  freq*4. ) * amp*0.25;
-      disp += curl( pos.x * freq *8. , pos.y *  freq *8., pos.z *  freq*8. ) * amp*0.15;
+      vec3 disp;
+      disp += fbm(pos, amp, freq);
 
       float d = length(pos-disp) * dist;
       pos = mix( pos, disp, pow( d, 5. ) );

@@ -21,7 +21,7 @@ export default class SimMatCurlTwo extends ShaderMaterial {
         varying vec2 vUv;
         void main() {
             vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4( position,.8 );
+            gl_Position = projectionMatrix * modelViewMatrix * vec4( position,1. );
         }
       `,
       fragmentShader: /* glsl */ `
@@ -38,7 +38,8 @@ export default class SimMatCurlTwo extends ShaderMaterial {
 	      mat2 m = mat2(c, s, -s, c);
 	      return m * v;
       }
-       vec4 taylorInvSqrt(in vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+    vec4 taylorInvSqrt(in vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
     vec3 mod289(const in vec3 x) { return x - floor(x * (1. / 289.)) * 289.; }
     vec4 mod289(const in vec4 x) { return x - floor(x * (1. / 289.)) * 289.; }
 
@@ -151,18 +152,19 @@ export default class SimMatCurlTwo extends ShaderMaterial {
     }
 
     vec3 fbm(vec3 p, float amp, float freq){
-      vec3 value =vec3(0.);
+      vec3 result =vec3(0.);
       float ampScale = 0.5; 
       float freqScale = 2.;
       int octaves = 4;
     
       for (int i = 0; i < octaves; i++) {
-        value += amp * curlNoise(p * freq);
-        // p.xy += rotate(p.xy, freq);
+        result += amp * curlNoise(p * freq);
+        p.xz += rotate(p.xz*0.5, amp*0.5);
+        // p.yz += rotate(p.yz*0.15 + uTime*0.1, freq*0.15);
         freq*= freqScale;
         amp*= ampScale;
       } 
-      return value;
+      return result;
     }
 
     void main() {
