@@ -188,7 +188,7 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       vec3 pos = texture2D( uPositions, uv ).xyz;
       vec3 pos2 = texture2D( uPositions2, uv ).xyz;
 
-      const float freq = 2.;
+      const float freq = 2.5;
       const float amp = .015;
       pos +=curl((pos) * freq + uTime*0.5) *amp;
 
