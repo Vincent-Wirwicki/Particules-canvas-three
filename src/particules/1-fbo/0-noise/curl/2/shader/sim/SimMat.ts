@@ -173,8 +173,8 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       curlPos = curlNoise(pos * freq + time);
       curlPos += curlNoise(curlPos *freq *2.) ;
       
-      vec3 render = mix(pos, curlPos, 1.);
-      curlPos.xz =rotate(render.xz, uTime*0.1);
+      // vec3 render = mix(pos, curlPos, 1.);
+      curlPos.xz =rotate(curlPos.xz, uTime*0.1);
 
       gl_FragColor = vec4( curlPos, 1. );
 
