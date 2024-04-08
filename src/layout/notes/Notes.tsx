@@ -7,7 +7,7 @@ type Props = {
 };
 
 const Notes: React.FC<Props> = ({ notes }) => {
-  const [isOpen, setIsOpen] = useState<boolean>(true);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const stagger = useTrail(notes.length, {
     opacity: isOpen ? 1 : 0,
     // width: isOpen ? 192 : 140,

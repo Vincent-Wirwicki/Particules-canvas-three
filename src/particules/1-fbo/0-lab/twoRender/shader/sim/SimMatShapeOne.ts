@@ -243,9 +243,9 @@ examples:
       float r = length(pos);
       vec3 dir = normalize(pos - pos2*0.1);
 
-      vec3 f = smoothstep(0.,1.5,vec3(d2)) ;
+      vec3 f = smoothstep(0.1,1.5,vec3(d2));
       vec3 curlPos = pos;
-      float freq = mix(0.1,.5, 0.5 * smoothstep(0., 10., pos2.x));
+      float freq = mix(0.1,.5, 0.5 * smoothstep(pos.x,10., uTime*0.5));
       float amp = mix(0.35,.5, smoothstep(0.,1., uTime*0.6));
       float d = length(pos - pos2);
 
