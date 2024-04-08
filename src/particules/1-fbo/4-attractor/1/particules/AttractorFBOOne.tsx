@@ -1,21 +1,13 @@
-import { useFBO } from "@react-three/drei";
-import {
-  useFrame,
-  createPortal,
-  extend,
-  Object3DNode,
-  useThree,
-} from "@react-three/fiber";
-import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  AdditiveBlending,
-  FloatType,
-  NearestFilter,
-  OrthographicCamera,
-  RGBAFormat,
-  Scene,
-  ShaderMaterial,
-} from "three";
+import { useFrame, extend, Object3DNode, useThree } from "@react-three/fiber";
+import { useEffect, useRef } from "react";
+import { AdditiveBlending, ShaderMaterial } from "three";
+
+import useInitFBO from "../../../../../hooks/useInitFBO";
+import useInitParticles from "../../../../../hooks/useInitParticles";
+import useInitRenderTarget from "../../../../../hooks/useInitRenderTarget";
+
+import BufferParticles from "../../../../../components/BufferParticles";
+import PortalMesh from "../../../../../components/PortalMesh";
 
 import RenderMatAttractOne from "../shader/render/RenderMatShapeOne";
 import SimMatAttractOne from "../shader/sim/SimMatShapeOne";
@@ -46,40 +38,14 @@ const AttractorFBOOne = () => {
   const simulationMaterialRef = useRef<ShaderMaterial | null>(null);
   const renderMaterialRef = useRef<ShaderMaterial | null>(null);
 
-  const [scene] = useState(() => new Scene());
-  const [camera] = useState(() => new OrthographicCamera(-1, 1, 1, -1, -1, 1));
-  const [positions] = useState(
-    () =>
-      new Float32Array([
-        -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0,
-      ])
-  );
-  const [uvs] = useState(
-    () => new Float32Array([0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0])
-  );
+  const { scene, camera, positions, uvs } = useInitFBO();
+  const particles = useInitParticles(size);
 
-  const particles = useMemo(() => {
-    const length = size * size;
-    const particles = new Float32Array(length * 3);
-    for (let i = 0; i < length; i++) {
-      const i3 = i * 3;
-      particles[i3 + 0] = (i % size) / size;
-      particles[i3 + 1] = i / size / size;
-    }
-    return particles;
-  }, [size]);
-
-  let target = useFBO(size, size, {
-    minFilter: NearestFilter,
-    magFilter: NearestFilter,
-    format: RGBAFormat,
-    stencilBuffer: false,
-    type: FloatType,
-  });
-
+  let target = useInitRenderTarget(size);
   let target1 = target.clone();
 
   const state = useThree();
+
   //init render scene
   useEffect(() => {
     const { gl } = state;
@@ -123,26 +89,9 @@ const AttractorFBOOne = () => {
 
   return (
     <>
-      {createPortal(
-        <mesh>
-          <simMatAttractOne ref={simulationMaterialRef} args={[size]} />
-          <bufferGeometry>
-            <bufferAttribute
-              attach="attributes-position"
-              count={positions.length / 3}
-              array={positions}
-              itemSize={3}
-            />
-            <bufferAttribute
-              attach="attributes-uv"
-              count={uvs.length / 2}
-              array={uvs}
-              itemSize={2}
-            />
-          </bufferGeometry>
-        </mesh>,
-        scene
-      )}
+      <PortalMesh uvs={uvs} positions={positions} scene={scene}>
+        <simMatAttractOne ref={simulationMaterialRef} args={[size]} />
+      </PortalMesh>
       <points>
         <renderMatAttractOne
           ref={renderMaterialRef}
@@ -151,14 +100,7 @@ const AttractorFBOOne = () => {
           transparent={true}
           // side={DoubleSide}
         />
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            count={particles.length / 3}
-            array={particles}
-            itemSize={3}
-          />
-        </bufferGeometry>
+        <BufferParticles particles={particles} />
       </points>
     </>
   );

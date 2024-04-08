@@ -1,23 +1,14 @@
-import { Preload, useFBO, useGLTF } from "@react-three/drei";
-import {
-  useFrame,
-  createPortal,
-  extend,
-  Object3DNode,
-} from "@react-three/fiber";
-import { useMemo, useRef, useState } from "react";
-import {
-  AdditiveBlending,
-  DoubleSide,
-  // DoubleSide,
-  FloatType,
-  Mesh,
-  NearestFilter,
-  OrthographicCamera,
-  RGBAFormat,
-  Scene,
-  ShaderMaterial,
-} from "three";
+import { useFrame, extend, Object3DNode } from "@react-three/fiber";
+import { AdditiveBlending, Mesh, ShaderMaterial } from "three";
+import { Preload, useGLTF } from "@react-three/drei";
+import { useRef } from "react";
+
+import useInitFBO from "../../../../../hooks/useInitFBO";
+import useInitParticles from "../../../../../hooks/useInitParticles";
+import useInitRenderTarget from "../../../../../hooks/useInitRenderTarget";
+
+import BufferParticles from "../../../../../components/BufferParticles";
+import PortalMesh from "../../../../../components/PortalMesh";
 
 import SimMatBust from "../shader/sim/SimMat";
 import RenderMatBust from "../shader/render/RenderMat";
@@ -38,6 +29,7 @@ declare module "@react-three/fiber" {
     simMatBust: Object3DNode<SimMatBust, typeof SimMatBust>;
   }
 }
+
 const BustFBO = () => {
   const size = 512;
   const model = useGLTF("/bust-hi.glb");
@@ -72,35 +64,9 @@ const BustFBO = () => {
   const simulationMaterialRef = useRef<ShaderMaterial | null>(null);
   const renderMaterialRef = useRef<ShaderMaterial | null>(null);
 
-  const [scene] = useState(() => new Scene());
-  const [camera] = useState(() => new OrthographicCamera(-1, 1, 1, -1, -1, 1));
-  const [positions] = useState(
-    () =>
-      new Float32Array([
-        -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0,
-      ])
-  );
-  const [uvs] = useState(
-    () => new Float32Array([0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0])
-  );
-
-  const particles = useMemo(() => {
-    const length = size * size;
-    const particles = new Float32Array(length * 3);
-    for (let i = 0; i < length; i++) {
-      const i3 = i * 3;
-      particles[i3 + 0] = (i % size) / size;
-      particles[i3 + 1] = i / size / size;
-    }
-    return particles;
-  }, [size]);
-
-  const target = useFBO(size, size, {
-    minFilter: NearestFilter,
-    magFilter: NearestFilter,
-    format: RGBAFormat,
-    type: FloatType,
-  });
+  const { scene, camera, positions, uvs } = useInitFBO();
+  const particles = useInitParticles(size);
+  const target = useInitRenderTarget(size);
 
   useFrame(state => {
     const { gl, clock } = state;
@@ -119,42 +85,18 @@ const BustFBO = () => {
 
   return (
     <>
-      {createPortal(
-        <mesh>
-          <simMatBust ref={simulationMaterialRef} args={[size, data]} />
-          <bufferGeometry>
-            <bufferAttribute
-              attach="attributes-position"
-              count={positions.length / 3}
-              array={positions}
-              itemSize={3}
-            />
-            <bufferAttribute
-              attach="attributes-uv"
-              count={uvs.length / 2}
-              array={uvs}
-              itemSize={2}
-            />
-          </bufferGeometry>
-        </mesh>,
-        scene
-      )}
+      <PortalMesh uvs={uvs} positions={positions} scene={scene}>
+        <simMatBust ref={simulationMaterialRef} args={[size, data]} />
+      </PortalMesh>
       <points>
         <renderMatBust
           ref={renderMaterialRef}
           blending={AdditiveBlending}
           transparent={true}
           depthTest={false}
-          side={DoubleSide}
+          // side={DoubleSide}
         />
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            count={particles.length / 3}
-            array={particles}
-            itemSize={3}
-          />
-        </bufferGeometry>
+        <BufferParticles particles={particles} />
       </points>
       <Preload />
     </>
