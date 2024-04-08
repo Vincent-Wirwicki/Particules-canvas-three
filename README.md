@@ -15,5 +15,5 @@ A quick note on folder structure :
 
 ## To learn more
 
-All the basics in this [article by Nicolas Barradeau](https://barradeau.com/blog/?p=621) 
+All the basics with this [article by Nicolas Barradeau](https://barradeau.com/blog/?p=621)  
 For mouse interaction [this video by Yuri Artiukh](https://www.youtube.com/watch?v=CC__iJ8IIqc)
