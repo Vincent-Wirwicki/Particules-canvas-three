@@ -4,7 +4,7 @@ import { AdditiveBlending, ShaderMaterial } from "three";
 
 import useInitRenderTarget from "../../../../../hooks/useInitRenderTarget";
 import useInitParticles from "../../../../../hooks/useInitParticles";
-import useInitFBO from "../../../../../hooks/useInitFBO";
+import useInitFBOScene from "../../../../../hooks/useInitFBOScene";
 
 import PortalMesh from "../../../../../components/PortalMesh";
 import BufferParticles from "../../../../../components/BufferParticles";
@@ -38,7 +38,7 @@ const AttractorFBOTwo = () => {
   const simulationMaterialRef = useRef<ShaderMaterial | null>(null);
   const renderMaterialRef = useRef<ShaderMaterial | null>(null);
 
-  const { scene, camera, positions, uvs } = useInitFBO();
+  const { scene, camera, positions, uvs } = useInitFBOScene();
   const particles = useInitParticles(size);
 
   let target = useInitRenderTarget(size);

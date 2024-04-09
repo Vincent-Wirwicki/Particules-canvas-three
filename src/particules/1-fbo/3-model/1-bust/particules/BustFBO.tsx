@@ -3,7 +3,7 @@ import { AdditiveBlending, Mesh, ShaderMaterial } from "three";
 import { Preload, useGLTF } from "@react-three/drei";
 import { useRef } from "react";
 
-import useInitFBO from "../../../../../hooks/useInitFBO";
+import useInitFBOScene from "../../../../../hooks/useInitFBOScene";
 import useInitParticles from "../../../../../hooks/useInitParticles";
 import useInitRenderTarget from "../../../../../hooks/useInitRenderTarget";
 
@@ -64,7 +64,7 @@ const BustFBO = () => {
   const simulationMaterialRef = useRef<ShaderMaterial | null>(null);
   const renderMaterialRef = useRef<ShaderMaterial | null>(null);
 
-  const { scene, camera, positions, uvs } = useInitFBO();
+  const { scene, camera, positions, uvs } = useInitFBOScene();
   const particles = useInitParticles(size);
   const target = useInitRenderTarget(size);
 

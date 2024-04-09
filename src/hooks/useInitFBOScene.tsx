@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Scene, OrthographicCamera } from "three";
 
-const useInitFBO = () => {
+const useInitFBOScene = () => {
   const [scene] = useState(() => new Scene());
   const [camera] = useState(() => new OrthographicCamera(-1, 1, 1, -1, -1, 1));
   const [positions] = useState(
@@ -18,4 +18,4 @@ const useInitFBO = () => {
   return { scene, camera, positions, uvs };
 };
 
-export default useInitFBO;
+export default useInitFBOScene;
