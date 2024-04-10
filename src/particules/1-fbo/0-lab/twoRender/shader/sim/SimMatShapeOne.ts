@@ -209,23 +209,40 @@ examples:
       return normalize( vec3( x , y , z ) * divisor );
     
     }
+    const mat2 mtx = mat2( 0.80,  0.60, -0.60,  0.80 );
 
     vec3 fbm(vec3 p, float amp, float freq){
 
       vec3 value =vec3(0.) ;
       float ampScale = 0.5; 
       float freqScale = 2.;
-      int octaves = 20;
+      int octaves = 5;
     
       for (int i = 0; i < octaves; i++) {
-        value += amp * curlNoise(p * freq);
+        value += abs(amp * snoiseVec3(p * freq))  ;
+        p += twist(p,4.);
+        // p*= idk;
         freq*= freqScale;
         amp *=ampScale;
       }
     
-      return value;
+      return value/0.9375;
     
     }
+
+    vec3 SprotzLinzFAttractor(vec3 pos, float t){
+        float a = 5.;
+        float b = -10.;
+        float d = 2.6666666667;
+
+        vec3 target = vec3(0);
+
+        target.x = pos.y + pos.z;
+        target.y = -pos.x + a * pos.y;
+        target.z =(pos.x*pos.x) - pos.z;
+        // (c + a * Z - Z*Z*Z / 3.0 - (X*X + Y*Y)*(1.0 + e*Z) + f * Z * X*X*X)
+        return target * t;
+      } 
 
 // x = Math.cos(s) * Math.sinh(v)*Math.sin(u) + Math.sin(s) * Math.cosh(v)*Math.cos(u)
 // y = -Math.cos(s) * Math.sinh(v)*Math.sin(u) + Math.sin(s) * Math.cosh(v)*Math.cos(u)
@@ -236,24 +253,34 @@ examples:
       vec2 newUv = uv;
       float dispUv = worley(vec3(newUv.xy * uTime, 1.)+uTime);
       vec3 pos = texture2D( uPositions, uv).xyz;
-            vec3 pos2 = texture2D( uPositions2, uv ).xyz;
+      vec3 pos2 = texture2D( uPositions2, uv ).xyz;
 
-      pos.y -= clamp( pos.y, 0.0, 1. );
+      pos.y -= clamp( pos.y, 0.0, pos2.y );
       float d2 = length( pos ) - 0.25;
       float r = length(pos);
       vec3 dir = normalize(pos - pos2*0.1);
 
-      vec3 f = smoothstep(0.1,1.5,vec3(d2));
+      vec3 f = smoothstep(0.1,2.5,vec3(d2));
       vec3 curlPos = pos;
-      float freq = mix(0.1,.5, 0.5 * smoothstep(pos.x,10., uTime*0.5));
-      float amp = mix(0.35,.5, smoothstep(0.,1., uTime*0.6));
+      float freq = mix(0.15,.25,smoothstep(0.,10.,sin(uTime *3.)) );
+      float amp = mix(0.17,.3,  sin(uTime));
       float d = length(pos - pos2);
 
-      curlPos = curlNoise(pos);
-      curlPos += fbm(curlPos *f, freq, amp) ;
+      curlPos = curlNoise(pos2) ;
+      curlPos += fbm(curlPos  + uTime *0.25, freq, 0.15);
+      curlPos += fbm(curlPos *2. + 1.-cos(uTime *0.5), 0.25, 0.15) ;
+
+      // float time = mod(uTime, 10.);
+      // vec3 p1 = (fbm(curlPos + time, .15, 0.15));
+      // vec3 p2 = (fbm(curlPos + time -3., .15, 0.15));
+      // curlPos += clamp( pos.y, 0.0, pos2.y );
+      // vec3 target =SprotzLinzFAttractor(pos,0.05);
+      // curlPos +=target;
+
+      // vec3 render = mix(p1, p2, clamp((time - 2.5) / (3.-2.5), 0.,1.));
       
       // vec3 render = mix(pos, curlPos, smoothstep(0.,20., abs(pos.x + pos2.y) + uTime));
-
+// 0.5 * smoothstep(pos.x,10., clamp( pos.y, 0.0, pos2.y ))
       gl_FragColor = vec4( curlPos, 1. );
 
       }`,

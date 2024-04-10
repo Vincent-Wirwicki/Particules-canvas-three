@@ -1,11 +1,10 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
-import { getTorusWeird } from "../../../../../0-dataShape/getTorusKnot";
 import { getRandom } from "../../../../../0-dataShape/getRandom";
 
 export default class SimMatCurlTwo extends ShaderMaterial {
-  constructor(size: number) {
+  constructor(size: number, data: Float32Array) {
     const positionsTexture = new DataTexture(
-      getTorusWeird(size, 2, 3, 1),
+      data,
       size,
       size,
       RGBAFormat,
@@ -188,12 +187,12 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       vec3 pos = texture2D( uPositions, uv ).xyz;
       vec3 pos2 = texture2D( uPositions2, uv ).xyz;
 
-      const float freq = 2.5;
+      const float freq = 2.;
       const float amp = .015;
       pos +=curl((pos) * freq + uTime*0.5) *amp;
 
       //some randomness found randomly but it works
-      float someDist = length(pos2 -0.15);
+      float someDist = length(pos2 - 0.15);
       vec3 someDir = normalize(pos - vec3(0.75));
       pos += someDir * 0.15 * smoothstep(pos2.z *0.15,0.,someDist);
       // pos += someDir * 0.5 * smoothstep(pos2.x *0.1,0.,someDist);
@@ -201,8 +200,7 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       vec3 target = thomasAttractor(pos, 0.025);
       target += thomasAttractor(pos2*0.15, 0.005)*0.15;
       
-      
-      pos+=target ;
+      pos+=target;
       
       gl_FragColor = vec4(pos, 1.);
       }`,

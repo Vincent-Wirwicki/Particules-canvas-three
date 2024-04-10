@@ -11,6 +11,7 @@ import BufferParticles from "../../../../../components/BufferParticles";
 
 import RenderMatAttractTwo from "../shader/render/RenderMatShapeOne";
 import SimMatAttractTwo from "../shader/sim/SimMatShapeOne";
+import { getTorusWeird } from "../../../../0-dataShape/getTorusKnot";
 
 extend({
   SimMatAttractTwo: SimMatAttractTwo,
@@ -40,6 +41,8 @@ const AttractorFBOTwo = () => {
 
   const { scene, camera, positions, uvs } = useInitFBOScene();
   const particles = useInitParticles(size);
+
+  const dataShape = getTorusWeird(size, 2, 3, 1);
 
   let target = useInitRenderTarget(size);
   let target1 = target.clone();
@@ -91,7 +94,10 @@ const AttractorFBOTwo = () => {
   return (
     <>
       <PortalMesh uvs={uvs} positions={positions} scene={scene}>
-        <simMatAttractTwo ref={simulationMaterialRef} args={[size]} />
+        <simMatAttractTwo
+          ref={simulationMaterialRef}
+          args={[size, dataShape]}
+        />
       </PortalMesh>
       <BufferParticles particles={particles} />
       <points>

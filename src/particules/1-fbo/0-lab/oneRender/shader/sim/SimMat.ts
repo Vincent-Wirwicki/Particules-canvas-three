@@ -1,11 +1,12 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
 // import { getRandom } from "../../../../../0-dataShape/getRandom";
-import { getLab2 } from "../../../../../0-dataShape/getLab";
+// import { getLab2 } from "../../../../../0-dataShape/getLab";
+import { getRandom } from "../../../../../0-dataShape/getRandom";
 
 export default class SimMatCurlTwo extends ShaderMaterial {
   constructor(size: number) {
     const positionsTexture = new DataTexture(
-      getLab2(size),
+      getRandom(size),
       size,
       size,
       RGBAFormat,
@@ -150,7 +151,14 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       return normalize( vec3( x , y , z ) * divisor );
     
     }
-
+      vec3 twist(vec3 p, float k ){
+       // or some other amount
+        float c = cos(k*p.y);
+        float s = sin(k*p.y);
+        mat2  m = mat2(c,-s,s,c);
+        vec3  q = vec3(m*p.xz, p.y);
+        return q;
+      }
     vec3 fbm(vec3 p, float amp, float freq){
 
       vec3 value =vec3(0.) ;
@@ -159,7 +167,8 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       int octaves = 20;
     
       for (int i = 0; i < octaves; i++) {
-        value += amp * curlNoise(p * freq);
+        value += amp * snoiseVec3(p * freq);
+        p+=twist(p, freq*2.);
         freq*= freqScale;
         amp *=ampScale;
       }
@@ -181,9 +190,9 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       
       vec3 render = mix(pos, curlPos, 1.);
       // render.yz = rotate(render.yz, uTime*0.1);
-      pos.xy = rotate(pos.xy, uTime*0.2);
+      // pos.xy = rotate(pos.xy, uTime*0.2);
 
-      gl_FragColor = vec4( pos, 1. );
+      gl_FragColor = vec4( curlPos, 1. );
 
       }`,
     });

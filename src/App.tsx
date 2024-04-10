@@ -1,11 +1,13 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { Suspense, lazy } from "react";
 import Layout from "./layout/Layout";
 
 import HomePage from "./pages/1-home/HomePage";
 import ErrorPage from "./pages/0-error/ErrorPage";
 
 // import CurlOnePage from "./pages/2-curlOne/CurlOnePage";
-import CurlTwoPage from "./pages/3-curlTwo/CurlTwoPage";
+// import CurlTwoPage from "./pages/3-curlTwo/CurlTwoPage";
+const CurlTwoPage = lazy(() => import("./pages/3-curlTwo/CurlTwoPage"));
 import MorphOnePage from "./pages/4-morph/MorphOnePage";
 import ModelOnePage from "./pages/5-model/ModelOnePage";
 import AttractOnePage from "./pages/6-attractOne/AttractOnePage";
@@ -22,7 +24,14 @@ const App = () => {
       errorElement: <ErrorPage />,
       children: [
         { path: "/", element: <HomePage />, index: true },
-        { path: "curl-2", element: <CurlTwoPage /> },
+        {
+          path: "curl-2",
+          element: (
+            <Suspense fallback={null}>
+              <CurlTwoPage />
+            </Suspense>
+          ),
+        },
         { path: "morph-1", element: <MorphOnePage /> },
         { path: "model-1", element: <ModelOnePage /> },
         { path: "attract-1", element: <AttractOnePage /> },

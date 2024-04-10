@@ -66,7 +66,6 @@ const CurlTwoFBO = () => {
           blending={AdditiveBlending}
           transparent={true}
           depthTest={false}
-          // side={DoubleSide}
         />
         <BufferParticles particles={particles} />
       </points>
