@@ -1,5 +1,8 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
 import { getRandomPI } from "../../../../../0-dataShape/getRandom";
+import { getSphere } from "../../../../../0-dataShape/getSphere";
+// import { getRandomLab } from "../../../../../0-dataShape/getLab";
+// import { getTorusWeird } from "../../../../../0-dataShape/getTorusKnot";
 
 export default class SimMatCurlTwo extends ShaderMaterial {
   constructor(size: number) {
@@ -11,7 +14,7 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       FloatType
     );
     const positionsTexture2 = new DataTexture(
-      getRandomPI(size),
+      getSphere(size, 1),
       size,
       size,
       RGBAFormat,
@@ -55,17 +58,29 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       target.z = (d*pos.x*pos.y - e*pos.z);
       return target * t;
     }
+    
     void main() {
       vec2 uv = vUv;   
       vec3 pos = texture2D( uPositions, uv ).xyz;
       vec3 pos2 = texture2D( uPositions2, uv ).xyz;
 
     
-      float disp = (sin(uTime *0.015 -0.5))*cos(pos2.x  *0.15 - 0.5);
-      
-      vec3 target = dadrasAttractor(pos + disp , 0.005);
-      float d  = length(target - pos2);
-      pos+= (target) *0.5 *d;
+      float disp = cos(pos.x  *0.15 - 0.5);
+      float radius = length(pos);
+
+      vec3 target2 = dadrasAttractor(pos2 , 0.006) ;
+      // float k = sin(pos *1.5 + uTime);
+      float r = length(pos2);
+      vec3 a = normalize(target2);
+      float f = smoothstep(0.,.1, (target2.x - pos.x));
+
+      vec3 target = dadrasAttractor(pos + r , 0.005) ;
+
+
+      float d  = length(target2 - pos2);
+      // target *=d;
+      pos+=(target);
+      // pos+=target2;
 
      
       gl_FragColor = vec4(pos, 1.);

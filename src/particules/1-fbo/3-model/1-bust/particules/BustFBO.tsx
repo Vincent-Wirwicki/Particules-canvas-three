@@ -10,8 +10,8 @@ import useInitRenderTarget from "../../../../../hooks/useInitRenderTarget";
 import BufferParticles from "../../../../../components/BufferParticles";
 import PortalMesh from "../../../../../components/PortalMesh";
 
-import SimMatBust from "../shader/sim/SimMat";
-import RenderMatBust from "../shader/render/RenderMat";
+import SimMatBust from "../shader/sim/SimMatModel";
+import RenderMatBust from "../shader/render/RenderMatModel";
 
 extend({
   SimMatBust: SimMatBust,

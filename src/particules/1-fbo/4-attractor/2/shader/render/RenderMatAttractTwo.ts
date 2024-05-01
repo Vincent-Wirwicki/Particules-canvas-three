@@ -1,6 +1,6 @@
 import { ShaderMaterial } from "three";
 
-export default class RenderMatShapeOne extends ShaderMaterial {
+export default class RenderMatAttractTwo extends ShaderMaterial {
   constructor() {
     super({
       uniforms: {

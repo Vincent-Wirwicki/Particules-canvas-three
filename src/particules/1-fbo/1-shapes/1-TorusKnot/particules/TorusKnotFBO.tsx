@@ -6,8 +6,8 @@ import {
   ShaderMaterial,
 } from "three";
 
-import SimTorusKnot from "../shader/sim/SimMat";
-import RenderTorusKnot from "../shader/render/RenderMat";
+import SimTorusKnot from "../shader/sim/SimMatShape";
+import RenderTorusKnot from "../shader/render/RenderMatShape";
 
 import useInitFBOScene from "../../../../../hooks/useInitFBOScene";
 import useInitParticles from "../../../../../hooks/useInitParticles";

@@ -51,6 +51,32 @@ export const getLab2 = (numPoints: number) => {
   return data;
 };
 
+export const getRandomLab = (numPoints: number) => {
+  const size = numPoints * numPoints * 4;
+  const data = new Float32Array(size);
+
+  for (let i = 0; i < size; i++) {
+    const stride = i * 4;
+
+    const u = Math.random() * Math.PI * 2;
+    const v = Math.random() * 2 - 1;
+    // t = torsion;
+    // const t = 1;
+    // const bot = 1 + Math.cosh(u) * Math.cosh(v);
+
+    const x = v * u;
+    const y = Math.PI * 4 * (Math.random() - 0.5);
+    const z = v;
+
+    data[stride] = x;
+    data[stride + 1] = y;
+    data[stride + 2] = z;
+    data[stride + 3] = 1;
+  }
+
+  return data;
+};
+
 // Catenoid ---------------------------------------
 // const u = Math.random() * Math.PI * 2;
 // const v = Math.random() * 2 - 1;

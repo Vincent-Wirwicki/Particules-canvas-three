@@ -9,8 +9,8 @@ import useInitFBOScene from "../../../../../hooks/useInitFBOScene";
 import PortalMesh from "../../../../../components/PortalMesh";
 import BufferParticles from "../../../../../components/BufferParticles";
 
-import RenderMatAttractTwo from "../shader/render/RenderMatShapeOne";
-import SimMatAttractTwo from "../shader/sim/SimMatShapeOne";
+import RenderMatAttractTwo from "../shader/render/RenderMatAttractTwo";
+import SimMatAttractTwo from "../shader/sim/SimMatAttractTwo";
 import { getTorusWeird } from "../../../../0-dataShape/getTorusKnot";
 
 extend({

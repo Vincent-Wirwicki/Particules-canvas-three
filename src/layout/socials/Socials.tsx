@@ -1,6 +1,6 @@
 const Socials = () => {
   return (
-    <div className="fixed z-50 top-5 right-5 text-neutral-200 text-xs text-end flex gap-5 items-end">
+    <div className="fixed z-50 top-5 right-5 text-neutral-200 text-xs text-end flex justify-center gap-5 items-end">
       <h3 className="">
         An experimental project <br />
         about particles and FBO

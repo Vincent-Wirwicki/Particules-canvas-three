@@ -9,8 +9,8 @@ import useInitRenderTarget from "../../../../../hooks/useInitRenderTarget";
 import BufferParticles from "../../../../../components/BufferParticles";
 import PortalMesh from "../../../../../components/PortalMesh";
 
-import RenderMatAttractOne from "../shader/render/RenderMatShapeOne";
-import SimMatAttractOne from "../shader/sim/SimMatShapeOne";
+import RenderMatAttractOne from "../shader/render/RenderMatAttractOne";
+import SimMatAttractOne from "../shader/sim/SimMatAttractOne";
 
 extend({
   SimMatAttractOne: SimMatAttractOne,

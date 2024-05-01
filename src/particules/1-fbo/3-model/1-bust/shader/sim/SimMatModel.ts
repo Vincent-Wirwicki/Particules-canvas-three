@@ -1,7 +1,7 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
 
 // const m = useGLTF("./public/bust-hi.glb");
-export default class SimMatCurlTwo extends ShaderMaterial {
+export default class SimMatModel extends ShaderMaterial {
   constructor(size: number, data: Float32Array) {
     const positionsTexture = new DataTexture(
       data,

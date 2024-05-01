@@ -1,63 +1,67 @@
 import { useFrame, extend, Object3DNode, useThree } from "@react-three/fiber";
-import { useEffect, useRef } from "react";
-import { AdditiveBlending, ShaderMaterial, Vector3 } from "three";
+import { useEffect, useLayoutEffect, useRef } from "react";
+import { AdditiveBlending, ShaderMaterial } from "three";
 
-import useInitFBOScene from "../../../../hooks/useInitFBOScene";
-import useInitParticles from "../../../../hooks/useInitParticles";
-import useInitRenderTarget from "../../../../hooks/useInitRenderTarget";
+import useInitRenderTarget from "../../../../../hooks/useInitRenderTarget";
+import useInitParticles from "../../../../../hooks/useInitParticles";
+import useInitFBOScene from "../../../../../hooks/useInitFBOScene";
 
-import BufferParticles from "../../../../components/BufferParticles";
-import PortalMesh from "../../../../components/PortalMesh";
+import PortalMesh from "../../../../../components/PortalMesh";
+import BufferParticles from "../../../../../components/BufferParticles";
 
-import RenderMatMouseOne from "../shader/render/RenderMatCursorOne";
-import SimMatMouseOne from "../shader/sim/SimMatCursorOne";
+import RenderMatAttractThree from "../shader/render/RenderMatAttractorThree";
+import SimMatAttractThree from "../shader/sim/SimMatAttractorThree";
 
 extend({
-  SimMatMouseOne: SimMatMouseOne,
-  RenderMatMouseOne: RenderMatMouseOne,
+  SimMatAttractThree: SimMatAttractThree,
+  RenderMatAttractThree: RenderMatAttractThree,
 });
 
 declare module "@react-three/fiber" {
   interface ThreeElements {
-    renderMatMouseOne: Object3DNode<
-      RenderMatMouseOne,
-      typeof RenderMatMouseOne
+    renderMatAttractThree: Object3DNode<
+      RenderMatAttractThree,
+      typeof RenderMatAttractThree
     >;
   }
 }
 
 declare module "@react-three/fiber" {
   interface ThreeElements {
-    simMatMouseOne: Object3DNode<SimMatMouseOne, typeof SimMatMouseOne>;
+    simMatAttractThree: Object3DNode<
+      SimMatAttractThree,
+      typeof SimMatAttractThree
+    >;
   }
 }
 
-const MouseFBOOne = () => {
-  const size = 256;
+const AttractorFBOThree = () => {
+  const size = 512;
 
   const simulationMaterialRef = useRef<ShaderMaterial | null>(null);
   const renderMaterialRef = useRef<ShaderMaterial | null>(null);
 
   const { scene, camera, positions, uvs } = useInitFBOScene();
   const particles = useInitParticles(size);
-  let target = useInitRenderTarget(size);
 
+  let target = useInitRenderTarget(size);
   let target1 = target.clone();
 
   const state = useThree();
-  // init render target
-  useEffect(() => {
+
+  useLayoutEffect(() => {
     const { gl } = state;
     gl.setRenderTarget(target);
     gl.clear();
     gl.render(scene, camera);
-    gl.compile(scene, camera);
     gl.setRenderTarget(target1);
     gl.clear();
     gl.render(scene, camera);
     gl.setRenderTarget(null);
+    gl.compile(scene, camera);
   });
-  // reload on resize or the render dispear
+
+  //reload on resize or the render dispear
   useEffect(() => {
     const onResize = () => location.reload();
     window.addEventListener("resize", onResize);
@@ -65,20 +69,11 @@ const MouseFBOOne = () => {
   });
 
   useFrame(state => {
-    const { gl, clock, raycaster, pointer } = state;
+    const { gl, clock } = state;
 
-    raycaster.setFromCamera(pointer, camera);
     if (simulationMaterialRef.current) {
       simulationMaterialRef.current.uniforms.uTime.value = clock.elapsedTime;
       simulationMaterialRef.current.uniforms.uPositions.value = target.texture;
-
-      const intersects = raycaster.intersectObjects(scene.children);
-      if (intersects)
-        simulationMaterialRef.current.uniforms.uMouse.value = new Vector3(
-          pointer.x,
-          pointer.y,
-          0
-        );
     }
 
     if (renderMaterialRef.current) {
@@ -99,14 +94,15 @@ const MouseFBOOne = () => {
   return (
     <>
       <PortalMesh uvs={uvs} positions={positions} scene={scene}>
-        <simMatMouseOne ref={simulationMaterialRef} args={[size]} />
+        <simMatAttractThree ref={simulationMaterialRef} args={[size]} />
       </PortalMesh>
+      <BufferParticles particles={particles} />
       <points>
-        <renderMatMouseOne
+        <renderMatAttractThree
           ref={renderMaterialRef}
           blending={AdditiveBlending}
           depthWrite={false}
-          transparent={true}
+          // transparent={true}
           // side={DoubleSide}
         />
         <BufferParticles particles={particles} />
@@ -115,4 +111,4 @@ const MouseFBOOne = () => {
   );
 };
 
-export default MouseFBOOne;
+export default AttractorFBOThree;

@@ -28,7 +28,7 @@ const getRing = (numPoints: number) => {
   return data;
 };
 
-export default class SimMatCurlTwo extends ShaderMaterial {
+export default class SimMatCursorOne extends ShaderMaterial {
   constructor(size: number) {
     const positionsTexture = new DataTexture(
       getRing(size),

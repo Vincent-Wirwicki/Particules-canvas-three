@@ -1,10 +1,8 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
 import { getRandomPI } from "../../../../../0-dataShape/getRandom";
 import { getSphere } from "../../../../../0-dataShape/getSphere";
-// import { getRandomLab } from "../../../../../0-dataShape/getLab";
-// import { getTorusWeird } from "../../../../../0-dataShape/getTorusKnot";
 
-export default class SimMatCurlTwo extends ShaderMaterial {
+export default class SimMatAttractorThree extends ShaderMaterial {
   constructor(size: number) {
     const positionsTexture = new DataTexture(
       getRandomPI(size),
@@ -28,6 +26,7 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       uniforms: {
         uPositions: { value: positionsTexture },
         uPositions2: { value: positionsTexture2 },
+
         uTime: { value: 0 },
       },
       vertexShader: /* glsl */ `
@@ -40,75 +39,25 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       `,
       fragmentShader: /* glsl */ `
     uniform sampler2D uPositions;
-    uniform sampler2D uPositions2;
+        uniform sampler2D uPositions2;
+
 
     uniform float uTime;
 
     varying vec2 vUv;
-
     #define PI 3.141592653589793
 
-    vec3 dadrasAttractor(vec3 pos, float t){
-      float a = 3.;
-      float b = 2.7;
-      float c = 1.7;
-      float d = 2.;
-      float e = 9.;
-      vec3 target = vec3(0);
-      target.x = (pos.y- a*pos.x +b*pos.y*pos.z) ;
-      target.y = (c*pos.y -pos.x*pos.z +pos.z) ;
-      target.z = (d*pos.x*pos.y - e*pos.z);
-      return target * t;
-    }
-    //for t != 1
-    // vec3 dadrasAttractorD(vec3 pos, float t){
-    //   float a = 3.;
-    //   float b = 2.7;
-    //   float c = 1.7;
-    //   float d = 2.;
-    //   float e = 9.;
-    //   vec3 target = vec3(0);
-    //   target.x = -a * (pos.x / t) + (1.0 + b * pos.z) * (pos.y / t) + (b * pos.y) * (pos.z / t);
-    //   target.y = -pos.z * (pos.x / t) + c * (pos.y / t) + (pos.z / t);
-    //   target.z = (d * pos.y) * (pos.x / t) + (d * pos.x) * (pos.y / t) - e * (pos.z / t);
-    //   return target * t;
-    // }
+    //
+    // Description : Array and textureless GLSL 2D/3D/4D simplex
+    //               noise functions.
+    //      Author : Ian McEwan, Ashima Arts.
+    //  Maintainer : ijm
+    //     Lastmod : 20110822 (ijm)
+    //     License : Copyright (C) 2011 Ashima Arts. All rights reserved.
+    //               Distributed under the MIT License. See LICENSE file.
+    //               https://github.com/ashima/webgl-noise
+    //
 
-    //for t = 1
-    vec3 dadrasAttractorD1(vec3 pos ){
-      float a = 3.;
-      float b = 2.7;
-      float c = 1.7;
-      float d = 2.;
-      float e = 9.;
-      vec3 target = vec3(0);
-      target.x = -a * (pos.x) + (1.0 + b * pos.z) * (pos.y ) + (b * pos.y) * (pos.z );
-      target.y = -pos.z * (pos.x ) + c * (pos.y ) + (pos.z );
-      target.z = (d * pos.y) * (pos.x ) + (d * pos.x) * (pos.y ) - e * (pos.z );
-      return target;
-    }
-
-    vec3 thomasAttractorD(vec3 pos){   
-      float b = 0.19;
-      vec3 target = vec3(0);              
-      target.x = -b; // Derivative of (-b*pos.x) with respect to pos.x
-      target.y = cos(pos.y); // Derivative of sin(pos.y) with respect to pos.y
-      target.z = 0.0; // Derivative of sin(pos.z) with respect to pos.
-      return target;
-    }
-
-    
-    vec3 thomasAttractor(vec3 pos, float t){   
-      float b = 0.19;
-      vec3 target = vec3(0);              
-      target.x = (-b*pos.x + sin(pos.y)) ;
-      target.y = (-b*pos.y + sin(pos.z)) ;
-      target.z = (-b*pos.z + sin(pos.x)) ;   
-      return target * t;
-    }
-//	Simplex 3D Noise 
-//	by Ian McEwan, Ashima Arts
-//
  vec4 taylorInvSqrt(in vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
     vec3 mod289(const in vec3 x) { return x - floor(x * (1. / 289.)) * 289.; }
     vec4 mod289(const in vec4 x) { return x - floor(x * (1. / 289.)) * 289.; }
@@ -234,27 +183,6 @@ export default class SimMatCurlTwo extends ShaderMaterial {
         
       } 
 
-
-      vec3 attractor(vec3 pos, float t){
-        float a = 0.25;
-        float b = 0.95;
-        float c = 0.6;
-        float d = 3.5;
-        float e = 0.7;
-        float f = 0.1;
-
-        vec3 target = vec3(0);
-        float x = pos.x;
-        float y = pos.y;
-        float z = pos.z;
-
-        target.x = (z-b) *x - d*y;
-        target.y = e*x + (z-b)*y;
-        target.z = c + b*z - (z*z*z)/3. - (x*x+y*y)*(1.+ a*z) + f*z*x*x*x;
-        // (c + a * Z - Z*Z*Z / 3.0 - (X*X + Y*Y)*(1.0 + e*Z) + f * Z * X*X*X)
-        return target * t;
-      } 
-
       vec3 HalvorsenAttractor(vec3 pos, float t){
         float a = 1.89;
 
@@ -269,8 +197,7 @@ export default class SimMatCurlTwo extends ShaderMaterial {
         
         return target * t;
       } 
-
-      
+     
       vec3 HalvorsenAttractorD(vec3 pos){
         float a = 1.89;
 
@@ -327,6 +254,3 @@ export default class SimMatCurlTwo extends ShaderMaterial {
     });
   }
 }
-// float animationDuration = 3.0; // Duration of animation cycle
-// float t = uTime / animationDuration; // Normalized time within the animation cycle
-// vec3 repeatOffset = vec3(.0, .0,0.); // Adjust as needed for different axes

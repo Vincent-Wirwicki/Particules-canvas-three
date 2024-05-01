@@ -10,8 +10,8 @@ import useInitFBOScene from "../../../../hooks/useInitFBOScene";
 import useInitParticles from "../../../../hooks/useInitParticles";
 import useInitRenderTarget from "../../../../hooks/useInitRenderTarget";
 
-import SimHeavyOne from "../shader/sim/SimMat";
-import RenderHeavyOne from "../shader/render/RenderMat";
+import SimHeavyOne from "../shader/sim/SimMatHeavy";
+import RenderHeavyOne from "../shader/render/RenderMatHeavy";
 import PortalMesh from "../../../../components/PortalMesh";
 import BufferParticles from "../../../../components/BufferParticles";
 

@@ -1,6 +1,6 @@
 import { ShaderMaterial } from "three";
 
-export default class RenderMatShapeOne extends ShaderMaterial {
+export default class RenderMatAttractOne extends ShaderMaterial {
   constructor() {
     super({
       uniforms: {
@@ -19,7 +19,7 @@ export default class RenderMatShapeOne extends ShaderMaterial {
         void main() {
           vec3 pos = texture2D( uPositions, position.xy ).xyz;
           vec4 mvPosition = modelViewMatrix * vec4(pos.xyz, 1.);
-          gl_PointSize = 8. * (1./ -mvPosition.z);
+          gl_PointSize = 5. * (1./ -mvPosition.z);
           gl_Position = projectionMatrix * mvPosition;
 
         }`,

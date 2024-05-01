@@ -1,61 +1,43 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
-import { getRandom } from "../../../../../0-dataShape/getRandom";
+import { getRandom } from "../../../../0-dataShape/getRandom";
 
-export default class SimMatCurlTwo extends ShaderMaterial {
-  constructor(size: number, data: Float32Array) {
+export default class SimMatHeavy extends ShaderMaterial {
+  constructor(size: number) {
     const positionsTexture = new DataTexture(
-      data,
-      size,
-      size,
-      RGBAFormat,
-      FloatType
-    );
-
-    const positionsTexture2 = new DataTexture(
       getRandom(size),
       size,
       size,
       RGBAFormat,
       FloatType
     );
-
     positionsTexture.needsUpdate = true;
-    positionsTexture2.needsUpdate = true;
 
     super({
       uniforms: {
         uPositions: { value: positionsTexture },
-        uPositions2: { value: positionsTexture2 },
-
         uTime: { value: 0 },
       },
       vertexShader: /* glsl */ `
         varying vec2 vUv;
-
-          void main() {
+        void main() {
             vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.);
-          }
+            gl_Position = projectionMatrix * modelViewMatrix * vec4( position,1. );
+        }
       `,
       fragmentShader: /* glsl */ `
-    uniform sampler2D uPositions;
-        uniform sampler2D uPositions2;
+      precision mediump float;
+       uniform sampler2D uPositions;
+      uniform float uTime;
+      varying vec2 vUv;
 
-
-    uniform float uTime;
-
-    varying vec2 vUv;
-
-    //
-    // Description : Array and textureless GLSL 2D/3D/4D simplex
-    //               noise functions.
-    //      Author : Ian McEwan, Ashima Arts.
-    //  Maintainer : ijm
-    //     Lastmod : 20110822 (ijm)
-    //     License : Copyright (C) 2011 Ashima Arts. All rights reserved.
-    //               Distributed under the MIT License. See LICENSE file.
-    //               https://github.com/ashima/webgl-noise
-    //
+      #define PI 3.141592653589793
+      
+      vec2 rotate(vec2 v, float a) {
+	      float s = sin(a);
+	      float c = cos(a);
+	      mat2 m = mat2(c, s, -s, c);
+	      return m * v;
+      }
 
     vec4 taylorInvSqrt(in vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
     vec3 mod289(const in vec3 x) { return x - floor(x * (1. / 289.)) * 289.; }
@@ -137,20 +119,16 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),
                                     dot(p2,x2), dot(p3,x3) ) );
       }
-    
-    
+
     vec3 snoiseVec3( vec3 x ){
-    
       float s  = snoise(vec3( x ));
       float s1 = snoise(vec3( x.y - 19.1 , x.z + 33.4 , x.x + 47.2 ));
       float s2 = snoise(vec3( x.z + 74.2 , x.x - 124.5 , x.y + 99.4 ));
       vec3 c = vec3( s , s1 , s2 );
-      return c;
-    
+      return c;  
     }
 
-
-    vec3 curl( vec3 p ){
+    vec3 curlNoise( vec3 p ){
 
       const float e = .1;
       vec3 dx = vec3( e   , 0.0 , 0.0 );
@@ -173,36 +151,36 @@ export default class SimMatCurlTwo extends ShaderMaterial {
     
     }
 
-    vec3 thomasAttractor(vec3 pos, float t){   
-      float b = 0.19;
-      vec3 target = vec3(0);              
-      target.x = (-b*pos.x + sin(pos.y)) ;
-      target.y = (-b*pos.y + sin(pos.z)) ;
-      target.z = (-b*pos.z + sin(pos.x)) ;   
-      return target * t;
+    vec3 fbm(vec3 p, float amp, float freq){
+      vec3 result =vec3(0.);
+      float ampScale = 0.5; 
+      float freqScale = 2.;
+      int octaves = 4;
+    
+      for (int i = 0; i < octaves; i++) {
+        result += amp * curlNoise(p * freq);
+        p.xz += rotate(p.xz*0.5, amp*0.5);
+        // p.yz += rotate(p.yz*0.15 + uTime*0.1, freq*0.15);
+        freq*= freqScale;
+        amp*= ampScale;
+      } 
+      return result;
     }
 
     void main() {
-      vec2 uv = vUv;   
+      vec2 uv = vUv;
+    
       vec3 pos = texture2D( uPositions, uv ).xyz;
-      vec3 pos2 = texture2D( uPositions2, uv ).xyz;
+      vec3 curlPos = pos;
+      
+      float freq = mix(0.1,.25, smoothstep(0.,10., sin(uTime)));
+      float amp = mix(0.15,0.5, smoothstep(0.,20., uTime));
+      
+      pos = curlNoise(pos);
+      pos += fbm(pos + uTime*0.2, freq, amp); 
+      
+      gl_FragColor = vec4(pos, 1. );
 
-      const float freq = 2.;
-      const float amp = .015;
-      pos +=curl((pos) * freq + uTime*0.5) *amp;
-
-      //some randomness found randomly but it works
-      float someDist = length(pos2 - 0.15);
-      vec3 someDir = normalize(pos - vec3(0.75));
-      pos += someDir * 0.15 * smoothstep(pos2.z *0.15,0.,someDist);
-      // pos += someDir * 0.5 * smoothstep(pos2.x *0.1,0.,someDist);
-      
-      vec3 target = thomasAttractor(pos, 0.025);
-      target += thomasAttractor(pos2*0.15, 0.005)*0.15;
-      
-      pos+=target;
-      
-      gl_FragColor = vec4(pos, 1.);
       }`,
     });
   }

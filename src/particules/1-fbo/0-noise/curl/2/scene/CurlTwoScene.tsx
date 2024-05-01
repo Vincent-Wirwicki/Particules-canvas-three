@@ -5,7 +5,7 @@ const CurlTwoFBO = lazy(() => import("../particules/CurlTwoFBO"));
 const CurlTwoScene = () => {
   return (
     <Suspense fallback={null}>
-      <Canvas camera={{ position: [0, 0, 5] }}>
+      <Canvas camera={{ position: [0, 0, 5] }} dpr={1.75}>
         <CurlTwoFBO />
       </Canvas>
     </Suspense>

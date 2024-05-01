@@ -1,45 +1,83 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
-// import { getRandom } from "../../../../../0-dataShape/getRandom";
-// import { getLab2 } from "../../../../../0-dataShape/getLab";
-// import { getRandom } from "../../../../../0-dataShape/getRandom";
-import { getSphere } from "../../../../../0-dataShape/getSphere";
+// import { getLab } from "../../../../../0-dataShape/getLab";
+import { getRandom, getRandomPI } from "../../../../../0-dataShape/getRandom";
 
 export default class SimMatCurlTwo extends ShaderMaterial {
   constructor(size: number) {
     const positionsTexture = new DataTexture(
-      getSphere(size, 5),
+      getRandomPI(size),
       size,
       size,
       RGBAFormat,
       FloatType
     );
+    const positionsTexture2 = new DataTexture(
+      getRandom(size),
+      size,
+      size,
+      RGBAFormat,
+      FloatType
+    );
+
     positionsTexture.needsUpdate = true;
+    positionsTexture2.needsUpdate = true;
 
     super({
       uniforms: {
         uPositions: { value: positionsTexture },
+        uPositions2: { value: positionsTexture2 },
+
         uTime: { value: 0 },
       },
       vertexShader: /* glsl */ `
         varying vec2 vUv;
-        void main() {
+
+          void main() {
             vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4( position,.8 );
-        }
+            gl_Position = projectionMatrix * modelViewMatrix * vec4( position,1. );
+          }
       `,
       fragmentShader: /* glsl */ `
-      precision mediump float;
       uniform sampler2D uPositions;
+      uniform sampler2D uPositions2;
       uniform float uTime;
       varying vec2 vUv;
+      
+      #define PI 3.141592653589793
+      
+      vec2 rotate(vec2 v, float a) {
+	      float s = sin(a);
+	      float c = cos(a);
+	      mat2 m = mat2(c, s, -s, c);
+	      return m * v;
+      }
+
+      vec3 twist(vec3 p, float k ){
+       // or some other amount
+        float c = cos(k*p.y);
+        float s = sin(k*p.y);
+        mat2  m = mat2(c,-s,s,c);
+        vec3  q = vec3(m*p.xz, p.y);
+        return q;
+      }
+
+
+      /*
+contributors: Patricio Gonzalez Vivo
+description: Worley noise
+use: <vec2> worley(<vec2|vec3> pos)
+examples:
+    - /shaders/generative_worley.frag
+*/
+
 
     vec3 random3(vec3 p) {
     p = fract(p *  vec4(.1031, .1030, .0973, .1099).xyz);
     p += dot(p, p.yxz + 19.19);
     return fract((p.xxy + p.yzz) * p.zyx);
 }
-      #define PI 3.141592
-       float worley(vec3 p) {
+
+    float worley(vec3 p) {
     vec3 n = floor( p );
     vec3 f = fract( p );
 
@@ -55,14 +93,12 @@ export default class SimMatCurlTwo extends ShaderMaterial {
     }
 
     return 1.0-dis;
-}
-      vec2 rotate(vec2 v, float a) {
-	      float s = sin(a);
-	      float c = cos(a);
-	      mat2 m = mat2(c, s, -s, c);
-	      return m * v;
-      }
-       vec4 taylorInvSqrt(in vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+}     
+
+//	Simplex 3D Noise 
+//	by Ian McEwan, Ashima Arts
+//
+ vec4 taylorInvSqrt(in vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
     vec3 mod289(const in vec3 x) { return x - floor(x * (1. / 289.)) * 289.; }
     vec4 mod289(const in vec4 x) { return x - floor(x * (1. / 289.)) * 289.; }
 
@@ -173,25 +209,19 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       return normalize( vec3( x , y , z ) * divisor );
     
     }
-      vec3 twist(vec3 p, float k ){
-       // or some other amount
-        float c = cos(k*p.y);
-        float s = sin(k*p.y);
-        mat2  m = mat2(c,-s,s,c);
-        vec3  q = vec3(m*p.xz, p.y);
-        return q;
-      }
+    const mat2 mtx = mat2( 0.80,  0.60, -0.60,  0.80 );
+
     vec3 fbm(vec3 p, float amp, float freq){
 
       vec3 value =vec3(0.) ;
       float ampScale = 0.5; 
       float freqScale = 2.;
       int octaves = 5;
-      vec3 t = vec3(0.75,0.25,1.);
+    
       for (int i = 0; i < octaves; i++) {
-        value += amp * curlNoise((p) * freq);
-        // p.xy +=rotate(p.xy, 0.5);
-        // p +=twist(p,.15);
+        value += amp * snoiseVec3(p * freq)  ;
+        p += twist(p,4.);
+        // p*= idk;
         freq*= freqScale;
         amp *=ampScale;
       }
@@ -200,64 +230,93 @@ export default class SimMatCurlTwo extends ShaderMaterial {
     
     }
 
-float quinticInOut(in float t) {
-    return t < 0.5
-        ? +16.0 * pow(t, 5.0)
-        : -0.5 * pow(2.0 * t - 2.0, 5.0) + 1.0;       
-}    
+    vec3 SprotzLinzFAttractor(vec3 pos, float t){
+        float a = 5.;
+        float b = -10.;
+        float d = 2.6666666667;
+
+        vec3 target = vec3(0);
+
+        target.x = pos.y + pos.z;
+        target.y = -pos.x + a * pos.y;
+        target.z =(pos.x*pos.x) - pos.z;
+        // (c + a * Z - Z*Z*Z / 3.0 - (X*X + Y*Y)*(1.0 + e*Z) + f * Z * X*X*X)
+        return target * t;
+      } 
+float sdVerticalCapsule( vec3 p, float h, float r )
+{
+  p.y -= clamp( p.y, 0.0, h );
+  return length( p ) - r;
+}
+
+float sdEllipsoid( vec3 p, vec3 r )
+{
+  float k0 = length(p/r);
+  float k1 = length(p/(r*r));
+  return k0*(k0-1.0)/k1;
+}
+// x = Math.cos(s) * Math.sinh(v)*Math.sin(u) + Math.sin(s) * Math.cosh(v)*Math.cos(u)
+// y = -Math.cos(s) * Math.sinh(v)*Math.sin(u) + Math.sin(s) * Math.cosh(v)*Math.cos(u)
+// z = u * Math.cos(s) + v*sin(s)
     void main() {
       vec2 uv = vUv;
+      // float lod = pow(1.0-r,4.0)*5.0;
+      vec3 pos1 = texture2D( uPositions, uv).xyz;
+      vec3 pos2 = texture2D( uPositions2, uv ).xyz;
       
-      vec3 pos = texture2D( uPositions, uv ).xyz;
-      vec3 curlPos = pos;
+      vec3 target1 = pos1;
+      vec3 target2  = pos2;
+      float seed = snoise(vec3(0.15,0.25,0.1));
+      float freq = mix(0.25,.15, sin(uTime*0.75));
+      float amp = mix(0.25,.15,sin(uTime*0.25));
+     
 
-
-      float animationDuration = 3.0; // Duration of animation cycle
+      float animationDuration = 10.0; // Duration of animation cycle
       float t = uTime / animationDuration; // Normalized time within the animation cycle
-      vec3 repeatOffset = vec3(.0, .0,0.); // Adjust as needed for different axes
+      vec3 repeatOffset = vec3(1.0, 1.0,0.); // Adjust as needed for different axes
 
-      // float freq = mix(0.35,.65,smoothstep(0.,30., sin(uTime *0.25 )));
-      // float amp = mix(0.2,0.4, smoothstep(15.,0., sin(uTime*0.5)));
+      vec3 p = pos1 - repeatOffset * fract(t);
+
+      // float cap = sdVerticalCapsule(pos2, .5,2.);
+      float r = length(pos1);
+      // float f = smoothstep(0.,.5,abs(pos1.x - cap));
+      float a = atan(pos1.x, pos1.y) ;
+      // vec3 t = vec3(cos(a), sin(a),1.);
+
+      // pos1 += (t - pos1) *0.5; 
+      // curlPos = curlNoise(pos * d + freq) * amp ;
+      target1 += curlNoise(pos1);
+      float w = worley(pos1);
+
+      vec3 dir = normalize(target1);
+      // float dist = nt.x* r smoothstep(0.,10.,sin(uTime));
+      float f2 = smoothstep(0.,10., abs(target1.x));
+      target1 += fbm(target1, 0.25, 0.15) ;
+      target1 -= dir * r * 0.075 ;
+      pos1 += (target1 - p)*0.3;
+      // vec3 t2 =SprotzLinzFAttractor(target1,0.05);
+      // target1 +=t2; 
+      // target2 = curlNoise(pos1);
+      // target2 += fbm(target1, freq, amp);
+
+      // vec3 render = mix(target1*0.15, target2, 0.5);
+      // vec3 render = min(target1,pos1);
+
+      // pos2 += (curlPos - pos2) *0.5;
+      // curlPos += fbm(curlPos *2. + 1.-cos(uTime *0.5), 0.25, 0.15) ;
+
+      // float time = mod(uTime, 10.);
+      // vec3 p1 = (fbm(curlPos + time, .15, 0.15));
+      // vec3 p2 = (fbm(curlPos + time -3., .15, 0.15));
+      // curlPos += clamp( pos.y, 0.0, pos2.y );
+      // vec3 target =SprotzLinzFAttractor(pos,0.05);
+      // curlPos +=target;
+
+      // vec3 render = mix(p1, p2, clamp((time - 2.5) / (3.-2.5), 0.,1.));
       
-
-      
-      float loopLength = 3.;
-      float transitionStart = .5;
-      float time = mod(uTime, loopLength);
-
-      float transitionProgress = (time-transitionStart)/(loopLength-transitionStart);
-      float progress = clamp(transitionProgress, 0., 1.);
-
-      float freq = mix(0.15,.3,smoothstep(0.,15., sin(time )));
-      float amp = mix(0.5,.2, smoothstep(10.,0., sin(time)));
-      // pos.xz += rotate(pos.xz, sin(uTime * time));
-
-      vec3 n = curlNoise(pos);
-      // vec3 v1 = curlNoise(sin(n)  + time*0.25);
-      // vec3 v2 = curlNoise(sin(n)  + (time - loopLength)*0.25);
-      vec3 v1 = fbm(n *1.5  + time, amp, freq)*3.;
-      vec3 v2 = fbm(n *3. + (time - loopLength), amp, freq) ;
-      
-      // vec3 render = mix(v1, v2, progress);
-      // render.xz += rotate(render.xz, sin(uTime *0.15));
-
-      pos += mix(v1, v2, progress);
-            // pos.xz = rotate(pos.xz, sin(uTime *0.15));
-
-      vec3 p = pos - repeatOffset * fract(t);
-      // float w = worley(pos - p);
-      float ease = quinticInOut(sin(uTime *0.15));
-      // curlPos = curlNoise(pos);
-      // curlPos += fbm(curlPos  + sin(uTime *.25), freq, amp);
-      // curlPos += fbm(curlPos * fract(t), freq, amp);
-      // curlPos += fbm(curlPos + uTime *0.5, freq, amp) *0.5;
-        // curlPos += fbm(curlPos + uTime *0.15, freq, amp) *0.5;
-
-      
-      // render.yz = rotate(render.yz, uTime*0.1);
-      // pos.xy = rotate(pos.xy, uTime*0.2);
-
-      gl_FragColor = vec4( pos, 1. );
+      // vec3 render = mix(pos, curlPos, smoothstep(0.,20., abs(pos.x + pos2.y) + uTime));
+// 0.5 * smoothstep(pos.x,10., clamp( pos.y, 0.0, pos2.y ))
+      gl_FragColor = vec4( pos1, 1. );
 
       }`,
     });
