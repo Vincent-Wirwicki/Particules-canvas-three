@@ -25,6 +25,8 @@ export const getLab = (numPoints: number) => {
   return data;
 };
 
+
+
 export const getLab2 = (numPoints: number) => {
   const size = numPoints * numPoints * 4;
   const data = new Float32Array(size);
@@ -35,12 +37,16 @@ export const getLab2 = (numPoints: number) => {
     const u = Math.random() * Math.PI * 2;
     const v = Math.random() * 2 - 1;
     // t = torsion;
-    const t = 8;
-    const bot = 1 + Math.cosh(u) * Math.cosh(v);
+    const t = Math.PI;
+    // const bot = 1 + Math.cosh(u) * Math.cosh(v);
 
-    const x = (Math.sinh(v) * Math.cos(t * u)) / bot;
-    const y = (Math.sinh(v) * Math.sin(t * u)) / bot;
-    const z = (Math.cosh(v) * Math.sinh(u)) / bot;
+    // const x = v * Math.cos(t * u);
+    // const y = v * Math.sin(t * u);
+    // const z = u;
+
+    const x = v * Math.cos(t * u);
+    const y = v * Math.sin(t * u);
+    const z = u;
 
     data[stride] = x;
     data[stride + 1] = y;

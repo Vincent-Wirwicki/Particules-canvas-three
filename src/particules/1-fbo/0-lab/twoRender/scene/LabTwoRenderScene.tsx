@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-// import { OrbitControls } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import { Suspense } from "react";
 import LabTwoRenderFBO from "../particules/LabTwoRenderFBO";
 // import { div } from "three/examples/jsm/nodes/Nodes.js"; position: [2, 1, 10]
@@ -11,7 +11,7 @@ const LabTwoRenderScene = () => {
         <Suspense fallback={null}>
           <LabTwoRenderFBO />
         </Suspense>
-        {/* <OrbitControls /> */}
+        <OrbitControls />
       </Canvas>
     </div>
   );

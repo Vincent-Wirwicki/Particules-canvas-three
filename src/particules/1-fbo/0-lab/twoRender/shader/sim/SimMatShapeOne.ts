@@ -1,6 +1,9 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
-import { getRandomPI } from "../../../../../0-dataShape/getRandom";
 import { getSphere } from "../../../../../0-dataShape/getSphere";
+// import { getTorusWeird } from "../../../../../0-dataShape/getTorusKnot";
+// import { getLab2 } from "../../../../../0-dataShape/getLab";
+import { getRandomPI } from "../../../../../0-dataShape/getRandom";
+// import { getAttractor } from "../../../../../0-dataShape/getLab";
 // import { getRandomLab } from "../../../../../0-dataShape/getLab";
 // import { getTorusWeird } from "../../../../../0-dataShape/getTorusKnot";
 
@@ -99,11 +102,17 @@ export default class SimMatCurlTwo extends ShaderMaterial {
 
     
     vec3 thomasAttractor(vec3 pos, float t){   
-      float b = 0.19;
-      vec3 target = vec3(0);              
-      target.x = (-b*pos.x + sin(pos.y)) ;
-      target.y = (-b*pos.y + sin(pos.z)) ;
-      target.z = (-b*pos.z + sin(pos.x)) ;   
+      const float b = 0.19;
+      
+      vec3 target = vec3(0); 
+      float x = pos.x;
+      float y = pos.y;
+      float z = pos.z;
+
+      target.x = -b*x + sin(y) ;
+      target.y = -b*y + sin(z) ;
+      target.z = -b*z + sin(x) ;   
+      
       return target * t;
     }
 //	Simplex 3D Noise 
@@ -221,9 +230,9 @@ export default class SimMatCurlTwo extends ShaderMaterial {
     
     }
       vec3 AlorenzMod2Attractor(vec3 pos, float t){
-        float a = 10.0;
-        float b = 28.0;
-        float c = 2.6666666667;
+        const float a = 10.0;
+        const float b = 28.0;
+        const float c = 2.6666666667;
 
         vec3 target = vec3(0);
 
@@ -233,30 +242,43 @@ export default class SimMatCurlTwo extends ShaderMaterial {
         return target * t;
         
       } 
+	
+float smoothNoise(vec3 x) {
+    vec3 i = floor(x);
+    vec3 f = fract(x);
 
+    float a = snoise(i);
+    float b = snoise(i + vec3(1.0, 0.0, 0.0));
+    float c = snoise(i + vec3(0.0, 1.0, 0.0));
+    float d = snoise(i + vec3(1.0, 1.0, 0.0));
+    float e = snoise(i + vec3(0.0, 0.0, 1.0));
+    float g = snoise(i + vec3(0.0, 1.0, 1.0));
+    float h = snoise(i + vec3(1.0, 1.0, 1.0));
 
-      vec3 attractor(vec3 pos, float t){
-        float a = 0.25;
-        float b = 0.95;
-        float c = 0.6;
-        float d = 3.5;
-        float e = 0.7;
-        float f = 0.1;
+    vec3 u = smoothstep(0.0, 1.0, f);
 
-        vec3 target = vec3(0);
-        float x = pos.x;
-        float y = pos.y;
-        float z = pos.z;
+    float p0 = mix(a, b, u.x);
+    float p1 = mix(c, d, u.x);
+    float p2 = mix(e, g, u.x);
+    float p3 = mix(g, h, u.x);
 
-        target.x = (z-b) *x - d*y;
-        target.y = e*x + (z-b)*y;
-        target.z = c + b*z - (z*z*z)/3. - (x*x+y*y)*(1.+ a*z) + f*z*x*x*x;
-        // (c + a * Z - Z*Z*Z / 3.0 - (X*X + Y*Y)*(1.0 + e*Z) + f * Z * X*X*X)
-        return target * t;
-      } 
+    float p4 = mix(p0, p1, u.y);
+    float p5 = mix(p2, p3, u.y);
 
-      vec3 HalvorsenAttractor(vec3 pos, float t){
-        float a = 1.89;
+    return mix(p4, p5, u.z);
+}
+
+float periodicNoise(vec3 x, float period) {
+    return smoothNoise(vec3(x.x / period, x.y / period, x.z / period));
+}
+
+float noisyPeriodicFunction(vec3 x, float period, float frequency) {
+    float noisyValue = periodicNoise(x * frequency, period);
+    return sin(noisyValue * 2.0 * 3.14159);
+}
+
+      vec3 attractor(vec3 pos, float dt){
+        const float a = 1.89;
 
         vec3 target = vec3(0);
         float x = pos.x;
@@ -264,27 +286,46 @@ export default class SimMatCurlTwo extends ShaderMaterial {
         float z = pos.z;
 
         target.x = -a*x - 4.*y - 4.*z - y*y;
-        target.y = -a*y - 4.*z - 4.*x -z*z ;
-        target.z = -a*z -4.*x - 4.*y - x*x ;
-        
-        return target * t;
-      } 
+        target.y = -a*y - 4.*z - 4.*x - z*z ;
+        target.z = -a*z - 4.*x - 4.*y - x*x ;
 
-      
-      vec3 HalvorsenAttractorD(vec3 pos){
-        float a = 1.89;
+        return target * dt ;
+      }
+
+      vec3 attractorD(vec3 pos, float dt){
+        const float a = 1.89;
 
         vec3 target = vec3(0);
         float x = pos.x;
         float y = pos.y;
         float z = pos.z;
 
-        target.x = -a - 4. - 2. * y; 
-        target.y = -a - 4. - 2. * z; 
-        target.z = -a - 4. - 2. * x;
-        return target;
-      } 
+        target.x = -a -4. - 2. * y; 
+        target.y = -a -4. - 2. * z; 
+        target.z = -a -4. - 2. * x;
 
+        return target  ;
+      }
+    
+      vec3 midpoint(vec3 P, float dt){
+        vec3 k0 = attractor(P, dt);
+        return P + attractor(P + k0 * dt * 0.5,0.5) * dt;
+      }
+
+      vec3 runge_kutta4(vec3 P, float dt){
+	      vec3 k0 = attractor(P,1.);
+        vec3 k1 = attractor(P + k0 * dt * 0.5,1.);
+        vec3 k2 = attractor(P + k1 * dt * 0.5,1.);
+        vec3 k3 = attractor(P + k2 * dt,1.);
+        return P + (k0 + 2.0 * (k1 + k2) + k3) * dt / 6.0;
+      }
+     
+      vec2 rotate(vec2 v, float a) {
+	      float s = sin(a);
+	      float c = cos(a);
+	      mat2 m = mat2(c, s, -s, c);
+	      return m * v;
+      }
 
     void main() {
       vec2 uv = vUv;   
@@ -296,32 +337,42 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       float loopLength = 12.;
       float transitionStart = 6.;
       float time = mod(uTime , loopLength );
+      float angle = atan(pos.x, pos.y);
 
       float transitionProgress = (time-transitionStart)/(loopLength-transitionStart);
       float progress1 = clamp(transitionProgress, 0., 1.);
       float progress = transitionProgress * PI *2.  ;
-      float offset = sin(progress ) * cos(progress ) ;
-      pos += curlNoise((1.-pos) *2. + offset + vec3(2.) )*0.015;
-            // pos2 += snoiseVec3(pos2 + offset - vec3(0.5) )*0.025;
+      float offset = sin(progress ) * cos(progress) ;
+      float sn = smoothNoise(pos );
+      // vec3 n = curlNoise(pos)*0.15;
+      // float n = snoise(pos);
+      pos += curlNoise((1.-pos + offset)  )*0.015;
+            // pos2 += snoiseVec3(pos2 + offset - vec3(0.5) )*0.015;
 
 
-      vec3 target = HalvorsenAttractor(pos + offset , 0.005  )  ;
-      vec3 target2 = HalvorsenAttractorD(pos2 + offset) ;
+      vec3 target = attractor(pos + offset, .005);
+
+      // target += curlNoise(target)*0.015;
+      vec3 target2 = attractorD(pos2 + offset,.005) ;
       //--------------------------------------------------------------------------------------------
       // pos += curlNoise(pos )*0.015;
       // pos2 += snoiseVec3(pos2 *1.15) *0.015;
       // vec3 target = HalvorsenAttractor(pos, 0.005);
-      // // target +=curlNoise(target )*0.015;
+      // target +=curlNoise(target )*0.015;
       // // derivate value
       // vec3 target2 = HalvorsenAttractorD(pos2);
       // // target2 +=curlNoise(target2)*0.015;
 
       //particles speed
-      float d  = length(target - target2 )*0.15 ;
-      vec3 dir = normalize(target - target2) *0.15;
+      float d  = length(target - target2 ) *0.25 ;
+      float r1 = length(pos);
+      vec3 dir = normalize(target) * .25;
+      vec3 d2 = dir * smoothstep(10.,0.,r1) ;
+      pos += d2;
       // d+=snoise(pos + + offset + vec3(.5) + sin(uTime));
-      pos += (target) *d ; 
-      
+      pos += (target) *d;
+      // pos += sn; 
+      // pos+= sin(pos + offset);
       gl_FragColor = vec4(pos, 1.);
       }`,
     });

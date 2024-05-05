@@ -198,7 +198,7 @@ export default class SimMatAttractorThree extends ShaderMaterial {
         return target * t;
       } 
      
-      vec3 HalvorsenAttractorD(vec3 pos){
+      vec3 HalvorsenAttractorD(vec3 pos, float dt){
         float a = 1.89;
 
         vec3 target = vec3(0);
@@ -209,7 +209,7 @@ export default class SimMatAttractorThree extends ShaderMaterial {
         target.x = -a - 4. - 2. * y; 
         target.y = -a - 4. - 2. * z; 
         target.z = -a - 4. - 2. * x;
-        return target;
+        return target ;
       } 
 
 
@@ -228,27 +228,24 @@ export default class SimMatAttractorThree extends ShaderMaterial {
       float progress1 = clamp(transitionProgress, 0., 1.);
       float progress = transitionProgress * PI *2.  ;
       float offset = sin(progress ) * cos(progress ) ;
-      pos += curlNoise((1.-pos) *2. + offset + vec3(2.) )*0.015;
+      // pos += curlNoise((1.-pos) *2. + offset + vec3(2.) )*0.015;
+      pos += curlNoise((1.-pos) + offset )*0.015;
+
             // pos2 += snoiseVec3(pos2 + offset - vec3(0.5) )*0.025;
 
 
       vec3 target = HalvorsenAttractor(pos + offset , 0.005  )  ;
-      vec3 target2 = HalvorsenAttractorD(pos2 + offset) ;
+      vec3 target2 = HalvorsenAttractorD(pos2 + offset,.0005) ;
       //--------------------------------------------------------------------------------------------
-      // pos += curlNoise(pos )*0.015;
-      // pos2 += snoiseVec3(pos2 *1.15) *0.015;
-      // vec3 target = HalvorsenAttractor(pos, 0.005);
-      // // target +=curlNoise(target )*0.015;
-      // // derivate value
-      // vec3 target2 = HalvorsenAttractorD(pos2);
-      // // target2 +=curlNoise(target2)*0.015;
 
       //particles speed
-      float d  = length(target - target2 )*0.15 ;
-      vec3 dir = normalize(target - target2) *0.15;
+      float d  = length(target - target2 )*0.25 ;
+      float r1 = length(pos);
+      vec3 dir = normalize(target) * .25;
+      vec3 d2 = dir * smoothstep(10.,0.,r1) ;
       // d+=snoise(pos + + offset + vec3(.5) + sin(uTime));
-      pos += (target) *d ; 
-      
+      pos += (target) * d ; 
+      pos += d2;
       gl_FragColor = vec4(pos, 1.);
       }`,
     });
