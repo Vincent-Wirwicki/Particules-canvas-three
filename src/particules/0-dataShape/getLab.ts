@@ -1,6 +1,28 @@
 // experimenting with x,y,z
 // other 3D data shapes in comments below
 
+export const getThomas = (numPoints: number) => {
+  const size = numPoints * numPoints * 4;
+  const data = new Float32Array(size);
+
+  for (let i = 0; i < size; i++) {
+    const stride = i * 4;
+    const { sin } = Math;
+    const b = 0.19;
+
+    const x = Math.random() * Math.PI * 2 - 1;
+    const y = Math.random() * Math.PI * 2 - 1;
+    const z = Math.random() * Math.PI * 2 - 1;
+
+    data[stride] = -b * x + sin(y);
+    data[stride + 1] = -b * y + sin(z);
+    data[stride + 2] = -b * z + sin(x);
+    data[stride + 3] = 1;
+  }
+
+  return data;
+};
+
 export const getLab = (numPoints: number) => {
   const size = numPoints * numPoints * 4;
   const data = new Float32Array(size);
@@ -24,8 +46,6 @@ export const getLab = (numPoints: number) => {
 
   return data;
 };
-
-
 
 export const getLab2 = (numPoints: number) => {
   const size = numPoints * numPoints * 4;

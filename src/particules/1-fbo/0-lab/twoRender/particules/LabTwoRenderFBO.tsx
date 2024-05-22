@@ -49,7 +49,7 @@ const LabTwoRenderFBO = () => {
     gl.clear();
     gl.render(scene, camera);
     gl.setRenderTarget(null);
-  });
+  }, [camera, scene, target, target1, state]);
 
   useEffect(() => {
     const onResize = () => location.reload();
@@ -90,7 +90,7 @@ const LabTwoRenderFBO = () => {
           ref={renderMaterialRef}
           blending={AdditiveBlending}
           depthWrite={false}
-          transparent={false}
+          transparent={true}
           // side={DoubleSide}
         />
         <BufferParticles particles={particles} />

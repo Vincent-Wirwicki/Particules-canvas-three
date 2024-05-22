@@ -1,7 +1,5 @@
 import { DataTexture, FloatType, RGBAFormat, ShaderMaterial } from "three";
-import { getSphere } from "../../../../../0-dataShape/getSphere";
-// import { getRandom, getRandomPI } from "../../../../../0-dataShape/getRandom";
-import { getThomas } from "../../../../../0-dataShape/getLab";
+import { getSphere } from "../../../../../../0-dataShape/getSphere";
 // import { getTorusWeird } from "../../../../../0-dataShape/getTorusKnot";
 // import { getLab2 } from "../../../../../0-dataShape/getLab";
 // import { getRandomPI } from "../../../../../0-dataShape/getRandom";
@@ -12,14 +10,14 @@ import { getThomas } from "../../../../../0-dataShape/getLab";
 export default class SimMatCurlTwo extends ShaderMaterial {
   constructor(size: number) {
     const positionsTexture = new DataTexture(
-      getThomas(size),
+      getSphere(size, 1),
       size,
       size,
       RGBAFormat,
       FloatType
     );
     const positionsTexture2 = new DataTexture(
-      getSphere(size, 1),
+      getSphere(size, 3),
       size,
       size,
       RGBAFormat,
@@ -103,7 +101,20 @@ export default class SimMatCurlTwo extends ShaderMaterial {
     }
 
     
+    vec3 thomasAttractor(vec3 pos, float t){   
+      const float b = 0.19;
+      
+      vec3 target = vec3(0); 
+      float x = pos.x;
+      float y = pos.y;
+      float z = pos.z;
 
+      target.x = -b*x + sin(y) ;
+      target.y = -b*y + sin(z) ;
+      target.z = -b*z + sin(x) ;   
+      
+      return target * t;
+    }
 //	Simplex 3D Noise 
 //	by Ian McEwan, Ashima Arts
 //
@@ -218,6 +229,7 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       return normalize( vec3( x , y , z ) * divisor );
     
     }
+    
       vec3 AlorenzMod2Attractor(vec3 pos, float t){
         const float a = 10.0;
         const float b = 28.0;
@@ -232,6 +244,7 @@ export default class SimMatCurlTwo extends ShaderMaterial {
         
       } 
 	
+
       vec3 attractor(vec3 pos, float dt){
         const float a = .9;	
         const float b = 5.;
@@ -273,28 +286,6 @@ export default class SimMatCurlTwo extends ShaderMaterial {
 	      mat2 m = mat2(c, s, -s, c);
 	      return m * v;
       }
-    vec3 thomasAttractor(vec3 pos, float t){   
-      const float b = 0.19;
-      
-      vec3 target = vec3(0); 
-      float x = pos.x;
-      float y = pos.y;
-      float z = pos.z;
-
-      target.x = -b*x + sin(y) ;
-      target.y = -b*y + sin(z) ;
-      target.z = -b*z + sin(x) ;   
-      
-      return target * t;
-    }
-
-    float map(float v, float iMin, float iMax ) { return (v-iMin)/(iMax-iMin); }
-    float mapF(in float v, in float iMin, in float iMax, in float oMin, in float oMax) { return oMin + (oMax - oMin) * (v - iMin) / (iMax - iMin); }
-    vec3 map3(in vec3 v, in vec3 iMin, in vec3 iMax, in vec3 oMin, in vec3 oMax) { return oMin + (oMax - oMin) * (v - iMin) / (iMax - iMin); }
-
-    float easeInOutQuad(float t) {
-    return t < 0.5 ? 2.0 * t * t : -1.0 + (4.0 - 2.0 * t) * t;
-}
 
     void main() {
       vec2 uv = vUv;   
@@ -302,29 +293,70 @@ export default class SimMatCurlTwo extends ShaderMaterial {
       vec3 pos2 = texture2D( uPositions2, uv ).xyz;
       
       //gif setup -------------------------------------------------------------------------------
-float loopLength = 5.;
-      float transitionStart = 20.;
+      float loopLength = 20.;
+      float transitionStart = 10.;
       float time = mod(uTime , loopLength );
-      float transitionProgress = map(time, transitionStart, loopLength);
-      vec3 q = pos;
-      vec3 q2 = pos2;
-      pos /= transitionProgress;
-      pos2 *= transitionProgress;
-      vec3 n = curlNoise(pos) *.15;
-      vec3 n2 = snoiseVec3(pos2) * 0.15;
-      vec3 disp = q +  thomasAttractor(pos2, 0.05  );
-      vec3 target = q +  thomasAttractor(pos, 0.05  );
-      // target += sin(pos2 *2.)*0.01;
-      float d = length(target - disp)*.3;
-      // target += disp*0.01;
-      target += d;
+      float angle = atan(pos.x, pos.y);
+
+      float transitionProgress = (time-transitionStart)/(loopLength-transitionStart);
+      float progress1 = clamp(transitionProgress, 0., 1.);
+      float progress = transitionProgress * PI *2.  ;
+      float offset = sin(progress ) * cos(progress) ;
+      // float sn = smoothNoise(pos );
+      // vec3 n = curlNoise(pos)*0.15;
+      // float n = snoise(pos);
+      // pos += curlNoise((pos +uTime)  )*0.001;
+      //       pos2 += snoiseVec3(pos2 + offset - vec3(0.5) )*0.015;
 
 
+      vec3 target = attractor(pos, .0005);
+
+      // target += curlNoise(target)*0.015;
+      vec3 target2 = attractorD(pos2, .005) ;
       //--------------------------------------------------------------------------------------------
+ 
 
-      // pos += target * s;
-      // pos += dir *0.01;
-      gl_FragColor = vec4(target, 1.);
+      float radius = length(pos.xy);
+
+      // vec3 n = curlNoise(pos2   ) *4. ;
+      // float na = atan(n.x, n.y);
+
+      // vec3 n2 = curlNoise(pos  ) ;
+      // float na2 = atan(n2.x, n2.y);
+
+      float angle2 = atan(pos2.x, pos2.y) ;
+      float radius2 = length(pos2.xy);
+      vec2 polar2 = vec2(angle2, radius2);
+      // float rrr =( 1./ angle2) *
+      // float tt = snoise( pos2 + time - loopLength )    ;
+      // float tt2 = snoise( pos2 + time )    ;
+      // float tt = snoise( na + pos2 - pos)    ;
+            // float tiii = mix(4.,12., abs(sin(uTime)));
+
+      float speed = length(pos - pos2)*0.025;
+      float tt = mix(2., 1.  , abs(sin(progress))  ) ;
+      vec3 n = curlNoise(pos2 )  ;
+      float na = atan(n.x, n.y);
+      // float acc = mix(tt, tt2, progress1) + angle2    ;* mix(10.,8.,cos( na2 *0.001 )* sin(na2) *0.1)
+            // float tt = transitionProgress ;
+
+      float acc = tt +  na   ;
+
+      // pos.x += (8.*acc + 2.  )* cos((na2 * tt) ) ;
+      // pos.y += (8.*acc + 2.  )* sin((na2 * tt) );
+
+      // pos2.x += (8.*acc + PI * 8.  )* cos((na * tt ) ) ;
+      // pos2.y += (8.*acc + PI * 8.  )* sin((na * tt ) ) ;
+      pos2.x += (.055*acc + 2.  )* cos((na * tt ) ) - speed ;
+      pos2.y += (.055*acc + 2.  )* sin((na * tt ) ) ;
+    // pos2+=n;
+
+      // pos2.x += (2.* PI * acc - pos.z  )* cos(8.*PI / (na  ) ) ;
+      // pos2.y += (2.* PI * acc - pos.z  )* sin(8.*PI / (na  ) ) ;
+
+      // pos2.y += acos(pos.z / angle2) ;
+      vec3 render = vec3(polar2.x, polar2.y, 1.);
+      gl_FragColor = vec4(pos2, 1.);
       }`,
     });
   }
@@ -338,47 +370,3 @@ float loopLength = 5.;
 // float animationDuration = 3.0; // Duration of animation cycle
 // float t = uTime / animationDuration; // Normalized time within the animation cycle
 // vec3 repeatOffset = vec3(.0, .0,0.); // Adjust as needed for different axes
-
-// float loopLength = 5.;
-//       float transitionStart = 15.;
-//       float time = mod(uTime , loopLength );
-//       float transitionProgress = map(time, transitionStart, loopLength);
-//       vec3 q = pos;
-//       vec3 q2 = pos2;
-//       pos += transitionProgress;
-//       pos2 += transitionProgress;
-//       vec3 disp = q + transitionProgress * thomasAttractor(pos2 / transitionProgress +2.*PI , 0.05 / transitionProgress );
-//       vec3 target = q + transitionProgress * thomasAttractor(pos * transitionProgress  , 0.05 / transitionProgress );
-//       // target += sin(pos2 *2.)*0.01;
-//       float d = length(target - disp)*.025;
-//       // target += disp*0.01;
-//       target += d;
-
-// float loopLength = 4.;
-// float transitionStart = 12.;
-// float time = mod(uTime , loopLength );
-// float transitionProgress = map(time, transitionStart, loopLength);
-// float progress = (time - transitionStart) / loopLength;
-// vec3 q = pos;
-// vec3 q2 = pos2;
-// pos /= transitionProgress;
-// pos2 /= transitionProgress;
-// vec3 target;
-// vec3 disp;
-// for(int i = 0; i< 20; i++){
-//   float j = float(i);
-
-//   disp = q +   thomasAttractor((pos2  )  , (0.005 * j)   );
-//  target = q +  thomasAttractor(pos   , (0.005 * j)   );
-// }
-
-// // target += sin(pos2 *2.)*0.01;
-// float d = length(target - disp)*.05;
-// // target += disp*0.01;
-// target += d;
-
-// //--------------------------------------------------------------------------------------------
-
-// // pos += target * s;
-// // pos += dir *0.01;
-// gl_FragColor = vec4(target, 1.);
